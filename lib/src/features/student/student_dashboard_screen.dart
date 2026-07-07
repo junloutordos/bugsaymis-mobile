@@ -76,7 +76,7 @@ class StudentDashboardScreen extends ConsumerWidget {
                   // ── Profile card ────────────────────────────────────
                   profile.when(
                     loading: () => const ShimmerCard(height: 100),
-                    error: (_, __) => const SizedBox.shrink(),
+                    error: (_, _) => const SizedBox.shrink(),
                     data: (p) => _ProfileCard(profile: p),
                   ),
 
@@ -86,7 +86,7 @@ class StudentDashboardScreen extends ConsumerWidget {
                   // ── Today status ────────────────────────────────────
                   today.when(
                     loading: () => const ShimmerCard(height: 80),
-                    error: (_, __) => const SizedBox.shrink(),
+                    error: (_, _) => const SizedBox.shrink(),
                     data: (t) => _TodayCard(summary: t),
                   ),
 
@@ -96,7 +96,7 @@ class StudentDashboardScreen extends ConsumerWidget {
                   // ── Grade summary ───────────────────────────────────
                   grades.when(
                     loading: () => const ShimmerCard(height: 120),
-                    error: (_, __) => _GradesUnavailable(),
+                    error: (_, _) => _GradesUnavailable(),
                     data: (d) => _GradeSummaryCard(
                       grades: d,
                       onTap: () => context.go('/student/grades'),

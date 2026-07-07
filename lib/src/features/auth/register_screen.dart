@@ -130,7 +130,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                               child: Image.asset(
                                 'assets/images/pshs_logo.png',
                                 fit: BoxFit.contain,
-                                errorBuilder: (_, __, ___) => const Icon(
+                                errorBuilder: (_, _, _) => const Icon(
                                     Icons.shield_rounded,
                                     color: Colors.white,
                                     size: 40),

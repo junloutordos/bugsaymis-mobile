@@ -3,7 +3,19 @@ import 'package:flutter/foundation.dart';
 class AppConstants {
   AppConstants._();
 
+  /// Production API endpoint (Cloudflare-proxied ALB).
+  static const String _prodBaseUrl = 'https://mis.crc.pshs.edu.ph/api/mobile';
+
+  /// Compile-time override: flutter build --dart-define=API_BASE_URL=…
+  static const String _envBaseUrl = String.fromEnvironment('API_BASE_URL');
+
   static String get baseUrl {
+    if (_envBaseUrl.isNotEmpty) return _envBaseUrl;
+
+    // Release builds always talk to production.
+    if (kReleaseMode) return _prodBaseUrl;
+
+    // Debug/profile builds default to the local Docker backend.
     if (kIsWeb) {
       // Web (Chrome dev) hits the backend directly on localhost
       return 'http://localhost:8080/api/mobile';

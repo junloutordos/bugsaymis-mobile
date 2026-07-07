@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/api_client.dart';
 import '../../core/theme.dart';
+import '../../shared/widgets/shimmer_card.dart';
 
 // ── Model ─────────────────────────────────────────────────────────────────────
 
@@ -91,8 +92,7 @@ class _NotificationPreferencesScreenState
 
           Expanded(
             child: prefsAsync.when(
-              loading: () => const Center(
-                  child: CircularProgressIndicator(color: AppColors.accent)),
+              loading: () => const ShimmerList(count: 2, itemHeight: 76),
               error: (e, _) => Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,

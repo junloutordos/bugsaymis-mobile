@@ -139,7 +139,7 @@ class _StudentCard extends ConsumerWidget {
 
     return summary.when(
       loading: () => _loadingCard(),
-      error: (_, __) => _errorCard(student),
+      error: (_, _) => _errorCard(student),
       data: (s) => _dataCard(context, s, student),
     );
   }

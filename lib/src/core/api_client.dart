@@ -1,15 +1,22 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import '../features/auth/auth_provider.dart';
 import 'constants.dart';
 
-final apiClientProvider = Provider<ApiClient>((ref) => ApiClient());
+final apiClientProvider = Provider<ApiClient>((ref) => ApiClient(
+      // Lazily resolved so ApiClient and AuthNotifier can depend on each
+      // other without a provider cycle.
+      onUnauthorized: () =>
+          ref.read(authStateProvider.notifier).forceLogout(),
+    ));
 
 class ApiClient {
   late final Dio _dio;
   final _storage = const FlutterSecureStorage();
+  final Future<void> Function()? onUnauthorized;
 
-  ApiClient() {
+  ApiClient({this.onUnauthorized}) {
     _dio = Dio(BaseOptions(
       baseUrl: AppConstants.baseUrl,
       connectTimeout: const Duration(seconds: 15),
@@ -25,7 +32,13 @@ class ApiClient {
         }
         handler.next(options);
       },
-      onError: (error, handler) {
+      onError: (error, handler) async {
+        // Expired/revoked token: drop the local session so the router
+        // sends the user back to /login instead of every screen failing.
+        final isAuthCall = error.requestOptions.path == '/login';
+        if (error.response?.statusCode == 401 && !isAuthCall) {
+          await onUnauthorized?.call();
+        }
         handler.next(error);
       },
     ));

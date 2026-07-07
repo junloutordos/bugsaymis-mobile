@@ -29,7 +29,7 @@ class ShimmerList extends StatelessWidget {
   Widget build(BuildContext context) => ListView.builder(
         padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
         itemCount: count,
-        itemBuilder: (_, __) => Padding(
+        itemBuilder: (_, _) => Padding(
           padding: const EdgeInsets.only(bottom: 14),
           child: ShimmerCard(height: itemHeight),
         ),

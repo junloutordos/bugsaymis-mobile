@@ -75,7 +75,7 @@ class AuthNotifier extends AsyncNotifier<AuthUser?> {
       final response = await client.post('/login', data: {
         'email': email,
         'password': password,
-        'device_name': 'BugSayMIS Mobile App',
+        'device_name': 'AtlasGo Mobile App',
       });
 
       final data = response.data as Map<String, dynamic>;
@@ -105,6 +105,12 @@ class AuthNotifier extends AsyncNotifier<AuthUser?> {
       final client = ref.read(apiClientProvider);
       await client.delete('/logout');
     } catch (_) {}
+    await forceLogout();
+  }
+
+  /// Clear the local session without calling the API — used when the
+  /// server rejects our token (401) so every screen falls back to /login.
+  Future<void> forceLogout() async {
     await _storage.delete(key: AppConstants.tokenKey);
     await _storage.delete(key: AppConstants.userKey);
     state = const AsyncData(null);

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/api_client.dart';
 import '../../core/theme.dart';
+import '../../shared/widgets/shimmer_card.dart';
 import '../home/home_screen.dart' show BottomNav;
 import '../home/home_provider.dart';
 
@@ -301,7 +302,7 @@ class _ChildrenBody extends ConsumerWidget {
           // ── Pending requests section ───────────────────────────────
           requests.when(
             loading: () => const SizedBox.shrink(),
-            error: (_, __) => const SizedBox.shrink(),
+            error: (_, _) => const SizedBox.shrink(),
             data: (reqs) {
               if (reqs.isEmpty) return const SizedBox.shrink();
               return Column(
@@ -327,9 +328,14 @@ class _ChildrenBody extends ConsumerWidget {
 
           // ── Confirmed children section ─────────────────────────────
           students.when(
-            loading: () => const Center(
-                child: CircularProgressIndicator(color: AppColors.accent)),
-            error: (_, __) => Center(
+            loading: () => const Column(
+              children: [
+                ShimmerCard(height: 96),
+                SizedBox(height: 12),
+                ShimmerCard(height: 96),
+              ],
+            ),
+            error: (_, _) => Center(
               child: Text('Could not load children',
                   style: GoogleFonts.plusJakartaSans(
                       color: AppColors.textSecondary, fontSize: 14)),

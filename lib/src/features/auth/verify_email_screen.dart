@@ -34,8 +34,12 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
 
   @override
   void dispose() {
-    for (final c in _controllers) c.dispose();
-    for (final f in _focusNodes) f.dispose();
+    for (final c in _controllers) {
+      c.dispose();
+    }
+    for (final f in _focusNodes) {
+      f.dispose();
+    }
     _timer?.cancel();
     super.dispose();
   }
@@ -86,7 +90,9 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
           backgroundColor: Colors.redAccent,
         ),
       );
-      for (final c in _controllers) c.clear();
+      for (final c in _controllers) {
+        c.clear();
+      }
       _focusNodes.first.requestFocus();
     } finally {
       if (mounted) setState(() => _loading = false);
