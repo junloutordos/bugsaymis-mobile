@@ -18,7 +18,7 @@ class AppConstants {
     }
   }
 
-  static const String appName = 'MyPisay';
+  static const String appName = 'AtlasGo';
   static const String tokenKey = 'auth_token';
   static const String userKey = 'auth_user';
   static const String parentContactKey = 'parent_contact_id';

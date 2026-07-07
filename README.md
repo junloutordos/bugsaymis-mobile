@@ -1,4 +1,4 @@
-# bugsaymis_mobile
+# AtlasGo
 
 A new Flutter project.
 

@@ -102,7 +102,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           ),
                         ),
                         const SizedBox(height: 14),
-                        Text('myPisay',
+                        Text('AtlasGo',
                             style: GoogleFonts.plusJakartaSans(
                                 color: Colors.white,
                                 fontSize: 30,

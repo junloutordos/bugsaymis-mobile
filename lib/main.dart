@@ -19,11 +19,11 @@ void main() async {
     );
   }
 
-  runApp(const ProviderScope(child: BugSayMisApp()));
+  runApp(const ProviderScope(child: AtlasGoApp()));
 }
 
-class BugSayMisApp extends ConsumerWidget {
-  const BugSayMisApp({super.key});
+class AtlasGoApp extends ConsumerWidget {
+  const AtlasGoApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -55,7 +55,7 @@ class BugSayMisApp extends ConsumerWidget {
     });
 
     return MaterialApp.router(
-      title: 'MyPisay',
+      title: 'AtlasGo',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       routerConfig: router,

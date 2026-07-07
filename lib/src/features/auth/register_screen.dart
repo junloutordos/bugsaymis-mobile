@@ -145,7 +145,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                   fontWeight: FontWeight.w800,
                                   letterSpacing: -0.3)),
                           const SizedBox(height: 2),
-                          Text('MyPisay',
+                          Text('AtlasGo',
                               style: GoogleFonts.plusJakartaSans(
                                   color: Colors.white60, fontSize: 13)),
                         ],

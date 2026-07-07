@@ -1,5 +1,5 @@
-name: bugsaymis_mobile
-description: "MyPisay — PSHS Caraga Region Campus Parent App"
+name: atlasgo
+description: "AtlasGo — PSHS Caraga Region Campus Parent & Student App"
 publish_to: 'none'
 version: 1.0.0+1
 
@@ -48,6 +48,23 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   riverpod_generator: ^2.6.1
   build_runner: ^2.4.15
+  flutter_launcher_icons: ^0.14.3
+  flutter_native_splash: ^2.4.4
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: assets/icon/app_icon.png
+  remove_alpha_ios: true
+  adaptive_icon_background: "#1A3557"
+  adaptive_icon_foreground: assets/icon/app_icon_foreground.png
+
+flutter_native_splash:
+  color: "#1A3557"
+  image: assets/images/atlasgo_splash.png
+  android_12:
+    color: "#1A3557"
+    image: assets/images/atlasgo_mark.png
 
 flutter:
   uses-material-design: true
