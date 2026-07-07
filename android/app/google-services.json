@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "54745889381",
+    "project_id": "bugsaymis",
+    "storage_bucket": "bugsaymis.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:54745889381:android:53c57bfe59bd32343aa48c",
+        "android_client_info": {
+          "package_name": "ph.edu.pshs.crc.bugsaymis_mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "54745889381-7cn2j3rr588ba5o2fl7fte8gpjl52hmm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB232-IS7YYvQMZt79byhOriRXWCbDzbfQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "54745889381-7cn2j3rr588ba5o2fl7fte8gpjl52hmm.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "54745889381-sl596b1g2c8jh5uac5u6la5sk1ovlqb8.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "ph.edu.pshs.crc.bugsaymisMobile"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
