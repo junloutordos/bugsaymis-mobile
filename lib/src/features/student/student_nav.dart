@@ -25,6 +25,7 @@ class StudentBottomNav extends StatelessWidget {
                 case 1: context.go('/student/attendance');
                 case 2: context.go('/student/grades');
                 case 3: context.go('/student/schedule');
+                case 4: context.go('/student/services');
               }
             },
             destinations: const [
@@ -47,6 +48,11 @@ class StudentBottomNav extends StatelessWidget {
                 icon: Icon(Icons.grid_view_outlined),
                 selectedIcon: Icon(Icons.grid_view_rounded),
                 label: 'Schedule',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.widgets_outlined),
+                selectedIcon: Icon(Icons.widgets_rounded),
+                label: 'Services',
               ),
             ],
           ),

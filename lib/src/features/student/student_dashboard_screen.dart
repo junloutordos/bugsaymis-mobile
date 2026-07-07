@@ -7,6 +7,8 @@ import '../../core/theme.dart';
 import '../../shared/widgets/shimmer_card.dart';
 import '../auth/auth_provider.dart';
 import '../grades/grades_provider.dart';
+import '../portal/portal_provider.dart';
+import '../portal/portal_widgets.dart';
 import 'student_nav.dart';
 import 'student_provider.dart';
 
@@ -19,6 +21,7 @@ class StudentDashboardScreen extends ConsumerWidget {
     final profile = ref.watch(studentProfileProvider);
     final today   = ref.watch(studentTodayProvider);
     final grades  = ref.watch(studentGradesProvider);
+    final portal  = ref.watch(portalDashboardProvider);
 
     final firstName = user?.name.split(' ').first ?? 'Student';
     final greeting  = _greeting();
@@ -65,6 +68,7 @@ class StudentDashboardScreen extends ConsumerWidget {
                 ref.invalidate(studentProfileProvider);
                 ref.invalidate(studentTodayProvider);
                 ref.invalidate(studentGradesProvider);
+                ref.invalidate(portalDashboardProvider);
               },
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
@@ -99,6 +103,12 @@ class StudentDashboardScreen extends ConsumerWidget {
                     ),
                   ),
 
+                  // ── Portal to-dos (forms / clearance / RH) ──────────
+                  portal.maybeWhen(
+                    data: (p) => _PortalTodoSection(portal: p),
+                    orElse: () => const SizedBox.shrink(),
+                  ),
+
                   const SizedBox(height: 20),
                   const SectionLabel('QUICK ACTIONS'),
 
@@ -117,6 +127,14 @@ class StudentDashboardScreen extends ConsumerWidget {
                           icon: Icons.grid_view_rounded,
                           label: 'Schedule',
                           onTap: () => context.go('/student/schedule'),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _QuickAction(
+                          icon: Icons.widgets_rounded,
+                          label: 'Services',
+                          onTap: () => context.go('/student/services'),
                         ),
                       ),
                     ],
@@ -412,6 +430,122 @@ class _GradeSummaryCard extends StatelessWidget {
     if (gwa <= 3.0) return AppColors.accent;
     return Colors.red.shade600;
   }
+}
+
+/// Compact "needs your attention" section fed by the portal dashboard:
+/// pending annual forms, clearance progress, dormer status.
+class _PortalTodoSection extends StatelessWidget {
+  final PortalDashboard portal;
+  const _PortalTodoSection({required this.portal});
+
+  @override
+  Widget build(BuildContext context) {
+    final rows = <Widget>[];
+
+    if (portal.total > 0 && portal.totalDone < portal.total) {
+      rows.add(_todoRow(
+        context,
+        icon: Icons.assignment_rounded,
+        iconColor: AppColors.accent,
+        iconBg: AppColors.accentBg,
+        title: 'Annual forms',
+        subtitle:
+            '${portal.totalDone} of ${portal.total} sections completed — tap to continue',
+        route: '/student/portal/forms',
+      ));
+    }
+
+    final c = portal.clearance;
+    if (c != null && c.status != 'not_generated') {
+      rows.add(_todoRow(
+        context,
+        icon: Icons.verified_rounded,
+        iconColor: AppColors.success,
+        iconBg: AppColors.successBg,
+        title: c.periodTitle ?? 'Year-End Clearance',
+        subtitle: c.holds > 0
+            ? '${c.pending} pending · ${c.holds} on hold'
+            : '${c.done} of ${c.total} requirements cleared',
+        route: '/student/portal/clearance',
+      ));
+    }
+
+    if (portal.isDormer) {
+      rows.add(_todoRow(
+        context,
+        icon: Icons.night_shelter_rounded,
+        iconColor: const Color(0xFF7C3AED),
+        iconBg: const Color(0xFFF3E8FF),
+        title: 'Residence Hall',
+        subtitle: 'Active dormer — file leave passes here',
+        route: '/student/portal/leave-passes',
+      ));
+    }
+
+    if (rows.isEmpty) return const SizedBox.shrink();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 20),
+        const SectionLabel('NEEDS YOUR ATTENTION'),
+        WhiteCard(
+          padding: EdgeInsets.zero,
+          child: Column(
+            children: [
+              for (var i = 0; i < rows.length; i++) ...[
+                if (i > 0) const Divider(height: 1, indent: 66),
+                rows[i],
+              ],
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _todoRow(
+    BuildContext context, {
+    required IconData icon,
+    required Color iconColor,
+    required Color iconBg,
+    required String title,
+    required String subtitle,
+    required String route,
+  }) =>
+      InkWell(
+        onTap: () => context.push(route),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Row(
+            children: [
+              Container(
+                width: 38,
+                height: 38,
+                decoration:
+                    BoxDecoration(color: iconBg, shape: BoxShape.circle),
+                child: Icon(icon, size: 18, color: iconColor),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title,
+                        style: GoogleFonts.plusJakartaSans(
+                            fontSize: 13, fontWeight: FontWeight.w700)),
+                    Text(subtitle,
+                        style: GoogleFonts.plusJakartaSans(
+                            fontSize: 11, color: AppColors.textSecondary)),
+                  ],
+                ),
+              ),
+              const Icon(Icons.chevron_right_rounded,
+                  size: 18, color: AppColors.textDisabled),
+            ],
+          ),
+        ),
+      );
 }
 
 class _GradesUnavailable extends StatelessWidget {
