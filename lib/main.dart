@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'firebase_options.dart';
@@ -59,6 +60,21 @@ class AtlasGoApp extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       routerConfig: router,
+      scrollBehavior: const _DragEverywhereScrollBehavior(),
     );
   }
+}
+
+/// Flutter only enables drag-scrolling for touch by default; this makes
+/// lists draggable with a mouse/trackpad too (web builds, simulators).
+class _DragEverywhereScrollBehavior extends MaterialScrollBehavior {
+  const _DragEverywhereScrollBehavior();
+
+  @override
+  Set<PointerDeviceKind> get dragDevices => const {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+        PointerDeviceKind.trackpad,
+        PointerDeviceKind.stylus,
+      };
 }

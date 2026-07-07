@@ -34,6 +34,9 @@ dependencies:
   # Barcode / QR scanner for linking children
   mobile_scanner: ^7.0.0
 
+  # Student sign-in with official PSHS-CRC Google account
+  google_sign_in: ^6.3.0
+
   # Typography
   google_fonts: ^6.2.1
 

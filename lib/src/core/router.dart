@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import '../features/auth/auth_provider.dart';
 import '../features/auth/login_screen.dart';
 import '../features/auth/register_screen.dart';
-import '../features/auth/student_register_screen.dart';
+import '../features/auth/student_link_screen.dart';
 import '../features/auth/verify_email_screen.dart';
 import '../features/attendance/attendance_screen.dart';
 import '../features/children/children_screen.dart';
@@ -36,7 +36,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       if (isLoading) return null;
 
       final isLoggedIn   = user != null;
-      final publicPaths  = {'/login', '/register', '/student/register', '/verify-email'};
+      final publicPaths  = {'/login', '/register', '/student/link', '/verify-email'};
       final isPublic     = publicPaths.contains(state.matchedLocation);
 
       if (!isLoggedIn && !isPublic) return '/login';
@@ -62,9 +62,18 @@ final routerProvider = Provider<GoRouter>((ref) {
     },
     routes: [
       // ── Auth ──────────────────────────────────────────────────────────
-      GoRoute(path: '/login',            builder: (ctx, st) => const LoginScreen()),
-      GoRoute(path: '/register',         builder: (ctx, st) => const RegisterScreen()),
-      GoRoute(path: '/student/register', builder: (ctx, st) => const StudentRegisterScreen()),
+      GoRoute(path: '/login',    builder: (ctx, st) => const LoginScreen()),
+      GoRoute(path: '/register', builder: (ctx, st) => const RegisterScreen()),
+      GoRoute(
+        path: '/student/link',
+        builder: (ctx, st) {
+          final extra = st.extra as Map<String, dynamic>?;
+          return StudentLinkScreen(
+            idToken: extra?['idToken'] as String? ?? '',
+            email: extra?['email'] as String? ?? '',
+          );
+        },
+      ),
       GoRoute(
         path: '/verify-email',
         builder: (ctx, st) {

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -17,6 +18,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _emailCtrl = TextEditingController();
   final _passCtrl  = TextEditingController();
   bool _obscure = true;
+  bool _googleLoading = false;
+
+  /// Native Google sign-in is available on Android and iOS only.
+  bool get _googleAvailable =>
+      !kIsWeb &&
+      (defaultTargetPlatform == TargetPlatform.android ||
+          defaultTargetPlatform == TargetPlatform.iOS);
 
   @override
   void dispose() {
@@ -33,6 +41,36 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         );
     if (mounted && ref.read(authStateProvider).value != null) {
       context.go('/home');
+    }
+  }
+
+  Future<void> _googleSignIn() async {
+    setState(() => _googleLoading = true);
+    try {
+      final result =
+          await ref.read(authStateProvider.notifier).loginWithGoogle();
+      if (!mounted) return;
+
+      switch (result) {
+        case GoogleLoginSuccess():
+          context.go('/student/home');
+        case GoogleLoginNeedsLink(:final idToken, :final email):
+          context.push('/student/link',
+              extra: {'idToken': idToken, 'email': email});
+        case GoogleLoginCancelled():
+          break;
+      }
+    } catch (e) {
+      if (!mounted) return;
+      final err = e.toString();
+      final msg = err.contains('403') || err.contains('PSHS-CRC')
+          ? 'Only official PSHS-CRC accounts (@crc.pshs.edu.ph) are allowed.'
+          : 'Google sign-in failed. Check your connection and try again.';
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(msg), backgroundColor: Colors.red.shade700),
+      );
+    } finally {
+      if (mounted) setState(() => _googleLoading = false);
     }
   }
 
@@ -93,10 +131,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           width: 88,
                           height: 88,
                           child: Image.asset(
-                            'assets/images/pshs_logo.png',
+                            'assets/images/atlas_arrow.png',
                             fit: BoxFit.contain,
                             errorBuilder: (_, _, _) => const Icon(
-                                Icons.shield_rounded,
+                                Icons.navigation_rounded,
                                 color: Colors.white,
                                 size: 50),
                           ),
@@ -144,6 +182,55 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   color: AppColors.textSecondary)),
 
                           const SizedBox(height: 24),
+
+                          // ── Student: Google sign-in ───────────────────
+                          if (_googleAvailable) ...[
+                            SizedBox(
+                              width: double.infinity,
+                              height: 50,
+                              child: OutlinedButton.icon(
+                                onPressed:
+                                    _googleLoading ? null : _googleSignIn,
+                                icon: _googleLoading
+                                    ? const SizedBox(
+                                        width: 18,
+                                        height: 18,
+                                        child: CircularProgressIndicator(
+                                            strokeWidth: 2))
+                                    : const Icon(Icons.school_rounded,
+                                        size: 20),
+                                label: Text(
+                                  'Student — Continue with Google',
+                                  style: GoogleFonts.plusJakartaSans(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w700),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            Center(
+                              child: Text('Use your @crc.pshs.edu.ph account',
+                                  style: GoogleFonts.plusJakartaSans(
+                                      fontSize: 11,
+                                      color: AppColors.textSecondary)),
+                            ),
+                            const SizedBox(height: 18),
+                            Row(
+                              children: [
+                                const Expanded(child: Divider()),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12),
+                                  child: Text('parents sign in with email',
+                                      style: GoogleFonts.plusJakartaSans(
+                                          fontSize: 11,
+                                          color: AppColors.textSecondary)),
+                                ),
+                                const Expanded(child: Divider()),
+                              ],
+                            ),
+                            const SizedBox(height: 18),
+                          ],
 
                           // ── Email ─────────────────────────────────────
                           _FieldLabel('Email address'),
@@ -220,24 +307,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               GestureDetector(
                                 onTap: () => context.push('/register'),
                                 child: Text('Create account',
-                                    style: GoogleFonts.plusJakartaSans(
-                                        color: AppColors.accent,
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w600)),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text('Student? ',
-                                  style: GoogleFonts.plusJakartaSans(
-                                      color: AppColors.textSecondary,
-                                      fontSize: 13)),
-                              GestureDetector(
-                                onTap: () => context.push('/student/register'),
-                                child: Text('Register here',
                                     style: GoogleFonts.plusJakartaSans(
                                         color: AppColors.accent,
                                         fontSize: 13,

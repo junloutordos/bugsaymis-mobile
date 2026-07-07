@@ -128,10 +128,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                             child: Padding(
                               padding: const EdgeInsets.all(8),
                               child: Image.asset(
-                                'assets/images/pshs_logo.png',
+                                'assets/images/atlas_arrow.png',
                                 fit: BoxFit.contain,
                                 errorBuilder: (_, _, _) => const Icon(
-                                    Icons.shield_rounded,
+                                    Icons.navigation_rounded,
                                     color: Colors.white,
                                     size: 40),
                               ),
