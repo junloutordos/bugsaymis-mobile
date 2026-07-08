@@ -1,3 +1,6 @@
+import 'dart:typed_data';
+
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/api_client.dart';
 
@@ -148,6 +151,25 @@ final clearanceProvider =
   return response.data as Map<String, dynamic>;
 });
 
+/// Lost & Found: found-items board + my reports + honesty points.
+final lostFoundProvider =
+    FutureProvider.autoDispose<Map<String, dynamic>>((ref) async {
+  final response =
+      await ref.read(apiClientProvider).get('/student/portal/lost-found');
+  return response.data as Map<String, dynamic>;
+});
+
+/// Item photo bytes fetched with the Sanctum bearer token (the endpoint is
+/// authenticated, so a plain Image.network URL would 401).
+final lostFoundPhotoProvider =
+    FutureProvider.autoDispose.family<Uint8List, int>((ref, itemId) async {
+  final response = await ref.read(apiClientProvider).dio.get(
+        '/student/portal/lost-found/photo/$itemId',
+        options: Options(responseType: ResponseType.bytes),
+      );
+  return Uint8List.fromList(response.data as List<int>);
+});
+
 /// Invalidate everything portal-related after a form submission.
 void refreshPortal(WidgetRef ref) {
   ref.invalidate(portalDashboardProvider);
@@ -156,4 +178,5 @@ void refreshPortal(WidgetRef ref) {
   ref.invalidate(rhApplicationProvider);
   ref.invalidate(leavePassesProvider);
   ref.invalidate(clearanceProvider);
+  ref.invalidate(lostFoundProvider);
 }

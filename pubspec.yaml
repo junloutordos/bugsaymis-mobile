@@ -49,6 +49,9 @@ dependencies:
   path_provider: ^2.1.5
   share_plus: ^10.1.4
 
+  # Lost & Found photo attachment (camera/gallery -> base64 JSON upload)
+  image_picker: ^1.1.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

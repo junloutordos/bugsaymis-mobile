@@ -38,7 +38,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Used to scan your child's ID card barcode when linking their account.</string>
+	<string>Used to scan your child's ID card barcode when linking their account, and to photograph lost-and-found items you report.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Used to attach a photo of a lost-and-found item you report.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

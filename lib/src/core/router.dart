@@ -15,6 +15,7 @@ import '../features/profile/profile_screen.dart';
 import '../features/portal/clearance_screen.dart';
 import '../features/portal/forms_overview_screen.dart';
 import '../features/portal/leave_passes_screen.dart';
+import '../features/portal/lost_found_screen.dart';
 import '../features/portal/medical_section_form_screen.dart';
 import '../features/portal/profile_section_form_screen.dart';
 import '../features/portal/rh_application_screen.dart';
@@ -123,6 +124,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/student/portal/rh-application', builder: (ctx, st) => const RhApplicationScreen()),
       GoRoute(path: '/student/portal/leave-passes',   builder: (ctx, st) => const LeavePassesScreen()),
       GoRoute(path: '/student/portal/clearance',      builder: (ctx, st) => const ClearanceScreen()),
+      GoRoute(path: '/student/portal/lost-found',     builder: (ctx, st) => const LostFoundScreen()),
     ],
   );
 });

@@ -80,6 +80,17 @@ class ServicesScreen extends ConsumerWidget {
                       onTap: () => context.push('/student/portal/leave-passes'),
                     ),
                     const SizedBox(height: 20),
+                    const SectionLabel('CAMPUS'),
+                    _ServiceTile(
+                      icon: Icons.travel_explore_rounded,
+                      iconColor: const Color(0xFFD97706),
+                      iconBg: const Color(0xFFFEF3C7),
+                      title: 'Lost & Found',
+                      subtitle:
+                          'Report items, browse GSU custody, earn honesty points',
+                      onTap: () => context.push('/student/portal/lost-found'),
+                    ),
+                    const SizedBox(height: 20),
                     const SectionLabel('CLEARANCE'),
                     _ServiceTile(
                       icon: Icons.verified_rounded,
