@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../../core/api_client.dart';
 import '../../core/theme.dart';
@@ -110,7 +109,7 @@ class RhApplicationScreen extends ConsumerWidget {
       ListView(
         padding: const EdgeInsets.fromLTRB(20, 40, 20, 24),
         children: [
-          WhiteCard(
+          AppCard(
             padding: const EdgeInsets.all(28),
             child: Column(
               children: [
@@ -123,15 +122,11 @@ class RhApplicationScreen extends ConsumerWidget {
                 const SizedBox(height: 18),
                 Text(headline,
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.plusJakartaSans(
-                        fontSize: 17, fontWeight: FontWeight.w700)),
+                    style: AppTextStyles.custom(fontSize: 17, fontWeight: FontWeight.w700)),
                 const SizedBox(height: 10),
                 Text(body,
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.plusJakartaSans(
-                        fontSize: 13,
-                        color: AppColors.textSecondary,
-                        height: 1.6)),
+                    style: AppTextStyles.custom(fontSize: 13, color: AppColors.textSecondary, height: 1.6)),
               ],
             ),
           ),
@@ -212,11 +207,10 @@ class _ApplicationFormState extends ConsumerState<_ApplicationForm> {
         children: [
           Text(
             'Apply for dormitory accommodation for S.Y. ${widget.data['school_year'] ?? '—'}.',
-            style: GoogleFonts.plusJakartaSans(
-                fontSize: 13, color: AppColors.textSecondary, height: 1.5),
+            style: AppTextStyles.custom(fontSize: 13, color: AppColors.textSecondary, height: 1.5),
           ),
           const SizedBox(height: 16),
-          WhiteCard(
+          AppCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -233,7 +227,7 @@ class _ApplicationFormState extends ConsumerState<_ApplicationForm> {
                 const SizedBox(height: 18),
                 TextField(
                   controller: _province,
-                  style: GoogleFonts.plusJakartaSans(fontSize: 14),
+                  style: AppTextStyles.custom(fontSize: 14),
                   decoration:
                       const InputDecoration(labelText: 'Home province'),
                 ),
@@ -241,14 +235,14 @@ class _ApplicationFormState extends ConsumerState<_ApplicationForm> {
                 TextField(
                   controller: _distance,
                   keyboardType: TextInputType.number,
-                  style: GoogleFonts.plusJakartaSans(fontSize: 14),
+                  style: AppTextStyles.custom(fontSize: 14),
                   decoration: const InputDecoration(
                       labelText: 'Estimated distance from campus (km)'),
                 ),
                 const SizedBox(height: 14),
                 TextField(
                   controller: _scholarship,
-                  style: GoogleFonts.plusJakartaSans(fontSize: 14),
+                  style: AppTextStyles.custom(fontSize: 14),
                   decoration: const InputDecoration(
                       labelText: 'Scholarship category (optional)'),
                 ),
@@ -257,26 +251,26 @@ class _ApplicationFormState extends ConsumerState<_ApplicationForm> {
           ),
           const SizedBox(height: 16),
           const SectionLabel('FOSTER PARENT / GUARDIAN IN THE AREA'),
-          WhiteCard(
+          AppCard(
             child: Column(
               children: [
                 TextField(
                   controller: _fosterName,
-                  style: GoogleFonts.plusJakartaSans(fontSize: 14),
+                  style: AppTextStyles.custom(fontSize: 14),
                   decoration: const InputDecoration(labelText: 'Full name'),
                 ),
                 const SizedBox(height: 14),
                 TextField(
                   controller: _fosterContact,
                   keyboardType: TextInputType.phone,
-                  style: GoogleFonts.plusJakartaSans(fontSize: 14),
+                  style: AppTextStyles.custom(fontSize: 14),
                   decoration:
                       const InputDecoration(labelText: 'Contact number'),
                 ),
                 const SizedBox(height: 14),
                 TextField(
                   controller: _fosterAddress,
-                  style: GoogleFonts.plusJakartaSans(fontSize: 14),
+                  style: AppTextStyles.custom(fontSize: 14),
                   decoration: const InputDecoration(labelText: 'Address'),
                 ),
               ],

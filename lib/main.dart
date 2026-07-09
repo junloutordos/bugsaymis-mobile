@@ -46,7 +46,7 @@ class AtlasGoApp extends ConsumerWidget {
       if (data['type'] == 'student_attendance') {
         final studentId = int.tryParse(data['student_id']?.toString() ?? '');
         if (studentId != null) {
-          router.push('/attendance', extra: {
+          router.go('/attendance', extra: {
             'studentId': studentId,
             'studentName': data['student_name']?.toString() ?? '',
           });

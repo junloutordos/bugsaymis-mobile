@@ -36,6 +36,17 @@ class AppColors {
   static const gradientEnd   = Color(0xFF1A4480);
 }
 
+// ── Radii ─────────────────────────────────────────────────────────────────────
+
+class AppRadius {
+  AppRadius._();
+
+  static const double card   = 16;
+  static const double field  = 12;
+  static const double button = 14;
+  static const double sheet  = 24;
+}
+
 // ── Gradients ─────────────────────────────────────────────────────────────────
 
 class AppGradients {
@@ -72,30 +83,74 @@ TextStyle _pjs({
       letterSpacing: letterSpacing,
     );
 
+/// Canonical text styles. One-off tweaks should use `.copyWith(...)` on the
+/// nearest style rather than calling GoogleFonts directly — theme.dart is the
+/// only file that may import google_fonts.
 class AppTextStyles {
   AppTextStyles._();
 
-  static TextStyle screenTitle(BuildContext context) =>
+  /// Large screen/page title (AppHeader name line).
+  static TextStyle get screenTitle =>
       _pjs(size: 22, weight: FontWeight.w800, letterSpacing: -0.3);
 
-  static TextStyle sectionHeader(BuildContext context) =>
-      _pjs(size: 18, weight: FontWeight.w700);
+  /// Section heading inside a screen body.
+  static TextStyle get sectionHeader => _pjs(size: 18, weight: FontWeight.w700);
 
-  static TextStyle cardTitle(BuildContext context) =>
-      _pjs(size: 15, weight: FontWeight.w700);
+  /// App-bar / prominent tile title.
+  static TextStyle get title => _pjs(size: 17, weight: FontWeight.w700);
 
-  static TextStyle body(BuildContext context) =>
-      _pjs(size: 14, weight: FontWeight.w400, height: 1.5);
+  /// Card heading.
+  static TextStyle get cardTitle => _pjs(size: 15, weight: FontWeight.w700);
 
-  static TextStyle bodyMedium(BuildContext context) =>
-      _pjs(size: 14, weight: FontWeight.w500);
+  /// Large stat figure (counts, grades).
+  static TextStyle get stat =>
+      _pjs(size: 20, weight: FontWeight.w800, letterSpacing: -0.3);
 
-  static TextStyle caption(BuildContext context) =>
+  /// Default paragraph text.
+  static TextStyle get body => _pjs(size: 14, weight: FontWeight.w400, height: 1.5);
+
+  static TextStyle get bodyMedium => _pjs(size: 14, weight: FontWeight.w500);
+
+  static TextStyle get bodySemibold => _pjs(size: 14, weight: FontWeight.w600);
+
+  /// Secondary line under a card title.
+  static TextStyle get cardSubtitle =>
+      _pjs(size: 13, weight: FontWeight.w400, color: AppColors.textSecondary);
+
+  /// Small muted text.
+  static TextStyle get caption =>
       _pjs(size: 12, weight: FontWeight.w400, color: AppColors.textSecondary);
 
-  static TextStyle label(BuildContext context) =>
-      _pjs(size: 11, weight: FontWeight.w600,
-          color: AppColors.textSecondary, letterSpacing: 0.7);
+  /// Form-field / small emphasis label.
+  static TextStyle get fieldLabel =>
+      _pjs(size: 13, weight: FontWeight.w600, color: AppColors.textPrimary);
+
+  /// Tiny uppercase-style label.
+  static TextStyle get label => _pjs(
+      size: 11, weight: FontWeight.w600,
+      color: AppColors.textSecondary, letterSpacing: 0.7);
+
+  /// Button text (white, for filled/gradient buttons).
+  static TextStyle get button => _pjs(
+      size: 15, weight: FontWeight.w600,
+      color: Colors.white, letterSpacing: 0.3);
+
+  /// Escape hatch for one-off styles that no semantic token covers.
+  /// Leaves unset properties inheriting from the ambient DefaultTextStyle.
+  static TextStyle custom({
+    double? fontSize,
+    FontWeight? fontWeight,
+    Color? color,
+    double? height,
+    double? letterSpacing,
+  }) =>
+      GoogleFonts.plusJakartaSans(
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+        color: color,
+        height: height,
+        letterSpacing: letterSpacing,
+      );
 }
 
 // ── Theme ─────────────────────────────────────────────────────────────────────
@@ -153,7 +208,8 @@ class AppTheme {
       cardTheme: CardThemeData(
         elevation: 0,
         color: AppColors.surface,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppRadius.card)),
         margin: EdgeInsets.zero,
       ),
 
@@ -164,7 +220,7 @@ class AppTheme {
           elevation: 0,
           shadowColor: Colors.transparent,
           minimumSize: const Size(88, 50),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.button)),
           textStyle: _pjs(size: 15, weight: FontWeight.w600, letterSpacing: 0.3),
         ),
       ),
@@ -174,7 +230,7 @@ class AppTheme {
           foregroundColor: AppColors.accent,
           side: const BorderSide(color: AppColors.border),
           minimumSize: const Size(88, 50),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.button)),
           textStyle: _pjs(size: 14, weight: FontWeight.w500),
         ),
       ),
@@ -185,23 +241,23 @@ class AppTheme {
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(AppRadius.field),
           borderSide: const BorderSide(color: AppColors.border),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(AppRadius.field),
           borderSide: const BorderSide(color: AppColors.border),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(AppRadius.field),
           borderSide: const BorderSide(color: AppColors.accent, width: 1.5),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(AppRadius.field),
           borderSide: const BorderSide(color: Colors.redAccent),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(AppRadius.field),
           borderSide: const BorderSide(color: Colors.redAccent, width: 1.5),
         ),
         labelStyle: _pjs(size: 14, weight: FontWeight.w400,
@@ -228,7 +284,8 @@ class AppTheme {
 
 // ── Shadows ───────────────────────────────────────────────────────────────────
 
-const _cardShadow = [
+/// Soft resting shadow for all cards.
+const kCardShadow = [
   BoxShadow(
     color: Color(0x0A000000),
     blurRadius: 20,
@@ -301,7 +358,7 @@ class GradientButton extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: enabled ? AppGradients.button : null,
         color: !enabled ? AppColors.accent.withValues(alpha: 0.4) : null,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(AppRadius.button),
         boxShadow: enabled
             ? [
                 BoxShadow(
@@ -315,7 +372,7 @@ class GradientButton extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(AppRadius.button),
           onTap: enabled ? onPressed : null,
           child: Center(
             child: isLoading
@@ -354,12 +411,17 @@ class AppHeader extends StatelessWidget {
   final String subtitle;
   final List<Widget> actions;
 
+  /// Optional widget before the text block (e.g. a back button on pushed
+  /// screens).
+  final Widget? leading;
+
   const AppHeader({
     super.key,
     required this.greeting,
     required this.name,
     required this.subtitle,
     this.actions = const [],
+    this.leading,
   });
 
   @override
@@ -371,10 +433,14 @@ class AppHeader extends StatelessWidget {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 16, 8, 16),
+              padding: EdgeInsets.fromLTRB(leading == null ? 20 : 8, 16, 8, 16),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  if (leading != null) ...[
+                    leading!,
+                    const SizedBox(width: 4),
+                  ],
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -429,21 +495,21 @@ class AccentCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Material(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(AppRadius.card),
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(AppRadius.card),
           splashColor: accentColor.withValues(alpha: 0.06),
           highlightColor: accentColor.withValues(alpha: 0.03),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 250),
             curve: Curves.easeOut,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(AppRadius.card),
               border: Border(
                 left: BorderSide(color: accentColor, width: 4),
               ),
-              boxShadow: _cardShadow,
+              boxShadow: kCardShadow,
             ),
             child: Padding(
               padding: const EdgeInsets.all(16),

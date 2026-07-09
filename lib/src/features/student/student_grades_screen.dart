@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme.dart';
 import '../../shared/widgets/empty_state.dart';
 import '../../shared/widgets/shimmer_card.dart';
 import '../grades/grades_provider.dart';
 import '../grades/grades_screen.dart' show GradeCard;
-import 'student_nav.dart';
 
 class StudentGradesScreen extends ConsumerStatefulWidget {
   const StudentGradesScreen({super.key});
@@ -50,11 +48,7 @@ class _StudentGradesScreenState extends ConsumerState<StudentGradesScreen>
                     padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
                     child: Text(
                       'My Grades',
-                      style: GoogleFonts.plusJakartaSans(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w800,
-                          color: AppColors.textPrimary,
-                          letterSpacing: -0.3),
+                      style: AppTextStyles.screenTitle,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -65,10 +59,8 @@ class _StudentGradesScreenState extends ConsumerState<StudentGradesScreen>
                     unselectedLabelColor: AppColors.textSecondary,
                     indicatorColor: AppColors.accent,
                     indicatorSize: TabBarIndicatorSize.label,
-                    labelStyle: GoogleFonts.plusJakartaSans(
-                        fontSize: 13, fontWeight: FontWeight.w700),
-                    unselectedLabelStyle: GoogleFonts.plusJakartaSans(
-                        fontSize: 13, fontWeight: FontWeight.w500),
+                    labelStyle: AppTextStyles.custom(fontSize: 13, fontWeight: FontWeight.w700),
+                    unselectedLabelStyle: AppTextStyles.custom(fontSize: 13, fontWeight: FontWeight.w500),
                     tabs: _quarters.map((q) => Tab(text: q)).toList(),
                   ),
                   const Divider(height: 1),
@@ -87,7 +79,6 @@ class _StudentGradesScreenState extends ConsumerState<StudentGradesScreen>
           ),
         ],
       ),
-      bottomNavigationBar: const StudentBottomNav(currentIndex: 2),
     );
   }
 }
@@ -130,9 +121,7 @@ class _StudentGradesTab extends ConsumerWidget {
                   child: Row(
                     children: [
                       Text('S.Y. ${d.schoolYear}',
-                          style: GoogleFonts.plusJakartaSans(
-                              fontSize: 12,
-                              color: AppColors.textSecondary)),
+                          style: AppTextStyles.custom(fontSize: 12, color: AppColors.textSecondary)),
                       const Spacer(),
                       if (gwa != null)
                         Container(
@@ -144,11 +133,7 @@ class _StudentGradesTab extends ConsumerWidget {
                           ),
                           child: Text(
                             'GWA ${gwa.toStringAsFixed(2)}',
-                            style: GoogleFonts.plusJakartaSans(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w700,
-                              color: _gwaColor(gwa),
-                            ),
+                            style: AppTextStyles.custom(fontSize: 12, fontWeight: FontWeight.w700, color: _gwaColor(gwa)),
                           ),
                         ),
                     ],

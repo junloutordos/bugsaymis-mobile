@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme.dart';
 import '../../shared/widgets/empty_state.dart';
 import '../../shared/widgets/shimmer_card.dart';
 import '../home/home_provider.dart';
-import '../home/home_screen.dart' show BottomNav;
 import 'grades_provider.dart';
 
 class GradesScreen extends ConsumerStatefulWidget {
@@ -54,12 +52,7 @@ class _GradesScreenState extends ConsumerState<GradesScreen>
                     padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
                     child: Text(
                       'Grades',
-                      style: GoogleFonts.plusJakartaSans(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w800,
-                        color: AppColors.textPrimary,
-                        letterSpacing: -0.3,
-                      ),
+                      style: AppTextStyles.screenTitle,
                     ),
                   ),
 
@@ -84,10 +77,8 @@ class _GradesScreenState extends ConsumerState<GradesScreen>
                     unselectedLabelColor: AppColors.textSecondary,
                     indicatorColor: AppColors.accent,
                     indicatorSize: TabBarIndicatorSize.label,
-                    labelStyle: GoogleFonts.plusJakartaSans(
-                        fontSize: 13, fontWeight: FontWeight.w700),
-                    unselectedLabelStyle: GoogleFonts.plusJakartaSans(
-                        fontSize: 13, fontWeight: FontWeight.w500),
+                    labelStyle: AppTextStyles.custom(fontSize: 13, fontWeight: FontWeight.w700),
+                    unselectedLabelStyle: AppTextStyles.custom(fontSize: 13, fontWeight: FontWeight.w500),
                     tabs: _quarters.map((q) => Tab(text: q)).toList(),
                   ),
                   const Divider(height: 1),
@@ -127,7 +118,6 @@ class _GradesScreenState extends ConsumerState<GradesScreen>
           ),
         ],
       ),
-      bottomNavigationBar: const BottomNav(currentIndex: 2),
     );
   }
 }
@@ -168,11 +158,7 @@ class _ChildChips extends StatelessWidget {
                 ),
                 child: Text(
                   s.fullName.split(',').first.trim(),
-                  style: GoogleFonts.plusJakartaSans(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: active ? Colors.white : AppColors.textSecondary,
-                  ),
+                  style: AppTextStyles.custom(fontSize: 12, fontWeight: FontWeight.w600, color: active ? Colors.white : AppColors.textSecondary),
                 ),
               ),
             );
@@ -221,10 +207,7 @@ class _GradesTab extends ConsumerWidget {
                   child: Row(
                     children: [
                       Text('S.Y. ${d.schoolYear}',
-                          style: GoogleFonts.plusJakartaSans(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.textSecondary)),
+                          style: AppTextStyles.custom(fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.textSecondary)),
                       const Spacer(),
                       if (gwa != null)
                         Container(
@@ -236,11 +219,7 @@ class _GradesTab extends ConsumerWidget {
                           ),
                           child: Text(
                             'GWA ${gwa.toStringAsFixed(2)}',
-                            style: GoogleFonts.plusJakartaSans(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w700,
-                              color: _gwaColor(gwa),
-                            ),
+                            style: AppTextStyles.custom(fontSize: 12, fontWeight: FontWeight.w700, color: _gwaColor(gwa)),
                           ),
                         ),
                     ],
@@ -296,11 +275,8 @@ class GradeCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: const [
-          BoxShadow(
-              color: Color(0x0A000000), blurRadius: 16, offset: Offset(0, 3))
-        ],
+        borderRadius: BorderRadius.circular(AppRadius.card),
+        boxShadow: kCardShadow,
       ),
       child: Row(
         children: [
@@ -310,18 +286,13 @@ class GradeCard extends StatelessWidget {
               children: [
                 Text(
                   grade.subjectName,
-                  style: GoogleFonts.plusJakartaSans(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary,
-                  ),
+                  style: AppTextStyles.bodySemibold,
                 ),
                 if (quarterIndex == 0 && grade.adjectival.isNotEmpty) ...[
                   const SizedBox(height: 3),
                   Text(
                     grade.adjectival,
-                    style: GoogleFonts.plusJakartaSans(
-                        fontSize: 11, color: AppColors.textSecondary),
+                    style: AppTextStyles.custom(fontSize: 11, color: AppColors.textSecondary),
                   ),
                 ],
               ],
@@ -333,11 +304,7 @@ class GradeCard extends StatelessWidget {
             children: [
               Text(
                 value != null ? value.toStringAsFixed(2) : '—',
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
-                  color: color,
-                ),
+                style: AppTextStyles.custom(fontSize: 18, fontWeight: FontWeight.w800, color: color),
               ),
               if (value != null)
                 Container(
@@ -350,13 +317,9 @@ class GradeCard extends StatelessWidget {
                   ),
                   child: Text(
                     passed ? 'Passed' : 'Failed',
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w700,
-                      color: passed
+                    style: AppTextStyles.custom(fontSize: 10, fontWeight: FontWeight.w700, color: passed
                           ? AppColors.success
-                          : Colors.red.shade600,
-                    ),
+                          : Colors.red.shade600),
                   ),
                 ),
             ],

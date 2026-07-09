@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme.dart';
 import '../auth/auth_provider.dart';
 
@@ -37,11 +36,7 @@ class ProfileScreen extends ConsumerWidget {
                         Expanded(
                           child: Text(
                             'My Profile',
-                            style: GoogleFonts.plusJakartaSans(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.textPrimary,
-                            ),
+                            style: AppTextStyles.title,
                           ),
                         ),
                       ],
@@ -65,14 +60,8 @@ class ProfileScreen extends ConsumerWidget {
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Color(0x0A000000),
-                          blurRadius: 20,
-                          offset: Offset(0, 4),
-                        ),
-                      ],
+                      borderRadius: BorderRadius.circular(AppRadius.card),
+                      boxShadow: kCardShadow,
                     ),
                     child: Row(
                       children: [
@@ -95,11 +84,7 @@ class ProfileScreen extends ConsumerWidget {
                               user?.name.isNotEmpty == true
                                   ? user!.name[0].toUpperCase()
                                   : '?',
-                              style: GoogleFonts.plusJakartaSans(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w800,
-                                fontSize: 24,
-                              ),
+                              style: AppTextStyles.custom(fontSize: 24, fontWeight: FontWeight.w800, color: Colors.white),
                             ),
                           ),
                         ),
@@ -110,19 +95,12 @@ class ProfileScreen extends ConsumerWidget {
                             children: [
                               Text(
                                 user?.name ?? '—',
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                  color: AppColors.textPrimary,
-                                ),
+                                style: AppTextStyles.custom(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.textPrimary),
                               ),
                               const SizedBox(height: 3),
                               Text(
                                 user?.email ?? '—',
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 13,
-                                  color: AppColors.textSecondary,
-                                ),
+                                style: AppTextStyles.custom(fontSize: 13, color: AppColors.textSecondary),
                               ),
                               const SizedBox(height: 6),
                               Container(
@@ -134,11 +112,7 @@ class ProfileScreen extends ConsumerWidget {
                                 ),
                                 child: Text(
                                   'Parent',
-                                  style: GoogleFonts.plusJakartaSans(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.w600,
-                                    color: AppColors.accent,
-                                  ),
+                                  style: AppTextStyles.custom(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.accent),
                                 ),
                               ),
                             ],
@@ -176,13 +150,10 @@ class ProfileScreen extends ConsumerWidget {
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20)),
                           title: Text('Sign out?',
-                              style: GoogleFonts.plusJakartaSans(
-                                  fontWeight: FontWeight.w700)),
+                              style: AppTextStyles.custom(fontWeight: FontWeight.w700)),
                           content: Text(
                             'You will need to sign in again to access your account.',
-                            style: GoogleFonts.plusJakartaSans(
-                                fontSize: 14,
-                                color: AppColors.textSecondary),
+                            style: AppTextStyles.custom(fontSize: 14, color: AppColors.textSecondary),
                           ),
                           actions: [
                             TextButton(
@@ -236,11 +207,8 @@ class _MenuItem extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: const [
-          BoxShadow(
-              color: Color(0x08000000), blurRadius: 16, offset: Offset(0, 3))
-        ],
+        borderRadius: BorderRadius.circular(AppRadius.card),
+        boxShadow: kCardShadow,
       ),
       child: Material(
         color: Colors.transparent,
@@ -269,11 +237,7 @@ class _MenuItem extends StatelessWidget {
                 Expanded(
                   child: Text(
                     label,
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: c,
-                    ),
+                    style: AppTextStyles.bodySemibold.copyWith(color: c),
                   ),
                 ),
                 Icon(Icons.chevron_right_rounded,

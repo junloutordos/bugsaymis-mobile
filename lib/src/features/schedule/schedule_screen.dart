@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../../core/theme.dart';
 import '../../shared/widgets/empty_state.dart';
 import '../../shared/widgets/shimmer_card.dart';
 import '../home/home_provider.dart';
-import '../home/home_screen.dart' show BottomNav;
 import 'schedule_provider.dart';
 
 class ScheduleScreen extends ConsumerStatefulWidget {
@@ -67,12 +65,7 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen>
                     padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
                     child: Text(
                       'Class Schedule',
-                      style: GoogleFonts.plusJakartaSans(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w800,
-                        color: AppColors.textPrimary,
-                        letterSpacing: -0.3,
-                      ),
+                      style: AppTextStyles.screenTitle,
                     ),
                   ),
 
@@ -97,10 +90,8 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen>
                     unselectedLabelColor: AppColors.textSecondary,
                     indicatorColor: AppColors.accent,
                     indicatorSize: TabBarIndicatorSize.label,
-                    labelStyle: GoogleFonts.plusJakartaSans(
-                        fontSize: 13, fontWeight: FontWeight.w700),
-                    unselectedLabelStyle: GoogleFonts.plusJakartaSans(
-                        fontSize: 13, fontWeight: FontWeight.w500),
+                    labelStyle: AppTextStyles.custom(fontSize: 13, fontWeight: FontWeight.w700),
+                    unselectedLabelStyle: AppTextStyles.custom(fontSize: 13, fontWeight: FontWeight.w500),
                     tabs: List.generate(
                       _days.length,
                       (i) => Tab(
@@ -145,7 +136,6 @@ class _ScheduleScreenState extends ConsumerState<ScheduleScreen>
           ),
         ],
       ),
-      bottomNavigationBar: const BottomNav(currentIndex: 3),
     );
   }
 }
@@ -186,11 +176,7 @@ class _ChildChips extends StatelessWidget {
                 ),
                 child: Text(
                   s.fullName.split(',').first.trim(),
-                  style: GoogleFonts.plusJakartaSans(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: active ? Colors.white : AppColors.textSecondary,
-                  ),
+                  style: AppTextStyles.custom(fontSize: 12, fontWeight: FontWeight.w600, color: active ? Colors.white : AppColors.textSecondary),
                 ),
               ),
             );
@@ -273,9 +259,7 @@ class _DayTab2 extends ConsumerWidget {
                             const Spacer(),
                             if (d.schoolYear != null)
                               Text('S.Y. ${d.schoolYear}',
-                                  style: GoogleFonts.plusJakartaSans(
-                                      fontSize: 12,
-                                      color: AppColors.textSecondary)),
+                                  style: AppTextStyles.custom(fontSize: 12, color: AppColors.textSecondary)),
                           ],
                         ),
                       ),
@@ -311,14 +295,10 @@ class _EmptyDay extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text('No classes on $day',
-                style: GoogleFonts.plusJakartaSans(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary)),
+                style: AppTextStyles.custom(fontSize: 15, fontWeight: FontWeight.w600, color: AppColors.textPrimary)),
             const SizedBox(height: 6),
             Text('Enjoy the free day',
-                style: GoogleFonts.plusJakartaSans(
-                    fontSize: 13, color: AppColors.textSecondary)),
+                style: AppTextStyles.custom(fontSize: 13, color: AppColors.textSecondary)),
           ],
         ),
       );
@@ -336,8 +316,7 @@ class InfoChip extends StatelessWidget {
           Icon(icon, size: 13, color: AppColors.textSecondary),
           const SizedBox(width: 4),
           Text(label,
-              style: GoogleFonts.plusJakartaSans(
-                  fontSize: 12, color: AppColors.textSecondary)),
+              style: AppTextStyles.custom(fontSize: 12, color: AppColors.textSecondary)),
         ],
       );
 }
@@ -357,13 +336,10 @@ class ClassCard extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppRadius.card),
         border: const Border(
             left: BorderSide(color: AppColors.accent, width: 3)),
-        boxShadow: const [
-          BoxShadow(
-              color: Color(0x0A000000), blurRadius: 16, offset: Offset(0, 3))
-        ],
+        boxShadow: kCardShadow,
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -375,19 +351,13 @@ class ClassCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(start,
-                    style: GoogleFonts.plusJakartaSans(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.accent)),
+                    style: AppTextStyles.custom(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.accent)),
                 Text(end,
-                    style: GoogleFonts.plusJakartaSans(
-                        fontSize: 11,
-                        color: AppColors.textSecondary)),
+                    style: AppTextStyles.custom(fontSize: 11, color: AppColors.textSecondary)),
                 if (slot.durationMin != null) ...[
                   const SizedBox(height: 4),
                   Text('${slot.durationMin}m',
-                      style: GoogleFonts.plusJakartaSans(
-                          fontSize: 10, color: AppColors.textDisabled)),
+                      style: AppTextStyles.custom(fontSize: 10, color: AppColors.textDisabled)),
                 ],
               ],
             ),
@@ -400,18 +370,13 @@ class ClassCard extends StatelessWidget {
               children: [
                 Text(
                   slot.subjectName,
-                  style: GoogleFonts.plusJakartaSans(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
-                  ),
+                  style: AppTextStyles.custom(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.textPrimary),
                 ),
                 if (slot.subjectCode != null) ...[
                   const SizedBox(height: 2),
                   Text(
                     slot.subjectCode!,
-                    style: GoogleFonts.plusJakartaSans(
-                        fontSize: 11, color: AppColors.textSecondary),
+                    style: AppTextStyles.custom(fontSize: 11, color: AppColors.textSecondary),
                   ),
                 ],
                 if (slot.teacherName != null) ...[
@@ -424,8 +389,7 @@ class ClassCard extends StatelessWidget {
                       Expanded(
                         child: Text(
                           slot.teacherName!,
-                          style: GoogleFonts.plusJakartaSans(
-                              fontSize: 12, color: AppColors.textSecondary),
+                          style: AppTextStyles.custom(fontSize: 12, color: AppColors.textSecondary),
                         ),
                       ),
                     ],

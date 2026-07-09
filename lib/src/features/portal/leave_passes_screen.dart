@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../../core/api_client.dart';
 import '../../core/theme.dart';
@@ -34,8 +33,7 @@ class LeavePassesScreen extends ConsumerWidget {
               foregroundColor: Colors.white,
               icon: const Icon(Icons.add_rounded),
               label: Text('File Leave Pass',
-                  style: GoogleFonts.plusJakartaSans(
-                      fontSize: 13, fontWeight: FontWeight.w600)),
+                  style: AppTextStyles.custom(fontSize: 13, fontWeight: FontWeight.w600)),
               onPressed: () => _openFileSheet(context, ref),
             )
           : null,
@@ -127,7 +125,7 @@ class _PassCard extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
-      child: WhiteCard(
+      child: AppCard(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -135,8 +133,7 @@ class _PassCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(_purposeLabels[purpose] ?? purpose,
-                      style: GoogleFonts.plusJakartaSans(
-                          fontSize: 14, fontWeight: FontWeight.w700)),
+                      style: AppTextStyles.custom(fontSize: 14, fontWeight: FontWeight.w700)),
                 ),
                 PortalStatusChip.forStatus(
                     pass['status']?.toString() ?? 'pending'),
@@ -177,8 +174,7 @@ class _InfoRow extends StatelessWidget {
             const SizedBox(width: 6),
             Expanded(
               child: Text(text,
-                  style: GoogleFonts.plusJakartaSans(
-                      fontSize: 12, color: AppColors.textSecondary)),
+                  style: AppTextStyles.custom(fontSize: 12, color: AppColors.textSecondary)),
             ),
           ],
         ),
@@ -288,8 +284,7 @@ class _FileLeavePassSheetState extends ConsumerState<_FileLeavePassSheet> {
               ),
               const SizedBox(height: 16),
               Text('File a Leave Pass',
-                  style: GoogleFonts.plusJakartaSans(
-                      fontSize: 17, fontWeight: FontWeight.w800)),
+                  style: AppTextStyles.custom(fontSize: 17, fontWeight: FontWeight.w800)),
               const SizedBox(height: 16),
               ChoicePicker(
                 label: 'Purpose',
@@ -301,7 +296,7 @@ class _FileLeavePassSheetState extends ConsumerState<_FileLeavePassSheet> {
               const SizedBox(height: 16),
               TextField(
                 controller: _destination,
-                style: GoogleFonts.plusJakartaSans(fontSize: 14),
+                style: AppTextStyles.custom(fontSize: 14),
                 decoration: const InputDecoration(labelText: 'Destination'),
               ),
               const SizedBox(height: 14),
@@ -317,9 +312,7 @@ class _FileLeavePassSheetState extends ConsumerState<_FileLeavePassSheet> {
                     _returnAt == null
                         ? 'Select date & time'
                         : DateFormat('MMM d, y · h:mm a').format(_returnAt!),
-                    style: GoogleFonts.plusJakartaSans(
-                        fontSize: 14,
-                        color: _returnAt == null
+                    style: AppTextStyles.custom(fontSize: 14, color: _returnAt == null
                             ? AppColors.textDisabled
                             : AppColors.textPrimary),
                   ),
@@ -330,14 +323,14 @@ class _FileLeavePassSheetState extends ConsumerState<_FileLeavePassSheet> {
                 value: _withCompanion,
                 onChanged: (v) => setState(() => _withCompanion = v),
                 title: Text('With companion',
-                    style: GoogleFonts.plusJakartaSans(fontSize: 14)),
+                    style: AppTextStyles.custom(fontSize: 14)),
                 contentPadding: EdgeInsets.zero,
                 activeTrackColor: AppColors.accent,
               ),
               if (_withCompanion) ...[
                 TextField(
                   controller: _companionName,
-                  style: GoogleFonts.plusJakartaSans(fontSize: 14),
+                  style: AppTextStyles.custom(fontSize: 14),
                   decoration:
                       const InputDecoration(labelText: 'Companion name'),
                 ),
@@ -345,7 +338,7 @@ class _FileLeavePassSheetState extends ConsumerState<_FileLeavePassSheet> {
                 TextField(
                   controller: _companionContact,
                   keyboardType: TextInputType.phone,
-                  style: GoogleFonts.plusJakartaSans(fontSize: 14),
+                  style: AppTextStyles.custom(fontSize: 14),
                   decoration:
                       const InputDecoration(labelText: 'Companion contact'),
                 ),

@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../../core/api_client.dart';
 import '../../core/theme.dart';
 import '../../shared/widgets/shimmer_card.dart';
 import '../attendance/attendance_screen.dart'
     show TimelineList, EmptyDayView;
-import 'student_nav.dart';
 
 final _studentAttendanceProvider = FutureProvider.autoDispose
     .family<Map<String, dynamic>, String>((ref, date) async {
@@ -70,10 +68,7 @@ class _StudentAttendanceScreenState
                         Expanded(
                           child: Text(
                             'My Attendance',
-                            style: GoogleFonts.plusJakartaSans(
-                                color: AppColors.textPrimary,
-                                fontSize: 17,
-                                fontWeight: FontWeight.w700),
+                            style: AppTextStyles.title,
                           ),
                         ),
                         IconButton(
@@ -131,20 +126,14 @@ class _StudentAttendanceScreenState
                               children: [
                                 Text(
                                   DateFormat('E').format(day)[0],
-                                  style: GoogleFonts.plusJakartaSans(
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w500,
-                                      color: isSelected
+                                  style: AppTextStyles.custom(fontSize: 11, fontWeight: FontWeight.w500, color: isSelected
                                           ? Colors.white70
                                           : AppColors.textSecondary),
                                 ),
                                 const SizedBox(height: 2),
                                 Text(
                                   DateFormat('d').format(day),
-                                  style: GoogleFonts.plusJakartaSans(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w800,
-                                      color: isSelected
+                                  style: AppTextStyles.custom(fontSize: 15, fontWeight: FontWeight.w800, color: isSelected
                                           ? Colors.white
                                           : AppColors.textPrimary),
                                 ),
@@ -183,8 +172,7 @@ class _StudentAttendanceScreenState
                         color: AppColors.textSecondary, size: 48),
                     const SizedBox(height: 12),
                     Text('Could not load logs',
-                        style: GoogleFonts.plusJakartaSans(
-                            color: AppColors.textSecondary, fontSize: 14)),
+                        style: AppTextStyles.custom(fontSize: 14, color: AppColors.textSecondary)),
                     const SizedBox(height: 8),
                     TextButton(
                       onPressed: () =>
@@ -209,7 +197,6 @@ class _StudentAttendanceScreenState
           ),
         ],
       ),
-      bottomNavigationBar: const StudentBottomNav(currentIndex: 1),
     );
   }
 }

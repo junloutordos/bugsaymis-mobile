@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../core/api_client.dart';
 import '../../core/theme.dart';
 import '../../shared/widgets/empty_state.dart';
@@ -418,7 +417,7 @@ class _ProfileFormState extends ConsumerState<_ProfileForm> {
     return const [];
   }
 
-  Widget _card(List<Widget> children) => WhiteCard(
+  Widget _card(List<Widget> children) => AppCard(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: children,
@@ -429,13 +428,13 @@ class _ProfileFormState extends ConsumerState<_ProfileForm> {
       TextField(
         controller: _text[field],
         maxLines: maxLines,
-        style: GoogleFonts.plusJakartaSans(fontSize: 14),
+        style: AppTextStyles.custom(fontSize: 14),
         decoration: InputDecoration(labelText: label),
       );
 
   Widget _repeater(String key, List<String> fields, List<String> hints,
           String addLabel) =>
-      WhiteCard(
+      AppCard(
         child: Column(
           children: [
             for (var i = 0; i < (_rows[key]?.length ?? 0); i++)
@@ -452,7 +451,7 @@ class _ProfileFormState extends ConsumerState<_ProfileForm> {
                       if (f > 0) const SizedBox(height: 10),
                       TextField(
                         controller: _rows[key]![i][fields[f]],
-                        style: GoogleFonts.plusJakartaSans(fontSize: 14),
+                        style: AppTextStyles.custom(fontSize: 14),
                         decoration: InputDecoration(
                           labelText: hints[f],
                           isDense: true,

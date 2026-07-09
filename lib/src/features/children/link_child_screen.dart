@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import '../../core/api_client.dart';
 import '../../core/theme.dart';
@@ -52,8 +51,7 @@ class _LinkChildScreenState extends ConsumerState<LinkChildScreen> {
               ),
               const SizedBox(height: 14),
               Text('Point at student\'s ID barcode',
-                  style: GoogleFonts.plusJakartaSans(
-                      color: Colors.white70, fontSize: 13)),
+                  style: AppTextStyles.custom(fontSize: 13, color: Colors.white70)),
               const SizedBox(height: 14),
               Expanded(
                 child: Padding(
@@ -155,15 +153,10 @@ class _LinkChildScreenState extends ConsumerState<LinkChildScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text('Add a Child',
-                                    style: GoogleFonts.plusJakartaSans(
-                                        color: AppColors.textPrimary,
-                                        fontSize: 17,
-                                        fontWeight: FontWeight.w700)),
+                                    style: AppTextStyles.title),
                                 Text(
                                     'A confirmation will be sent to the student',
-                                    style: GoogleFonts.plusJakartaSans(
-                                        color: AppColors.textSecondary,
-                                        fontSize: 12)),
+                                    style: AppTextStyles.custom(fontSize: 12, color: AppColors.textSecondary)),
                               ],
                             ),
                           ),
@@ -208,10 +201,7 @@ class _LinkChildScreenState extends ConsumerState<LinkChildScreen> {
                       'For the student\'s privacy, their information is not shown. '
                       'A confirmation email will be sent to the student\'s registered email. '
                       'They must approve before you can track their attendance.',
-                      style: GoogleFonts.plusJakartaSans(
-                          fontSize: 12,
-                          color: AppColors.accent,
-                          height: 1.5),
+                      style: AppTextStyles.custom(fontSize: 12, color: AppColors.accent, height: 1.5),
                     ),
                   ),
                 ],
@@ -259,10 +249,7 @@ class _LinkChildScreenState extends ConsumerState<LinkChildScreen> {
 
             // Relationship selector
             Text('Your relationship to the student',
-                style: GoogleFonts.plusJakartaSans(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary)),
+                style: AppTextStyles.fieldLabel),
             const SizedBox(height: 10),
             _RelationshipSelector(
               selected: _relationship,
@@ -308,20 +295,14 @@ class _LinkChildScreenState extends ConsumerState<LinkChildScreen> {
               ),
               const SizedBox(height: 20),
               Text('Request Sent!',
-                  style: GoogleFonts.plusJakartaSans(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimary)),
+                  style: AppTextStyles.custom(fontSize: 20, fontWeight: FontWeight.w800, color: AppColors.textPrimary)),
               const SizedBox(height: 12),
               Text(
                 'A confirmation email has been sent to the student\'s registered email address.\n\n'
                 'They must approve your request before you can track their attendance. '
                 'You can check the status of pending requests in the Children screen.',
                 textAlign: TextAlign.center,
-                style: GoogleFonts.plusJakartaSans(
-                    fontSize: 13,
-                    color: AppColors.textSecondary,
-                    height: 1.6),
+                style: AppTextStyles.custom(fontSize: 13, color: AppColors.textSecondary, height: 1.6),
               ),
               const SizedBox(height: 28),
               SizedBox(
@@ -339,8 +320,7 @@ class _LinkChildScreenState extends ConsumerState<LinkChildScreen> {
                   _relationship = 'guardian';
                 }),
                 child: Text('Add another child',
-                    style: GoogleFonts.plusJakartaSans(
-                        color: AppColors.accent, fontSize: 13)),
+                    style: AppTextStyles.custom(fontSize: 13, color: AppColors.accent)),
               ),
             ],
           ),
@@ -359,12 +339,10 @@ class _LinkChildScreenState extends ConsumerState<LinkChildScreen> {
                 color: Colors.white38, size: 48),
             const SizedBox(height: 12),
             Text('Camera not available',
-                style: GoogleFonts.plusJakartaSans(
-                    color: Colors.white54, fontSize: 14)),
+                style: AppTextStyles.custom(fontSize: 14, color: Colors.white54)),
             const SizedBox(height: 6),
             Text('Please type the ID number manually',
-                style: GoogleFonts.plusJakartaSans(
-                    color: Colors.white38, fontSize: 12)),
+                style: AppTextStyles.custom(fontSize: 12, color: Colors.white38)),
           ],
         ),
       );
@@ -428,10 +406,7 @@ class _Chip extends StatelessWidget {
               color: isSelected ? AppColors.accent : AppColors.border),
         ),
         child: Text(label,
-            style: GoogleFonts.plusJakartaSans(
-                fontSize: 13,
-                fontWeight: FontWeight.w500,
-                color: isSelected
+            style: AppTextStyles.custom(fontSize: 13, fontWeight: FontWeight.w500, color: isSelected
                     ? Colors.white
                     : AppColors.textSecondary)),
       ),

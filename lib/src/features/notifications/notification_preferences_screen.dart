@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../core/api_client.dart';
 import '../../core/theme.dart';
 import '../../shared/widgets/shimmer_card.dart';
@@ -101,8 +100,7 @@ class _NotificationPreferencesScreenState
                         size: 48, color: AppColors.textSecondary),
                     const SizedBox(height: 12),
                     Text('Could not load settings',
-                        style: GoogleFonts.plusJakartaSans(
-                            color: AppColors.textSecondary, fontSize: 14)),
+                        style: AppTextStyles.custom(fontSize: 14, color: AppColors.textSecondary)),
                     TextButton(
                       onPressed: () =>
                           ref.invalidate(_notificationPrefsProvider),
@@ -120,10 +118,7 @@ class _NotificationPreferencesScreenState
                   children: [
                     Text(
                       'Choose how you want to be alerted when your child enters or leaves campus.',
-                      style: GoogleFonts.plusJakartaSans(
-                          fontSize: 13,
-                          color: AppColors.textSecondary,
-                          height: 1.6),
+                      style: AppTextStyles.custom(fontSize: 13, color: AppColors.textSecondary, height: 1.6),
                     ),
                     const SizedBox(height: 24),
                     const SectionLabel('ALERT METHODS'),
@@ -181,11 +176,8 @@ class _PrefTile extends StatelessWidget {
   Widget build(BuildContext context) => Container(
         decoration: BoxDecoration(
           color: AppColors.surface,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: const [
-            BoxShadow(
-                color: Color(0x0A000000), blurRadius: 16, offset: Offset(0, 3)),
-          ],
+          borderRadius: BorderRadius.circular(AppRadius.card),
+          boxShadow: kCardShadow,
         ),
         child: SwitchListTile(
           contentPadding:
@@ -200,13 +192,9 @@ class _PrefTile extends StatelessWidget {
             child: Icon(icon, color: AppColors.accent, size: 20),
           ),
           title: Text(title,
-              style: GoogleFonts.plusJakartaSans(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14,
-                  color: AppColors.textPrimary)),
+              style: AppTextStyles.bodySemibold),
           subtitle: Text(subtitle,
-              style: GoogleFonts.plusJakartaSans(
-                  fontSize: 12, color: AppColors.textSecondary)),
+              style: AppTextStyles.custom(fontSize: 12, color: AppColors.textSecondary)),
           value: value,
           activeTrackColor: AppColors.accent,
           onChanged: onChanged,

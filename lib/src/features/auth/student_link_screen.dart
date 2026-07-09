@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme.dart';
 import '../portal/portal_widgets.dart';
 import 'auth_provider.dart';
@@ -84,23 +83,17 @@ class _StudentLinkScreenState extends ConsumerState<StudentLinkScreen> {
                       ),
                       const SizedBox(height: 16),
                       Text('One last step',
-                          style: GoogleFonts.plusJakartaSans(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: -0.3)),
+                          style: AppTextStyles.custom(fontSize: 20, fontWeight: FontWeight.w800, letterSpacing: -0.3)),
                       const SizedBox(height: 6),
                       Text(
                         'Signed in as ${widget.email}. Enter your PISAY ID once to link it to your student record.',
-                        style: GoogleFonts.plusJakartaSans(
-                            fontSize: 13,
-                            color: AppColors.textSecondary,
-                            height: 1.5),
+                        style: AppTextStyles.custom(fontSize: 13, color: AppColors.textSecondary, height: 1.5),
                       ),
                       const SizedBox(height: 20),
                       TextField(
                         controller: _pisayCtrl,
                         textCapitalization: TextCapitalization.characters,
-                        style: GoogleFonts.plusJakartaSans(fontSize: 15),
+                        style: AppTextStyles.custom(fontSize: 15),
                         decoration: const InputDecoration(
                           labelText: 'PISAY ID',
                           hintText: 'e.g. 25-12345',
@@ -118,10 +111,7 @@ class _StudentLinkScreenState extends ConsumerState<StudentLinkScreen> {
                         child: Text(
                           'Only enrolled students can link. Contact the Guidance Office if you need help.',
                           textAlign: TextAlign.center,
-                          style: GoogleFonts.plusJakartaSans(
-                              fontSize: 11,
-                              color: AppColors.textSecondary,
-                              height: 1.5),
+                          style: AppTextStyles.custom(fontSize: 11, color: AppColors.textSecondary, height: 1.5),
                         ),
                       ),
                     ],

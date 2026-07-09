@@ -1,6 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../features/auth/auth_provider.dart';
+import '../shared/widgets/app_shell.dart';
 import '../features/auth/login_screen.dart';
 import '../features/auth/register_screen.dart';
 import '../features/auth/student_link_screen.dart';
@@ -23,6 +25,7 @@ import '../features/portal/services_screen.dart';
 import '../features/schedule/schedule_screen.dart';
 import '../features/student/student_dashboard_screen.dart';
 import '../features/student/student_grades_screen.dart';
+import '../features/student/student_id_screen.dart';
 import '../features/student/student_schedule_screen.dart';
 import '../features/student/student_attendance_screen.dart';
 
@@ -83,31 +86,82 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
       ),
 
-      // ── Parent routes ──────────────────────────────────────────────────
-      GoRoute(path: '/home',     builder: (ctx, st) => const HomeScreen()),
-      GoRoute(path: '/grades',   builder: (ctx, st) => const GradesScreen()),
-      GoRoute(path: '/schedule', builder: (ctx, st) => const ScheduleScreen()),
-      GoRoute(
-        path: '/attendance',
-        builder: (ctx, st) {
-          final extra = st.extra as Map<String, dynamic>?;
-          return AttendanceScreen(
-            studentId: extra?['studentId'] as int?,
-            studentName: extra?['studentName'] as String?,
-          );
-        },
+      // ── Parent shell (persistent bottom nav, kept tab state) ──────────
+      StatefulShellRoute.indexedStack(
+        builder: (ctx, st, shell) =>
+            AppShell(shell: shell, role: ShellRole.parent),
+        branches: [
+          StatefulShellBranch(routes: [
+            GoRoute(path: '/home', builder: (ctx, st) => const HomeScreen()),
+          ]),
+          StatefulShellBranch(routes: [
+            GoRoute(
+              path: '/attendance',
+              builder: (ctx, st) {
+                final extra = st.extra as Map<String, dynamic>?;
+                return AttendanceScreen(
+                  studentId: extra?['studentId'] as int?,
+                  studentName: extra?['studentName'] as String?,
+                );
+              },
+            ),
+          ]),
+          StatefulShellBranch(routes: [
+            GoRoute(path: '/grades', builder: (ctx, st) => const GradesScreen()),
+          ]),
+          StatefulShellBranch(routes: [
+            GoRoute(path: '/schedule', builder: (ctx, st) => const ScheduleScreen()),
+          ]),
+        ],
       ),
+
+      // ── Student shell (4 tabs + raised center ID button) ──────────────
+      StatefulShellRoute.indexedStack(
+        builder: (ctx, st, shell) =>
+            AppShell(shell: shell, role: ShellRole.student),
+        branches: [
+          StatefulShellBranch(routes: [
+            GoRoute(path: '/student/home',       builder: (ctx, st) => const StudentDashboardScreen()),
+          ]),
+          StatefulShellBranch(routes: [
+            GoRoute(path: '/student/attendance', builder: (ctx, st) => const StudentAttendanceScreen()),
+          ]),
+          StatefulShellBranch(routes: [
+            GoRoute(path: '/student/grades',     builder: (ctx, st) => const StudentGradesScreen()),
+          ]),
+          StatefulShellBranch(routes: [
+            GoRoute(path: '/student/services',   builder: (ctx, st) => const ServicesScreen()),
+          ]),
+        ],
+      ),
+
+      // ── Full-screen routes (cover the bottom nav) ──────────────────────
+      GoRoute(
+        path: '/student/id',
+        pageBuilder: (ctx, st) => CustomTransitionPage(
+          key: st.pageKey,
+          fullscreenDialog: true,
+          transitionDuration: const Duration(milliseconds: 220),
+          reverseTransitionDuration: const Duration(milliseconds: 180),
+          child: const StudentIdScreen(),
+          transitionsBuilder: (ctx, anim, _, child) {
+            final curved =
+                CurvedAnimation(parent: anim, curve: Curves.easeOutCubic);
+            return FadeTransition(
+              opacity: curved,
+              child: ScaleTransition(
+                scale: Tween(begin: 0.92, end: 1.0).animate(curved),
+                child: child,
+              ),
+            );
+          },
+        ),
+      ),
+      GoRoute(path: '/student/schedule', builder: (ctx, st) => const StudentScheduleScreen()),
       GoRoute(path: '/children',       builder: (ctx, st) => const ChildrenScreen()),
       GoRoute(path: '/children/link',  builder: (ctx, st) => const LinkChildScreen()),
       GoRoute(path: '/notification-preferences', builder: (ctx, st) => const NotificationPreferencesScreen()),
       GoRoute(path: '/profile',        builder: (ctx, st) => const ProfileScreen()),
-
-      // ── Student routes ─────────────────────────────────────────────────
-      GoRoute(path: '/student/home',       builder: (ctx, st) => const StudentDashboardScreen()),
-      GoRoute(path: '/student/grades',     builder: (ctx, st) => const StudentGradesScreen()),
-      GoRoute(path: '/student/schedule',   builder: (ctx, st) => const StudentScheduleScreen()),
-      GoRoute(path: '/student/attendance', builder: (ctx, st) => const StudentAttendanceScreen()),
-      GoRoute(path: '/student/services',   builder: (ctx, st) => const ServicesScreen()),
 
       // ── Student portal (forms, RH, clearance) ──────────────────────────
       GoRoute(path: '/student/portal/forms', builder: (ctx, st) => const FormsOverviewScreen()),

@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../../core/api_client.dart';
 import '../../core/theme.dart';
 import '../../shared/widgets/shimmer_card.dart';
-import '../home/home_screen.dart' show BottomNav;
 
 // ── Provider ──────────────────────────────────────────────────────────────────
 
@@ -78,10 +76,7 @@ class _AttendanceScreenState extends ConsumerState<AttendanceScreen> {
                         Expanded(
                           child: Text(
                             widget.studentName ?? 'Attendance History',
-                            style: GoogleFonts.plusJakartaSans(
-                                color: AppColors.textPrimary,
-                                fontSize: 17,
-                                fontWeight: FontWeight.w700),
+                            style: AppTextStyles.title,
                           ),
                         ),
                         IconButton(
@@ -139,20 +134,14 @@ class _AttendanceScreenState extends ConsumerState<AttendanceScreen> {
                               children: [
                                 Text(
                                   DateFormat('E').format(day)[0],
-                                  style: GoogleFonts.plusJakartaSans(
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w500,
-                                      color: isSelected
+                                  style: AppTextStyles.custom(fontSize: 11, fontWeight: FontWeight.w500, color: isSelected
                                           ? Colors.white70
                                           : AppColors.textSecondary),
                                 ),
                                 const SizedBox(height: 2),
                                 Text(
                                   DateFormat('d').format(day),
-                                  style: GoogleFonts.plusJakartaSans(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w800,
-                                      color: isSelected
+                                  style: AppTextStyles.custom(fontSize: 15, fontWeight: FontWeight.w800, color: isSelected
                                           ? Colors.white
                                           : AppColors.textPrimary),
                                 ),
@@ -195,8 +184,7 @@ class _AttendanceScreenState extends ConsumerState<AttendanceScreen> {
                         color: AppColors.textSecondary, size: 48),
                     const SizedBox(height: 12),
                     Text('Could not load logs',
-                        style: GoogleFonts.plusJakartaSans(
-                            color: AppColors.textSecondary, fontSize: 14)),
+                        style: AppTextStyles.custom(fontSize: 14, color: AppColors.textSecondary)),
                     const SizedBox(height: 8),
                     TextButton(
                       onPressed: () => ref.invalidate(_attendanceLogsProvider),
@@ -221,7 +209,6 @@ class _AttendanceScreenState extends ConsumerState<AttendanceScreen> {
           ),
         ],
       ),
-      bottomNavigationBar: const BottomNav(currentIndex: 1),
     );
   }
 }
@@ -271,11 +258,8 @@ class SummaryStrip extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: const [
-          BoxShadow(
-              color: Color(0x0A000000), blurRadius: 16, offset: Offset(0, 3))
-        ],
+        borderRadius: BorderRadius.circular(AppRadius.card),
+        boxShadow: kCardShadow,
       ),
       child: Row(
         children: [
@@ -283,15 +267,11 @@ class SummaryStrip extends StatelessWidget {
               color: AppColors.textSecondary, size: 18),
           const SizedBox(width: 8),
           Text('${logs.length} scan${logs.length == 1 ? '' : 's'}',
-              style: GoogleFonts.plusJakartaSans(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimary)),
+              style: AppTextStyles.custom(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
           const Spacer(),
           if (lastLog != null) ...[
             Text('Last: ',
-                style: GoogleFonts.plusJakartaSans(
-                    fontSize: 12, color: AppColors.textSecondary)),
+                style: AppTextStyles.custom(fontSize: 12, color: AppColors.textSecondary)),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
@@ -299,10 +279,7 @@ class SummaryStrip extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10)),
               child: Text(
                 '${isLastIn ? 'Time In' : 'Time Out'}  $lastTime',
-                style: GoogleFonts.plusJakartaSans(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: color),
+                style: AppTextStyles.custom(fontSize: 12, fontWeight: FontWeight.w600, color: color),
               ),
             ),
           ],
@@ -372,13 +349,8 @@ class TimelineItem extends StatelessWidget {
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
                   color: AppColors.surface,
-                  borderRadius: BorderRadius.circular(14),
-                  boxShadow: const [
-                    BoxShadow(
-                        color: Color(0x0A000000),
-                        blurRadius: 14,
-                        offset: Offset(0, 3))
-                  ],
+                  borderRadius: BorderRadius.circular(AppRadius.card),
+                  boxShadow: kCardShadow,
                 ),
                 child: Row(
                   children: [
@@ -400,22 +372,14 @@ class TimelineItem extends StatelessWidget {
                         children: [
                           if (log['student_name'] != null)
                             Text(log['student_name'],
-                                style: GoogleFonts.plusJakartaSans(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w600,
-                                    color: AppColors.textPrimary)),
+                                style: AppTextStyles.fieldLabel),
                           Text(time,
-                              style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 13,
-                                  fontWeight: log['student_name'] != null
+                              style: AppTextStyles.custom(fontSize: 13, fontWeight: log['student_name'] != null
                                       ? FontWeight.w400
-                                      : FontWeight.w600,
-                                  color: AppColors.textPrimary)),
+                                      : FontWeight.w600, color: AppColors.textPrimary)),
                           if (log['gate_location'] != null)
                             Text(log['gate_location'],
-                                style: GoogleFonts.plusJakartaSans(
-                                    fontSize: 12,
-                                    color: AppColors.textSecondary)),
+                                style: AppTextStyles.custom(fontSize: 12, color: AppColors.textSecondary)),
                         ],
                       ),
                     ),
@@ -428,10 +392,7 @@ class TimelineItem extends StatelessWidget {
                       ),
                       child: Text(
                         log['type_label'] ?? (isIn ? 'Time In' : 'Time Out'),
-                        style: GoogleFonts.plusJakartaSans(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w700,
-                            color: color),
+                        style: AppTextStyles.custom(fontSize: 11, fontWeight: FontWeight.w700, color: color),
                       ),
                     ),
                   ],
@@ -464,14 +425,10 @@ class EmptyDayView extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text('No scans on this day',
-                style: GoogleFonts.plusJakartaSans(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary)),
+                style: AppTextStyles.custom(fontSize: 15, fontWeight: FontWeight.w600, color: AppColors.textPrimary)),
             const SizedBox(height: 6),
             Text(DateFormat('MMMM d, y').format(date),
-                style: GoogleFonts.plusJakartaSans(
-                    fontSize: 13, color: AppColors.textSecondary)),
+                style: AppTextStyles.custom(fontSize: 13, color: AppColors.textSecondary)),
           ],
         ),
       );

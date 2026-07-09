@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme.dart';
 
 class EmptyState extends StatelessWidget {
@@ -38,21 +37,13 @@ class EmptyState extends StatelessWidget {
               Text(
                 headline,
                 textAlign: TextAlign.center,
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 17,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimary,
-                ),
+                style: AppTextStyles.title,
               ),
               const SizedBox(height: 8),
               Text(
                 subtext,
                 textAlign: TextAlign.center,
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 13,
-                  color: AppColors.textSecondary,
-                  height: 1.6,
-                ),
+                style: AppTextStyles.custom(fontSize: 13, color: AppColors.textSecondary, height: 1.6),
               ),
               if (ctaLabel != null && onCta != null) ...[
                 const SizedBox(height: 28),
@@ -85,8 +76,7 @@ class ErrorRetryView extends StatelessWidget {
             const SizedBox(height: 12),
             Text(
               message ?? 'Could not load data',
-              style: GoogleFonts.plusJakartaSans(
-                  fontSize: 14, color: AppColors.textSecondary),
+              style: AppTextStyles.custom(fontSize: 14, color: AppColors.textSecondary),
             ),
             const SizedBox(height: 12),
             TextButton(onPressed: onRetry, child: const Text('Retry')),

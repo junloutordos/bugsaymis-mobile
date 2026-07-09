@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../../core/theme.dart';
 import '../../shared/widgets/empty_state.dart';
@@ -61,14 +60,11 @@ class FormsOverviewScreen extends ConsumerWidget {
                     padding: const EdgeInsets.only(bottom: 16),
                     child: Text(
                       'Please complete every section once for S.Y. ${d.schoolYear}.',
-                      style: GoogleFonts.plusJakartaSans(
-                          fontSize: 13,
-                          color: AppColors.textSecondary,
-                          height: 1.5),
+                      style: AppTextStyles.custom(fontSize: 13, color: AppColors.textSecondary, height: 1.5),
                     ),
                   ),
                 const SectionLabel('GUIDANCE PROFILE'),
-                WhiteCard(
+                AppCard(
                   padding: EdgeInsets.zero,
                   child: Column(
                     children: [
@@ -87,7 +83,7 @@ class FormsOverviewScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 20),
                 const SectionLabel('MEDICAL RECORDS'),
-                WhiteCard(
+                AppCard(
                   padding: EdgeInsets.zero,
                   child: Column(
                     children: [
@@ -160,12 +156,10 @@ class _SectionTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(section.label,
-                      style: GoogleFonts.plusJakartaSans(
-                          fontSize: 14, fontWeight: FontWeight.w600)),
+                      style: AppTextStyles.custom(fontSize: 14, fontWeight: FontWeight.w600)),
                   if (subtitle != null)
                     Text(subtitle,
-                        style: GoogleFonts.plusJakartaSans(
-                            fontSize: 11, color: AppColors.textSecondary)),
+                        style: AppTextStyles.custom(fontSize: 11, color: AppColors.textSecondary)),
                 ],
               ),
             ),
@@ -181,10 +175,7 @@ class _SectionTile extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text('To do',
-                    style: GoogleFonts.plusJakartaSans(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.warningText)),
+                    style: AppTextStyles.custom(fontSize: 10, fontWeight: FontWeight.w700, color: AppColors.warningText)),
               ),
             const SizedBox(width: 6),
             const Icon(Icons.chevron_right_rounded,

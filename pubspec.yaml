@@ -52,6 +52,10 @@ dependencies:
   # Lost & Found photo attachment (camera/gallery -> base64 JSON upload)
   image_picker: ^1.1.2
 
+  # Digital student ID (barcode rendering + max brightness at the gate)
+  barcode_widget: ^2.0.4
+  screen_brightness: ^2.1.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

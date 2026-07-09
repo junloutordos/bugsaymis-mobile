@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../core/api_client.dart';
 import '../../core/theme.dart';
 import '../../shared/widgets/shimmer_card.dart';
-import '../home/home_screen.dart' show BottomNav;
 import '../home/home_provider.dart';
 
 class ChildrenScreen extends ConsumerWidget {
@@ -22,6 +20,12 @@ class ChildrenScreen extends ConsumerWidget {
             greeting: 'Manage',
             name: 'My Children',
             subtitle: 'Linked student accounts',
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back_ios_new_rounded,
+                  color: AppColors.textPrimary, size: 20),
+              onPressed: () =>
+                  context.canPop() ? context.pop() : context.go('/home'),
+            ),
             actions: [
               Padding(
                 padding: const EdgeInsets.only(left: 4, right: 8),
@@ -59,7 +63,6 @@ class ChildrenScreen extends ConsumerWidget {
           ref.invalidate(linkedStudentsProvider);
         },
       ),
-      bottomNavigationBar: const BottomNav(currentIndex: 2),
     );
   }
 
@@ -70,25 +73,21 @@ class ChildrenScreen extends ConsumerWidget {
       builder: (_) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Text('Unlink ${student.fullName}?',
-            style: GoogleFonts.plusJakartaSans(
-                fontWeight: FontWeight.w700, fontSize: 16)),
+            style: AppTextStyles.custom(fontSize: 16, fontWeight: FontWeight.w700)),
         content: Text(
           'You will stop receiving gate notifications for this student.',
-          style: GoogleFonts.plusJakartaSans(
-              fontSize: 13, color: AppColors.textSecondary, height: 1.5),
+          style: AppTextStyles.custom(fontSize: 13, color: AppColors.textSecondary, height: 1.5),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
             child: Text('Cancel',
-                style: GoogleFonts.plusJakartaSans(
-                    color: AppColors.textSecondary)),
+                style: AppTextStyles.custom(color: AppColors.textSecondary)),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
             child: Text('Unlink',
-                style: GoogleFonts.plusJakartaSans(
-                    color: Colors.red, fontWeight: FontWeight.w600)),
+                style: AppTextStyles.custom(fontWeight: FontWeight.w600, color: Colors.red)),
           ),
         ],
       ),
@@ -144,10 +143,7 @@ class _GradientFab extends StatelessWidget {
                   const Icon(Icons.add_rounded, color: Colors.white, size: 20),
                   const SizedBox(width: 8),
                   Text('Link Child',
-                      style: GoogleFonts.plusJakartaSans(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14)),
+                      style: AppTextStyles.bodySemibold.copyWith(color: Colors.white)),
                 ],
               ),
             ),
@@ -171,13 +167,8 @@ class _ChildCard extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: AppColors.surface,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: const [
-            BoxShadow(
-                color: Color(0x0A000000), blurRadius: 20, offset: Offset(0, 4)),
-            BoxShadow(
-                color: Color(0x06000000), blurRadius: 6, offset: Offset(0, 1)),
-          ],
+          borderRadius: BorderRadius.circular(AppRadius.card),
+          boxShadow: kCardShadow,
         ),
         child: Row(
           children: [
@@ -201,10 +192,7 @@ class _ChildCard extends StatelessWidget {
                   student.fullName.isNotEmpty
                       ? student.fullName[0].toUpperCase()
                       : '?',
-                  style: GoogleFonts.plusJakartaSans(
-                      color: AppColors.accent,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 20),
+                  style: AppTextStyles.custom(fontSize: 20, fontWeight: FontWeight.w700, color: AppColors.accent),
                 ),
               ),
             ),
@@ -216,10 +204,7 @@ class _ChildCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(student.fullName,
-                      style: GoogleFonts.plusJakartaSans(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary)),
+                      style: AppTextStyles.custom(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
                   const SizedBox(height: 4),
                   Row(
                     children: [
@@ -231,9 +216,7 @@ class _ChildCard extends StatelessWidget {
                         const SizedBox(width: 6),
                       ],
                       Text('ID: ${student.barcode}',
-                          style: GoogleFonts.plusJakartaSans(
-                              fontSize: 12,
-                              color: AppColors.textSecondary)),
+                          style: AppTextStyles.custom(fontSize: 12, color: AppColors.textSecondary)),
                     ],
                   ),
                 ],
@@ -272,10 +255,7 @@ class _Pill extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
         ),
         child: Text(text,
-            style: GoogleFonts.plusJakartaSans(
-                fontSize: 11,
-                fontWeight: FontWeight.w600,
-                color: color)),
+            style: AppTextStyles.custom(fontSize: 11, fontWeight: FontWeight.w600, color: color)),
       );
 }
 
@@ -337,8 +317,7 @@ class _ChildrenBody extends ConsumerWidget {
             ),
             error: (_, _) => Center(
               child: Text('Could not load children',
-                  style: GoogleFonts.plusJakartaSans(
-                      color: AppColors.textSecondary, fontSize: 14)),
+                  style: AppTextStyles.custom(fontSize: 14, color: AppColors.textSecondary)),
             ),
             data: (list) {
               if (list.isEmpty) {
@@ -378,13 +357,10 @@ class _PendingRequestCard extends StatelessWidget {
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
           color: AppColors.warningBg,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(AppRadius.card),
           border: const Border.fromBorderSide(
               BorderSide(color: Color(0xFFFDE68A))),
-          boxShadow: const [
-            BoxShadow(
-                color: Color(0x08000000), blurRadius: 12, offset: Offset(0, 3))
-          ],
+          boxShadow: kCardShadow,
         ),
         child: Row(
           children: [
@@ -404,21 +380,15 @@ class _PendingRequestCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('Awaiting Confirmation',
-                      style: GoogleFonts.plusJakartaSans(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.warningText)),
+                      style: AppTextStyles.custom(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.warningText)),
                   const SizedBox(height: 2),
                   Text(
                     'ID: ${request.maskedStudentId}  ·  ${_capitalize(request.relationship)}',
-                    style: GoogleFonts.plusJakartaSans(
-                        fontSize: 12, color: AppColors.warningText),
+                    style: AppTextStyles.custom(fontSize: 12, color: AppColors.warningText),
                   ),
                   Text(
                     'Email sent to student — waiting for approval',
-                    style: GoogleFonts.plusJakartaSans(
-                        fontSize: 11,
-                        color: AppColors.warningText.withValues(alpha: 0.7)),
+                    style: AppTextStyles.custom(fontSize: 11, color: AppColors.warningText.withValues(alpha: 0.7)),
                   ),
                 ],
               ),
@@ -457,18 +427,12 @@ class _EmptyState extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               Text('No children linked',
-                  style: GoogleFonts.plusJakartaSans(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary)),
+                  style: AppTextStyles.custom(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.textPrimary)),
               const SizedBox(height: 8),
               Text(
                 'Link your child\'s ID card to receive\ngate attendance notifications.',
                 textAlign: TextAlign.center,
-                style: GoogleFonts.plusJakartaSans(
-                    fontSize: 13,
-                    color: AppColors.textSecondary,
-                    height: 1.5),
+                style: AppTextStyles.custom(fontSize: 13, color: AppColors.textSecondary, height: 1.5),
               ),
               const SizedBox(height: 28),
               SizedBox(

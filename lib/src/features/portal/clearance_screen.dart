@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../core/api_client.dart';
@@ -131,7 +130,7 @@ class _ClearanceScreenState extends ConsumerState<ClearanceScreen> {
                     total: items.length),
                 const SizedBox(height: 20),
                 const SectionLabel('REQUIREMENTS'),
-                WhiteCard(
+                AppCard(
                   padding: EdgeInsets.zero,
                   child: Column(
                     children: [
@@ -188,10 +187,7 @@ class _SummaryCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(period['title']?.toString() ?? 'Clearance',
-                    style: GoogleFonts.plusJakartaSans(
-                        color: Colors.white,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700)),
+                    style: AppTextStyles.cardTitle.copyWith(color: Colors.white)),
               ),
               PortalStatusChip.forStatus(
                   clearance['status']?.toString() ?? 'in_progress'),
@@ -201,8 +197,7 @@ class _SummaryCard extends StatelessWidget {
             const SizedBox(height: 2),
             Text(
                 'Grade ${clearance['grade_level'] ?? '—'} — ${clearance['section_name']}',
-                style: GoogleFonts.plusJakartaSans(
-                    color: Colors.white70, fontSize: 12)),
+                style: AppTextStyles.custom(fontSize: 12, color: Colors.white70)),
           ],
           const SizedBox(height: 14),
           ClipRRect(
@@ -216,8 +211,7 @@ class _SummaryCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text('$done of $total requirements cleared',
-              style: GoogleFonts.plusJakartaSans(
-                  color: Colors.white70, fontSize: 12)),
+              style: AppTextStyles.custom(fontSize: 12, color: Colors.white70)),
         ],
       ),
     );
@@ -258,29 +252,21 @@ class _ItemTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(item['requirement_label']?.toString() ?? '—',
-                    style: GoogleFonts.plusJakartaSans(
-                        fontSize: 13, fontWeight: FontWeight.w600)),
+                    style: AppTextStyles.custom(fontSize: 13, fontWeight: FontWeight.w600)),
                 if (item['signed_by'] != null)
                   Text('Signed by ${item['signed_by']}',
-                      style: GoogleFonts.plusJakartaSans(
-                          fontSize: 11, color: AppColors.textSecondary)),
+                      style: AppTextStyles.custom(fontSize: 11, color: AppColors.textSecondary)),
                 if ((item['blocker_summary']?.toString() ?? '').isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.only(top: 4),
                     child: Text(item['blocker_summary'].toString(),
-                        style: GoogleFonts.plusJakartaSans(
-                            fontSize: 11,
-                            color: Colors.red.shade700,
-                            height: 1.4)),
+                        style: AppTextStyles.custom(fontSize: 11, color: Colors.red.shade700, height: 1.4)),
                   ),
                 if ((item['remarks']?.toString() ?? '').isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.only(top: 4),
                     child: Text(item['remarks'].toString(),
-                        style: GoogleFonts.plusJakartaSans(
-                            fontSize: 11,
-                            color: AppColors.textSecondary,
-                            height: 1.4)),
+                        style: AppTextStyles.custom(fontSize: 11, color: AppColors.textSecondary, height: 1.4)),
                   ),
               ],
             ),

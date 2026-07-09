@@ -50,7 +50,10 @@ class ScheduleData {
 
   factory ScheduleData.fromJson(Map<String, dynamic> json) {
     final section = json['section'] as Map<String, dynamic>?;
-    final rawSchedule = json['schedule'] as Map<String, dynamic>? ?? {};
+    // An empty PHP array serializes as [] (a List), not {} — cast defensively.
+    final rawSchedule = json['schedule'] is Map<String, dynamic>
+        ? json['schedule'] as Map<String, dynamic>
+        : <String, dynamic>{};
 
     final byDay = rawSchedule.map((day, slots) {
       final list = (slots as List)

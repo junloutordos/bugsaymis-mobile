@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../core/api_client.dart';
 import '../../core/theme.dart';
 import '../../shared/widgets/empty_state.dart';
@@ -240,11 +239,10 @@ class _MedicalFormState extends ConsumerState<_MedicalForm> {
               padding: const EdgeInsets.only(bottom: 16),
               child: Text(
                 _sectionHints[widget.section] ?? '',
-                style: GoogleFonts.plusJakartaSans(
-                    fontSize: 13, color: AppColors.textSecondary, height: 1.5),
+                style: AppTextStyles.custom(fontSize: 13, color: AppColors.textSecondary, height: 1.5),
               ),
             ),
-            WhiteCard(
+            AppCard(
               child: Column(
                 children: [
                   for (var i = 0; i < _rows.length; i++)
@@ -290,7 +288,7 @@ class _MedicalFormState extends ConsumerState<_MedicalForm> {
             TextField(
               controller: row.text['medication'],
               enabled: row.allergy == 'yes',
-              style: GoogleFonts.plusJakartaSans(fontSize: 14),
+              style: AppTextStyles.custom(fontSize: 14),
               decoration: const InputDecoration(
                 labelText: 'Medication / details',
                 hintText: 'e.g. Amoxicillin, antihistamine',
@@ -305,7 +303,7 @@ class _MedicalFormState extends ConsumerState<_MedicalForm> {
           children: [
             TextField(
               controller: row.text['vaccine'],
-              style: GoogleFonts.plusJakartaSans(fontSize: 14),
+              style: AppTextStyles.custom(fontSize: 14),
               decoration: const InputDecoration(
                 labelText: 'Vaccine name',
                 hintText: 'e.g. COVID-19 (Pfizer), HPV Dose 1',
@@ -327,7 +325,7 @@ class _MedicalFormState extends ConsumerState<_MedicalForm> {
           children: [
             TextField(
               controller: row.text['disease'],
-              style: GoogleFonts.plusJakartaSans(fontSize: 14),
+              style: AppTextStyles.custom(fontSize: 14),
               decoration: const InputDecoration(
                 labelText: 'Disease / condition',
                 hintText: 'e.g. Dengue, Chicken Pox',
@@ -349,7 +347,7 @@ class _MedicalFormState extends ConsumerState<_MedicalForm> {
                     value: row.opd,
                     onChanged: (v) => setState(() => row.opd = v ?? false),
                     title: Text('OPD visit',
-                        style: GoogleFonts.plusJakartaSans(fontSize: 12)),
+                        style: AppTextStyles.custom(fontSize: 12)),
                     dense: true,
                     contentPadding: EdgeInsets.zero,
                     controlAffinity: ListTileControlAffinity.leading,
@@ -361,7 +359,7 @@ class _MedicalFormState extends ConsumerState<_MedicalForm> {
                     onChanged: (v) =>
                         setState(() => row.confinement = v ?? false),
                     title: Text('Confinement',
-                        style: GoogleFonts.plusJakartaSans(fontSize: 12)),
+                        style: AppTextStyles.custom(fontSize: 12)),
                     dense: true,
                     contentPadding: EdgeInsets.zero,
                     controlAffinity: ListTileControlAffinity.leading,
@@ -376,7 +374,7 @@ class _MedicalFormState extends ConsumerState<_MedicalForm> {
           children: [
             TextField(
               controller: row.text['vitamin'],
-              style: GoogleFonts.plusJakartaSans(fontSize: 14),
+              style: AppTextStyles.custom(fontSize: 14),
               decoration: const InputDecoration(
                 labelText: 'Vitamin / supplement',
                 hintText: 'e.g. Vitamin C, Multivitamins',

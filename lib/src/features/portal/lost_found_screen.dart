@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import '../../core/api_client.dart';
@@ -37,8 +36,7 @@ class _LostFoundScreenState extends ConsumerState<LostFoundScreen> {
         foregroundColor: Colors.white,
         icon: const Icon(Icons.add_rounded),
         label: Text('Report Item',
-            style: GoogleFonts.plusJakartaSans(
-                fontSize: 13, fontWeight: FontWeight.w600)),
+            style: AppTextStyles.custom(fontSize: 13, fontWeight: FontWeight.w600)),
         onPressed: () => _openReportSheet(context),
       ),
       body: RefreshIndicator(
@@ -155,14 +153,10 @@ class _PointsBanner extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('$points Honesty Points',
-                      style: GoogleFonts.plusJakartaSans(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w800,
-                          color: const Color(0xFF92400E))),
+                      style: AppTextStyles.custom(fontSize: 15, fontWeight: FontWeight.w800, color: const Color(0xFF92400E))),
                   Text(
                       'Earn 10 points per found item turned over to the GSU office.',
-                      style: GoogleFonts.plusJakartaSans(
-                          fontSize: 11.5, color: const Color(0xFFB45309))),
+                      style: AppTextStyles.custom(fontSize: 11.5, color: const Color(0xFFB45309))),
                 ],
               ),
             ),
@@ -211,10 +205,7 @@ class _TabBar extends StatelessWidget {
             ),
             child: Text(label,
                 textAlign: TextAlign.center,
-                style: GoogleFonts.plusJakartaSans(
-                    fontSize: 12.5,
-                    fontWeight: FontWeight.w700,
-                    color: tab == index
+                style: AppTextStyles.custom(fontSize: 12.5, fontWeight: FontWeight.w700, color: tab == index
                         ? Colors.white
                         : AppColors.textSecondary)),
           ),
@@ -272,7 +263,7 @@ class _BoardCard extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
-      child: WhiteCard(
+      child: AppCard(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -294,25 +285,19 @@ class _BoardCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(item['item_name']?.toString() ?? '—',
-                      style: GoogleFonts.plusJakartaSans(
-                          fontSize: 14, fontWeight: FontWeight.w700)),
+                      style: AppTextStyles.custom(fontSize: 14, fontWeight: FontWeight.w700)),
                   if ((item['category_label']?.toString() ?? '').isNotEmpty)
                     Text(item['category_label'].toString(),
-                        style: GoogleFonts.plusJakartaSans(
-                            fontSize: 12, color: AppColors.textSecondary)),
+                        style: AppTextStyles.custom(fontSize: 12, color: AppColors.textSecondary)),
                   const SizedBox(height: 2),
                   Text(
                     'Found ${_fmtDate(item['date_lost_found'])}'
                     '${location.isNotEmpty ? ' · $location' : ''}',
-                    style: GoogleFonts.plusJakartaSans(
-                        fontSize: 11.5, color: AppColors.textDisabled),
+                    style: AppTextStyles.custom(fontSize: 11.5, color: AppColors.textDisabled),
                   ),
                   const SizedBox(height: 4),
                   Text('Yours? Claim it at the GSU office.',
-                      style: GoogleFonts.plusJakartaSans(
-                          fontSize: 11.5,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.accent)),
+                      style: AppTextStyles.custom(fontSize: 11.5, fontWeight: FontWeight.w600, color: AppColors.accent)),
                 ],
               ),
             ),
@@ -333,7 +318,7 @@ class _ReportCard extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
-      child: WhiteCard(
+      child: AppCard(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -349,25 +334,20 @@ class _ReportCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(999),
                   ),
                   child: Text(isFound ? 'Found' : 'Lost',
-                      style: GoogleFonts.plusJakartaSans(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w700,
-                          color: isFound
+                      style: AppTextStyles.custom(fontSize: 11, fontWeight: FontWeight.w700, color: isFound
                               ? AppColors.successText
                               : AppColors.warningText)),
                 ),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(item['item_name']?.toString() ?? '—',
-                      style: GoogleFonts.plusJakartaSans(
-                          fontSize: 14, fontWeight: FontWeight.w700)),
+                      style: AppTextStyles.custom(fontSize: 14, fontWeight: FontWeight.w700)),
                 ),
               ],
             ),
             const SizedBox(height: 6),
             Text(_fmtDate(item['date_lost_found']),
-                style: GoogleFonts.plusJakartaSans(
-                    fontSize: 11.5, color: AppColors.textDisabled)),
+                style: AppTextStyles.custom(fontSize: 11.5, color: AppColors.textDisabled)),
             const SizedBox(height: 8),
             Container(
               width: double.infinity,
@@ -383,10 +363,7 @@ class _ReportCard extends StatelessWidget {
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(item['custody_label']?.toString() ?? '—',
-                        style: GoogleFonts.plusJakartaSans(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.textSecondary)),
+                        style: AppTextStyles.custom(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.textSecondary)),
                   ),
                 ],
               ),
@@ -512,8 +489,7 @@ class _ReportItemSheetState extends ConsumerState<_ReportItemSheet> {
             ),
             const SizedBox(height: 16),
             Text('Report an Item',
-                style: GoogleFonts.plusJakartaSans(
-                    fontSize: 17, fontWeight: FontWeight.w800)),
+                style: AppTextStyles.custom(fontSize: 17, fontWeight: FontWeight.w800)),
             const SizedBox(height: 16),
             ChoicePicker(
               label: 'What happened?',
@@ -533,15 +509,14 @@ class _ReportItemSheetState extends ConsumerState<_ReportItemSheet> {
                 ),
                 child: Text(
                   'Bring the item to the GSU office — you\'ll earn 10 honesty points once GSU confirms the turnover.',
-                  style: GoogleFonts.plusJakartaSans(
-                      fontSize: 12, color: AppColors.successText),
+                  style: AppTextStyles.custom(fontSize: 12, color: AppColors.successText),
                 ),
               ),
             ],
             const SizedBox(height: 14),
             TextField(
               controller: _itemName,
-              style: GoogleFonts.plusJakartaSans(fontSize: 14),
+              style: AppTextStyles.custom(fontSize: 14),
               decoration: const InputDecoration(
                   labelText: 'Item name',
                   hintText: 'e.g. Blue water bottle, calculator'),
@@ -549,8 +524,7 @@ class _ReportItemSheetState extends ConsumerState<_ReportItemSheet> {
             const SizedBox(height: 14),
             DropdownButtonFormField<String>(
               initialValue: _category,
-              style: GoogleFonts.plusJakartaSans(
-                  fontSize: 14, color: AppColors.textPrimary),
+              style: AppTextStyles.custom(fontSize: 14, color: AppColors.textPrimary),
               decoration: const InputDecoration(labelText: 'Category'),
               items: widget.categories.entries
                   .map((e) => DropdownMenuItem(
@@ -569,13 +543,13 @@ class _ReportItemSheetState extends ConsumerState<_ReportItemSheet> {
                       const Icon(Icons.calendar_today_rounded, size: 16),
                 ),
                 child: Text(DateFormat('MMM d, y').format(_date),
-                    style: GoogleFonts.plusJakartaSans(fontSize: 14)),
+                    style: AppTextStyles.custom(fontSize: 14)),
               ),
             ),
             const SizedBox(height: 14),
             TextField(
               controller: _location,
-              style: GoogleFonts.plusJakartaSans(fontSize: 14),
+              style: AppTextStyles.custom(fontSize: 14),
               decoration: InputDecoration(
                   labelText: isFound
                       ? 'Where did you find it?'
@@ -586,7 +560,7 @@ class _ReportItemSheetState extends ConsumerState<_ReportItemSheet> {
             TextField(
               controller: _description,
               maxLines: 2,
-              style: GoogleFonts.plusJakartaSans(fontSize: 14),
+              style: AppTextStyles.custom(fontSize: 14),
               decoration: const InputDecoration(
                   labelText: 'Description',
                   hintText: 'Color, brand, distinguishing marks…'),
@@ -599,7 +573,7 @@ class _ReportItemSheetState extends ConsumerState<_ReportItemSheet> {
                     onPressed: () => _pickPhoto(ImageSource.camera),
                     icon: const Icon(Icons.photo_camera_rounded, size: 18),
                     label: Text('Camera',
-                        style: GoogleFonts.plusJakartaSans(fontSize: 13)),
+                        style: AppTextStyles.custom(fontSize: 13)),
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -608,7 +582,7 @@ class _ReportItemSheetState extends ConsumerState<_ReportItemSheet> {
                     onPressed: () => _pickPhoto(ImageSource.gallery),
                     icon: const Icon(Icons.photo_library_rounded, size: 18),
                     label: Text('Gallery',
-                        style: GoogleFonts.plusJakartaSans(fontSize: 13)),
+                        style: AppTextStyles.custom(fontSize: 13)),
                   ),
                 ),
               ],
@@ -631,7 +605,7 @@ class _ReportItemSheetState extends ConsumerState<_ReportItemSheet> {
                     onPressed: () => setState(() => _photoBase64 = null),
                     icon: const Icon(Icons.close_rounded, size: 16),
                     label: Text('Remove photo',
-                        style: GoogleFonts.plusJakartaSans(fontSize: 12.5)),
+                        style: AppTextStyles.custom(fontSize: 12.5)),
                   ),
                 ],
               ),
@@ -654,8 +628,7 @@ class _ReportItemSheetState extends ConsumerState<_ReportItemSheet> {
                         child: CircularProgressIndicator(
                             strokeWidth: 2, color: Colors.white))
                     : Text('Submit Report',
-                        style: GoogleFonts.plusJakartaSans(
-                            fontSize: 14, fontWeight: FontWeight.w700)),
+                        style: AppTextStyles.custom(fontSize: 14, fontWeight: FontWeight.w700)),
               ),
             ),
           ],

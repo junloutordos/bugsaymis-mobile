@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme.dart';
 import '../../shared/widgets/empty_state.dart';
 import '../../shared/widgets/shimmer_card.dart';
 import '../auth/auth_provider.dart';
-import '../student/student_nav.dart';
 import 'portal_provider.dart';
 import 'portal_widgets.dart';
 
@@ -82,6 +80,15 @@ class ServicesScreen extends ConsumerWidget {
                     const SizedBox(height: 20),
                     const SectionLabel('CAMPUS'),
                     _ServiceTile(
+                      icon: Icons.grid_view_rounded,
+                      iconColor: AppColors.accentMid,
+                      iconBg: AppColors.accentBg,
+                      title: 'Class Schedule',
+                      subtitle: 'Your weekly timetable',
+                      onTap: () => context.push('/student/schedule'),
+                    ),
+                    const SizedBox(height: 12),
+                    _ServiceTile(
                       icon: Icons.travel_explore_rounded,
                       iconColor: const Color(0xFFD97706),
                       iconBg: const Color(0xFFFEF3C7),
@@ -110,7 +117,7 @@ class ServicesScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: 20),
                     const SectionLabel('ACCOUNT'),
-                    WhiteCard(
+                    AppCard(
                       padding: EdgeInsets.zero,
                       child: Column(
                         children: [
@@ -118,23 +125,16 @@ class ServicesScreen extends ConsumerWidget {
                             leading: const Icon(Icons.person_rounded,
                                 color: AppColors.textSecondary, size: 20),
                             title: Text(user?.name ?? 'Student',
-                                style: GoogleFonts.plusJakartaSans(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600)),
+                                style: AppTextStyles.custom(fontSize: 14, fontWeight: FontWeight.w600)),
                             subtitle: Text(user?.email ?? '',
-                                style: GoogleFonts.plusJakartaSans(
-                                    fontSize: 12,
-                                    color: AppColors.textSecondary)),
+                                style: AppTextStyles.custom(fontSize: 12, color: AppColors.textSecondary)),
                           ),
                           const Divider(height: 1),
                           ListTile(
                             leading: const Icon(Icons.logout_rounded,
                                 color: Colors.redAccent, size: 20),
                             title: Text('Sign out',
-                                style: GoogleFonts.plusJakartaSans(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.redAccent)),
+                                style: AppTextStyles.bodySemibold.copyWith(color: Colors.redAccent)),
                             onTap: () async {
                               await ref
                                   .read(authStateProvider.notifier)
@@ -152,7 +152,6 @@ class ServicesScreen extends ConsumerWidget {
           ),
         ],
       ),
-      bottomNavigationBar: const StudentBottomNav(currentIndex: 4),
     );
   }
 
@@ -177,7 +176,7 @@ class _FormsCard extends ConsumerWidget {
     final progress =
         dashboard.total == 0 ? 0.0 : dashboard.totalDone / dashboard.total;
 
-    return WhiteCard(
+    return AppCard(
       padding: EdgeInsets.zero,
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
@@ -202,8 +201,7 @@ class _FormsCard extends ConsumerWidget {
                     ),
                     Center(
                       child: Text('${dashboard.totalDone}/${dashboard.total}',
-                          style: GoogleFonts.plusJakartaSans(
-                              fontSize: 12, fontWeight: FontWeight.w800)),
+                          style: AppTextStyles.custom(fontSize: 12, fontWeight: FontWeight.w800)),
                     ),
                   ],
                 ),
@@ -214,15 +212,13 @@ class _FormsCard extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('Guidance & Medical Forms',
-                        style: GoogleFonts.plusJakartaSans(
-                            fontSize: 14, fontWeight: FontWeight.w700)),
+                        style: AppTextStyles.custom(fontSize: 14, fontWeight: FontWeight.w700)),
                     const SizedBox(height: 2),
                     Text(
                       progress >= 1
                           ? 'All sections completed — thank you!'
                           : 'Complete your annual student forms',
-                      style: GoogleFonts.plusJakartaSans(
-                          fontSize: 12, color: AppColors.textSecondary),
+                      style: AppTextStyles.custom(fontSize: 12, color: AppColors.textSecondary),
                     ),
                   ],
                 ),
@@ -257,7 +253,7 @@ class _ServiceTile extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => WhiteCard(
+  Widget build(BuildContext context) => AppCard(
         padding: EdgeInsets.zero,
         child: InkWell(
           borderRadius: BorderRadius.circular(16),
@@ -279,12 +275,10 @@ class _ServiceTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(title,
-                          style: GoogleFonts.plusJakartaSans(
-                              fontSize: 14, fontWeight: FontWeight.w700)),
+                          style: AppTextStyles.custom(fontSize: 14, fontWeight: FontWeight.w700)),
                       const SizedBox(height: 2),
                       Text(subtitle,
-                          style: GoogleFonts.plusJakartaSans(
-                              fontSize: 12, color: AppColors.textSecondary)),
+                          style: AppTextStyles.custom(fontSize: 12, color: AppColors.textSecondary)),
                     ],
                   ),
                 ),

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../core/api_client.dart';
 import '../../core/theme.dart';
 
@@ -186,11 +185,8 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                           ),
                           const SizedBox(height: 16),
                           Text('Check your email',
-                              style: GoogleFonts.plusJakartaSans(
-                                  color: Colors.white,
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.w800,
-                                  letterSpacing: -0.3)),
+                              style: AppTextStyles.screenTitle
+                                  .copyWith(color: Colors.white)),
                         ],
                       ),
                     ),
@@ -200,36 +196,27 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                     // ── Card ──────────────────────────────────────────
                     Container(
                       padding: const EdgeInsets.all(24),
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(24),
+                        borderRadius:
+                            BorderRadius.all(Radius.circular(AppRadius.sheet)),
                         boxShadow: kFormShadow,
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text('Enter verification code',
-                              style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w800,
-                                  color: AppColors.textPrimary,
-                                  letterSpacing: -0.2)),
+                              style: AppTextStyles.sectionHeader),
                           const SizedBox(height: 8),
                           RichText(
                             text: TextSpan(
-                              style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 13,
-                                  color: AppColors.textSecondary,
-                                  height: 1.5),
+                              style: AppTextStyles.cardSubtitle.copyWith(height: 1.5),
                               children: [
                                 const TextSpan(
                                     text: 'We sent a 6-digit code to '),
                                 TextSpan(
                                     text: widget.email,
-                                    style: GoogleFonts.plusJakartaSans(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w600,
-                                        color: AppColors.textPrimary)),
+                                    style: AppTextStyles.fieldLabel),
                               ],
                             ),
                           ),
@@ -273,18 +260,15 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                             child: _resendCountdown > 0
                                 ? Text(
                                     'Resend code in ${_resendCountdown}s',
-                                    style: GoogleFonts.plusJakartaSans(
-                                        color: AppColors.textSecondary,
-                                        fontSize: 13),
+                                    style: AppTextStyles.cardSubtitle,
                                   )
                                 : GestureDetector(
                                     onTap: _resending ? null : _resend,
                                     child: Text(
                                       _resending ? 'Sending…' : 'Resend code',
-                                      style: GoogleFonts.plusJakartaSans(
+                                      style: AppTextStyles.bodySemibold.copyWith(
                                           color: AppColors.accent,
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.w600),
+                                          fontSize: 13),
                                     ),
                                   ),
                           ),
@@ -295,10 +279,8 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
                             child: Text(
                               'Code expires in 15 minutes.\nCheck spam if you don\'t see it.',
                               textAlign: TextAlign.center,
-                              style: GoogleFonts.plusJakartaSans(
-                                  color: AppColors.textDisabled,
-                                  fontSize: 12,
-                                  height: 1.6),
+                              style: AppTextStyles.caption.copyWith(
+                                  color: AppColors.textDisabled, height: 1.6),
                             ),
                           ),
                         ],
@@ -334,10 +316,7 @@ class _OtpBox extends StatelessWidget {
           textAlign: TextAlign.center,
           keyboardType: TextInputType.number,
           maxLength: 1,
-          style: GoogleFonts.plusJakartaSans(
-              fontSize: 22,
-              fontWeight: FontWeight.w700,
-              color: AppColors.textPrimary),
+          style: AppTextStyles.stat.copyWith(fontSize: 22),
           decoration: InputDecoration(
             counterText: '',
             filled: true,

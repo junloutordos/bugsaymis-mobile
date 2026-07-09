@@ -14,6 +14,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "54745889381-ciq38cp8d5dkdv8hau28nu44u2179781.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ph.edu.pshs.crc.bugsaymis_mobile",
+            "certificate_hash": "66337f06a16fbc36b31a353b888f3564be2683dc"
+          }
+        },
+        {
+          "client_id": "54745889381-kbbeg7csaocvho69jc5u3fchj5mkgjvt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ph.edu.pshs.crc.bugsaymis_mobile",
+            "certificate_hash": "1bef47b2fe1d78fc642a987b4bfa9ac52edcde1e"
+          }
+        },
+        {
           "client_id": "54745889381-7cn2j3rr588ba5o2fl7fte8gpjl52hmm.apps.googleusercontent.com",
           "client_type": 3
         }

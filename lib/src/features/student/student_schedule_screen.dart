@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme.dart';
 import '../../shared/widgets/empty_state.dart';
 import '../../shared/widgets/shimmer_card.dart';
 import '../schedule/schedule_provider.dart';
 import '../schedule/schedule_screen.dart' show ClassCard, InfoChip;
-import 'student_nav.dart';
+import 'package:go_router/go_router.dart';
 
 class StudentScheduleScreen extends ConsumerStatefulWidget {
   const StudentScheduleScreen({super.key});
@@ -54,14 +53,21 @@ class _StudentScheduleScreenState
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-                    child: Text(
-                      'My Schedule',
-                      style: GoogleFonts.plusJakartaSans(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w800,
-                          color: AppColors.textPrimary,
-                          letterSpacing: -0.3),
+                    padding: const EdgeInsets.fromLTRB(4, 8, 20, 0),
+                    child: Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.arrow_back_ios_new_rounded,
+                              color: AppColors.textPrimary, size: 20),
+                          onPressed: () => context.canPop()
+                              ? context.pop()
+                              : context.go('/student/home'),
+                        ),
+                        Text(
+                          'My Schedule',
+                          style: AppTextStyles.stat,
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -72,10 +78,8 @@ class _StudentScheduleScreenState
                     unselectedLabelColor: AppColors.textSecondary,
                     indicatorColor: AppColors.accent,
                     indicatorSize: TabBarIndicatorSize.label,
-                    labelStyle: GoogleFonts.plusJakartaSans(
-                        fontSize: 13, fontWeight: FontWeight.w700),
-                    unselectedLabelStyle: GoogleFonts.plusJakartaSans(
-                        fontSize: 13, fontWeight: FontWeight.w500),
+                    labelStyle: AppTextStyles.custom(fontSize: 13, fontWeight: FontWeight.w700),
+                    unselectedLabelStyle: AppTextStyles.custom(fontSize: 13, fontWeight: FontWeight.w500),
                     tabs: List.generate(
                       _days.length,
                       (i) => Tab(
@@ -116,7 +120,6 @@ class _StudentScheduleScreenState
           ),
         ],
       ),
-      bottomNavigationBar: const StudentBottomNav(currentIndex: 3),
     );
   }
 }
@@ -155,15 +158,10 @@ class _StudentDayView extends ConsumerWidget {
                       ),
                       const SizedBox(height: 16),
                       Text('No classes on $day',
-                          style: GoogleFonts.plusJakartaSans(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.textPrimary)),
+                          style: AppTextStyles.custom(fontSize: 15, fontWeight: FontWeight.w600, color: AppColors.textPrimary)),
                       const SizedBox(height: 6),
                       Text('Enjoy the free day',
-                          style: GoogleFonts.plusJakartaSans(
-                              fontSize: 13,
-                              color: AppColors.textSecondary)),
+                          style: AppTextStyles.custom(fontSize: 13, color: AppColors.textSecondary)),
                     ],
                   ),
                 )
@@ -184,9 +182,7 @@ class _StudentDayView extends ConsumerWidget {
                             const Spacer(),
                             if (d.schoolYear != null)
                               Text('S.Y. ${d.schoolYear}',
-                                  style: GoogleFonts.plusJakartaSans(
-                                      fontSize: 12,
-                                      color: AppColors.textSecondary)),
+                                  style: AppTextStyles.custom(fontSize: 12, color: AppColors.textSecondary)),
                           ],
                         ),
                       ),

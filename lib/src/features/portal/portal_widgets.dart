@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme.dart';
+export '../../shared/widgets/app_card.dart';
 
 /// Standard sub-screen scaffold for portal pages: white app bar with back
 /// button + title, slate background body.
@@ -23,32 +23,6 @@ class PortalSubScreen extends StatelessWidget {
         appBar: AppBar(title: Text(title)),
         body: body,
         bottomNavigationBar: bottomBar,
-      );
-}
-
-/// White rounded card with the app's standard soft shadow.
-class WhiteCard extends StatelessWidget {
-  final Widget child;
-  final EdgeInsetsGeometry padding;
-
-  const WhiteCard({
-    super.key,
-    required this.child,
-    this.padding = const EdgeInsets.all(16),
-  });
-
-  @override
-  Widget build(BuildContext context) => Container(
-        padding: padding,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: const [
-            BoxShadow(
-                color: Color(0x0A000000), blurRadius: 16, offset: Offset(0, 3))
-          ],
-        ),
-        child: child,
       );
 }
 
@@ -105,8 +79,7 @@ class RatingPicker extends StatelessWidget {
           children: [
             Expanded(
               child: Text(label,
-                  style: GoogleFonts.plusJakartaSans(
-                      fontSize: 13, color: AppColors.textPrimary)),
+                  style: AppTextStyles.custom(fontSize: 13, color: AppColors.textPrimary)),
             ),
             ...List.generate(5, (i) {
               final n = i + 1;
@@ -128,10 +101,7 @@ class RatingPicker extends StatelessWidget {
                     ),
                     child: Center(
                       child: Text('$n',
-                          style: GoogleFonts.plusJakartaSans(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w600,
-                              color: selected
+                          style: AppTextStyles.fieldLabel.copyWith(color: selected
                                   ? Colors.white
                                   : AppColors.textSecondary)),
                     ),
@@ -166,10 +136,7 @@ class ChoicePicker extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(label,
-              style: GoogleFonts.plusJakartaSans(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textPrimary)),
+              style: AppTextStyles.fieldLabel),
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,
@@ -181,10 +148,7 @@ class ChoicePicker extends StatelessWidget {
                 label: Text(optionLabels != null ? optionLabels![i] : opt),
                 selected: selected,
                 showCheckmark: false,
-                labelStyle: GoogleFonts.plusJakartaSans(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: selected ? Colors.white : AppColors.textSecondary),
+                labelStyle: AppTextStyles.fieldLabel.copyWith(color: selected ? Colors.white : AppColors.textSecondary),
                 selectedColor: AppColors.accent,
                 backgroundColor: AppColors.background,
                 side: BorderSide(
@@ -284,9 +248,7 @@ class DateField extends StatelessWidget {
           ),
           child: Text(
             value ?? '—',
-            style: GoogleFonts.plusJakartaSans(
-                fontSize: 14,
-                color: value == null
+            style: AppTextStyles.custom(fontSize: 14, color: value == null
                     ? AppColors.textDisabled
                     : AppColors.textPrimary),
           ),
@@ -339,8 +301,7 @@ class PortalStatusChip extends StatelessWidget {
         ),
         child: Text(
           _pretty(label),
-          style: GoogleFonts.plusJakartaSans(
-              fontSize: 11, fontWeight: FontWeight.w700, color: color),
+          style: AppTextStyles.custom(fontSize: 11, fontWeight: FontWeight.w700, color: color),
         ),
       );
 

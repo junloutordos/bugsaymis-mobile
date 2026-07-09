@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../../core/theme.dart';
 import '../../shared/widgets/shimmer_card.dart';
@@ -9,7 +8,6 @@ import '../auth/auth_provider.dart';
 import '../grades/grades_provider.dart';
 import '../portal/portal_provider.dart';
 import '../portal/portal_widgets.dart';
-import 'student_nav.dart';
 import 'student_provider.dart';
 
 class StudentDashboardScreen extends ConsumerWidget {
@@ -126,7 +124,7 @@ class StudentDashboardScreen extends ConsumerWidget {
                         child: _QuickAction(
                           icon: Icons.grid_view_rounded,
                           label: 'Schedule',
-                          onTap: () => context.go('/student/schedule'),
+                          onTap: () => context.push('/student/schedule'),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -145,7 +143,6 @@ class StudentDashboardScreen extends ConsumerWidget {
           ),
         ],
       ),
-      bottomNavigationBar: const StudentBottomNav(currentIndex: 0),
     );
   }
 
@@ -170,7 +167,7 @@ class _ProfileCard extends StatelessWidget {
             end: Alignment.bottomRight,
             colors: [Color(0xFF1A3557), Color(0xFF2563EB)],
           ),
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(AppRadius.card),
           boxShadow: const [
             BoxShadow(
                 color: Color(0x282563EB),
@@ -190,11 +187,7 @@ class _ProfileCard extends StatelessWidget {
               child: Center(
                 child: Text(
                   profile.name.isNotEmpty ? profile.name[0] : '?',
-                  style: GoogleFonts.plusJakartaSans(
-                    color: Colors.white,
-                    fontSize: 22,
-                    fontWeight: FontWeight.w800,
-                  ),
+                  style: AppTextStyles.custom(fontSize: 22, fontWeight: FontWeight.w800, color: Colors.white),
                 ),
               ),
             ),
@@ -204,18 +197,13 @@ class _ProfileCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(profile.name,
-                      style: GoogleFonts.plusJakartaSans(
-                          color: Colors.white,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w700)),
+                      style: AppTextStyles.cardTitle.copyWith(color: Colors.white)),
                   if (profile.gradeLevel != null && profile.section != null)
                     Text('Grade ${profile.gradeLevel} — ${profile.section}',
-                        style: GoogleFonts.plusJakartaSans(
-                            color: Colors.white70, fontSize: 12)),
+                        style: AppTextStyles.custom(fontSize: 12, color: Colors.white70)),
                   if (profile.schoolYear != null)
                     Text('S.Y. ${profile.schoolYear}',
-                        style: GoogleFonts.plusJakartaSans(
-                            color: Colors.white54, fontSize: 11)),
+                        style: AppTextStyles.custom(fontSize: 11, color: Colors.white54)),
                 ],
               ),
             ),
@@ -226,10 +214,7 @@ class _ProfileCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Text('Student',
-                  style: GoogleFonts.plusJakartaSans(
-                      color: Colors.white,
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600)),
+                  style: AppTextStyles.custom(fontSize: 11, fontWeight: FontWeight.w600, color: Colors.white)),
             ),
           ],
         ),
@@ -277,11 +262,8 @@ class _TodayCard extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: const [
-          BoxShadow(
-              color: Color(0x0A000000), blurRadius: 16, offset: Offset(0, 3))
-        ],
+        borderRadius: BorderRadius.circular(AppRadius.card),
+        boxShadow: kCardShadow,
       ),
       child: Row(
         children: [
@@ -297,14 +279,10 @@ class _TodayCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(label,
-                    style: GoogleFonts.plusJakartaSans(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimary)),
+                    style: AppTextStyles.custom(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
                 if (timeStr.isNotEmpty)
                   Text('Last scan at $timeStr',
-                      style: GoogleFonts.plusJakartaSans(
-                          fontSize: 12, color: AppColors.textSecondary)),
+                      style: AppTextStyles.custom(fontSize: 12, color: AppColors.textSecondary)),
               ],
             ),
           ),
@@ -316,10 +294,7 @@ class _TodayCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Text('${summary.totalScans} scan${summary.totalScans == 1 ? '' : 's'}',
-                  style: GoogleFonts.plusJakartaSans(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      color: color)),
+                  style: AppTextStyles.custom(fontSize: 11, fontWeight: FontWeight.w600, color: color)),
             ),
         ],
       ),
@@ -346,11 +321,8 @@ class _GradeSummaryCard extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: const [
-              BoxShadow(
-                  color: Color(0x0A000000), blurRadius: 16, offset: Offset(0, 3))
-            ],
+            borderRadius: BorderRadius.circular(AppRadius.card),
+            boxShadow: kCardShadow,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -358,8 +330,7 @@ class _GradeSummaryCard extends StatelessWidget {
               Row(
                 children: [
                   Text('S.Y. ${grades.schoolYear ?? '—'}',
-                      style: GoogleFonts.plusJakartaSans(
-                          fontSize: 12, color: AppColors.textSecondary)),
+                      style: AppTextStyles.custom(fontSize: 12, color: AppColors.textSecondary)),
                   const Spacer(),
                   if (gwa != null)
                     Container(
@@ -370,10 +341,7 @@ class _GradeSummaryCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text('GWA ${gwa.toStringAsFixed(2)}',
-                          style: GoogleFonts.plusJakartaSans(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w700,
-                              color: _gwaColor(gwa))),
+                          style: AppTextStyles.custom(fontSize: 12, fontWeight: FontWeight.w700, color: _gwaColor(gwa))),
                     ),
                   const SizedBox(width: 8),
                   const Icon(Icons.chevron_right_rounded,
@@ -390,18 +358,13 @@ class _GradeSummaryCard extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Text(g.subjectName,
-                                style: GoogleFonts.plusJakartaSans(
-                                    fontSize: 13,
-                                    color: AppColors.textPrimary)),
+                                style: AppTextStyles.custom(fontSize: 13, color: AppColors.textPrimary)),
                           ),
                           Text(
                             g.finalGe != null
                                 ? g.finalGe!.toStringAsFixed(2)
                                 : '—',
-                            style: GoogleFonts.plusJakartaSans(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w700,
-                                color: g.finalGe != null
+                            style: AppTextStyles.custom(fontSize: 13, fontWeight: FontWeight.w700, color: g.finalGe != null
                                     ? _gwaColor(g.finalGe!)
                                     : AppColors.textDisabled),
                           ),
@@ -413,8 +376,7 @@ class _GradeSummaryCard extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 4),
                     child: Text(
                       '+${grades.grades.length - 3} more subjects',
-                      style: GoogleFonts.plusJakartaSans(
-                          fontSize: 11, color: AppColors.textSecondary),
+                      style: AppTextStyles.custom(fontSize: 11, color: AppColors.textSecondary),
                     ),
                   ),
               ],
@@ -489,7 +451,7 @@ class _PortalTodoSection extends StatelessWidget {
       children: [
         const SizedBox(height: 20),
         const SectionLabel('NEEDS YOUR ATTENTION'),
-        WhiteCard(
+        AppCard(
           padding: EdgeInsets.zero,
           child: Column(
             children: [
@@ -532,11 +494,9 @@ class _PortalTodoSection extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(title,
-                        style: GoogleFonts.plusJakartaSans(
-                            fontSize: 13, fontWeight: FontWeight.w700)),
+                        style: AppTextStyles.custom(fontSize: 13, fontWeight: FontWeight.w700)),
                     Text(subtitle,
-                        style: GoogleFonts.plusJakartaSans(
-                            fontSize: 11, color: AppColors.textSecondary)),
+                        style: AppTextStyles.custom(fontSize: 11, color: AppColors.textSecondary)),
                   ],
                 ),
               ),
@@ -554,15 +514,11 @@ class _GradesUnavailable extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: const [
-            BoxShadow(
-                color: Color(0x0A000000), blurRadius: 16, offset: Offset(0, 3))
-          ],
+          borderRadius: BorderRadius.circular(AppRadius.card),
+          boxShadow: kCardShadow,
         ),
         child: Text('Grades not available yet.',
-            style: GoogleFonts.plusJakartaSans(
-                fontSize: 13, color: AppColors.textSecondary)),
+            style: AppTextStyles.custom(fontSize: 13, color: AppColors.textSecondary)),
       );
 }
 
@@ -583,13 +539,8 @@ class _QuickAction extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: 18),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: const [
-                BoxShadow(
-                    color: Color(0x0A000000),
-                    blurRadius: 16,
-                    offset: Offset(0, 3))
-              ],
+              borderRadius: BorderRadius.circular(AppRadius.card),
+              boxShadow: kCardShadow,
             ),
             child: Column(
               children: [
@@ -605,10 +556,7 @@ class _QuickAction extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
                 Text(label,
-                    style: GoogleFonts.plusJakartaSans(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.textPrimary)),
+                    style: AppTextStyles.fieldLabel),
               ],
             ),
           ),

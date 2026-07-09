@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../../core/theme.dart';
 import '../../shared/widgets/shimmer_card.dart';
@@ -61,7 +60,6 @@ class HomeScreen extends ConsumerWidget {
           ),
         ],
       ),
-      bottomNavigationBar: const BottomNav(currentIndex: 0),
     );
   }
 
@@ -155,7 +153,7 @@ class _StudentCard extends ConsumerWidget {
 
     return AccentCard(
       accentColor: accentColor,
-      onTap: () => context.push('/attendance',
+      onTap: () => context.go('/attendance',
           extra: {'studentId': student.id, 'studentName': student.fullName}),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -170,14 +168,10 @@ class _StudentCard extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(s.studentName,
-                        style: GoogleFonts.plusJakartaSans(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.textPrimary)),
+                        style: AppTextStyles.cardTitle),
                     if (student.relationship != null)
                       Text(_capitalize(student.relationship!),
-                          style: GoogleFonts.plusJakartaSans(
-                              fontSize: 12, color: AppColors.textSecondary)),
+                          style: AppTextStyles.custom(fontSize: 12, color: AppColors.textSecondary)),
                   ],
                 ),
               ),
@@ -200,14 +194,12 @@ class _StudentCard extends ConsumerWidget {
                     size: 13, color: AppColors.textSecondary),
                 const SizedBox(width: 4),
                 Text(_formatTime(s.lastScan!),
-                    style: GoogleFonts.plusJakartaSans(
-                        fontSize: 12, color: AppColors.textSecondary)),
+                    style: AppTextStyles.custom(fontSize: 12, color: AppColors.textSecondary)),
                 if (s.logs.isNotEmpty && s.logs.last.gateLocation != null) ...[
                   const Text('  ·  ',
                       style: TextStyle(color: AppColors.textDisabled)),
                   Text(s.logs.last.gateLocation!,
-                      style: GoogleFonts.plusJakartaSans(
-                          fontSize: 12, color: AppColors.textSecondary)),
+                      style: AppTextStyles.custom(fontSize: 12, color: AppColors.textSecondary)),
                 ],
               ],
             ),
@@ -223,10 +215,7 @@ class _StudentCard extends ConsumerWidget {
                 ...s.logs.take(4).map((log) => _ScanChip(log: log)),
                 const Spacer(),
                 Text('View all →',
-                    style: GoogleFonts.plusJakartaSans(
-                        fontSize: 11,
-                        color: AppColors.accent,
-                        fontWeight: FontWeight.w600)),
+                    style: AppTextStyles.custom(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.accent)),
               ],
             ),
           ],
@@ -241,13 +230,10 @@ class _StudentCard extends ConsumerWidget {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(AppRadius.card),
           border: const Border(
               left: BorderSide(color: AppColors.textDisabled, width: 4)),
-          boxShadow: const [
-            BoxShadow(
-                color: Color(0x0A000000), blurRadius: 20, offset: Offset(0, 4))
-          ],
+          boxShadow: kCardShadow,
         ),
         child: Row(
           children: [
@@ -258,14 +244,10 @@ class _StudentCard extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(student.fullName,
-                      style: GoogleFonts.plusJakartaSans(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary)),
+                      style: AppTextStyles.cardTitle),
                   const SizedBox(height: 4),
                   Text('Could not load status',
-                      style: GoogleFonts.plusJakartaSans(
-                          fontSize: 12, color: AppColors.textSecondary)),
+                      style: AppTextStyles.custom(fontSize: 12, color: AppColors.textSecondary)),
                 ],
               ),
             ),
@@ -308,8 +290,7 @@ class _Avatar extends StatelessWidget {
         child: Center(
           child: Text(
             name.isNotEmpty ? name[0].toUpperCase() : '?',
-            style: GoogleFonts.plusJakartaSans(
-                color: color, fontWeight: FontWeight.w700, fontSize: 18),
+            style: AppTextStyles.sectionHeader.copyWith(color: color),
           ),
         ),
       );
@@ -338,14 +319,9 @@ class _ScanChip extends StatelessWidget {
       child: Column(
         children: [
           Text(isIn ? 'IN' : 'OUT',
-              style: GoogleFonts.plusJakartaSans(
-                  fontSize: 9,
-                  fontWeight: FontWeight.w700,
-                  color: isIn ? AppColors.successText : AppColors.warningText)),
+              style: AppTextStyles.custom(fontSize: 9, fontWeight: FontWeight.w700, color: isIn ? AppColors.successText : AppColors.warningText)),
           Text(time,
-              style: GoogleFonts.plusJakartaSans(
-                  fontSize: 10,
-                  color: isIn ? AppColors.successText : AppColors.warningText)),
+              style: AppTextStyles.custom(fontSize: 10, color: isIn ? AppColors.successText : AppColors.warningText)),
         ],
       ),
     );
@@ -376,18 +352,12 @@ class _EmptyState extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               Text('No children linked yet',
-                  style: GoogleFonts.plusJakartaSans(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary)),
+                  style: AppTextStyles.title),
               const SizedBox(height: 8),
               Text(
                 'Link your child\'s ID card to start\nreceiving gate notifications.',
                 textAlign: TextAlign.center,
-                style: GoogleFonts.plusJakartaSans(
-                    fontSize: 13,
-                    color: AppColors.textSecondary,
-                    height: 1.6),
+                style: AppTextStyles.custom(fontSize: 13, color: AppColors.textSecondary, height: 1.6),
               ),
               const SizedBox(height: 28),
               SizedBox(
@@ -418,65 +388,10 @@ class _ErrorView extends StatelessWidget {
                 size: 48, color: AppColors.textSecondary),
             const SizedBox(height: 12),
             Text('Could not load data',
-                style: GoogleFonts.plusJakartaSans(
-                    fontSize: 14, color: AppColors.textSecondary)),
+                style: AppTextStyles.custom(fontSize: 14, color: AppColors.textSecondary)),
             const SizedBox(height: 12),
             TextButton(onPressed: onRetry, child: const Text('Retry')),
           ],
-        ),
-      );
-}
-
-// ── Bottom nav — floating with rounded top ────────────────────────────────────
-
-class BottomNav extends StatelessWidget {
-  final int currentIndex;
-  const BottomNav({super.key, required this.currentIndex});
-
-  @override
-  Widget build(BuildContext context) => Container(
-        decoration: const BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-          boxShadow: kNavShadow,
-        ),
-        child: ClipRRect(
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-          child: NavigationBar(
-            selectedIndex: currentIndex,
-            backgroundColor: AppColors.surface,
-            elevation: 0,
-            onDestinationSelected: (i) {
-              switch (i) {
-                case 0: context.go('/home');
-                case 1: context.go('/attendance');
-                case 2: context.go('/grades');
-                case 3: context.go('/schedule');
-              }
-            },
-            destinations: const [
-              NavigationDestination(
-                icon: Icon(Icons.home_outlined),
-                selectedIcon: Icon(Icons.home_rounded),
-                label: 'Home',
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.calendar_month_outlined),
-                selectedIcon: Icon(Icons.calendar_month_rounded),
-                label: 'Attendance',
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.bar_chart_rounded),
-                selectedIcon: Icon(Icons.bar_chart_rounded),
-                label: 'Grades',
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.grid_view_outlined),
-                selectedIcon: Icon(Icons.grid_view_rounded),
-                label: 'Schedule',
-              ),
-            ],
-          ),
         ),
       );
 }
