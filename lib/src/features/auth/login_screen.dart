@@ -161,6 +161,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                           : _parentFormCard(busy, isLoading, key: const ValueKey('form')),
                     ),
                   ),
+                  const SizedBox(height: 24),
+                  Text(
+                    'AtlasGo is the Mobile app of Philippine Science High '
+                    'School – Caraga Region Campus in Butuan City',
+                    textAlign: TextAlign.center,
+                    style: AppTextStyles.caption,
+                  ),
                 ],
               ),
             ),

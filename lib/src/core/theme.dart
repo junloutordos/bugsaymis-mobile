@@ -90,13 +90,6 @@ class AppGradients {
     colors: [Color(0xFF2563EB), Color(0xFF0EA5E9)],
   );
 
-  static const authDecoration = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [Color(0xFF1A3557), Color(0xFF2563EB), Color(0xFF38BDF8)],
-    stops: [0.0, 0.6, 1.0],
-  );
-
   /// Contained-hero gradient — used by HeroHeader and the Login banner.
   /// Medium-saturated blue to soft pastel green, matching the reference
   /// design exactly (blue-dominant, green as the secondary accent). The

@@ -131,7 +131,7 @@ class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
               child: Container(
                 height: 220,
                 decoration: const BoxDecoration(
-                  gradient: AppGradients.authDecoration,
+                  gradient: AppGradients.hero,
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(40),
                     bottomRight: Radius.circular(40),

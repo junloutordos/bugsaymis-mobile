@@ -79,7 +79,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               child: Container(
                 height: 240,
                 decoration: const BoxDecoration(
-                  gradient: AppGradients.authDecoration,
+                  gradient: AppGradients.hero,
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(40),
                     bottomRight: Radius.circular(40),
