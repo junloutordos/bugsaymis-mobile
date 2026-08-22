@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../core/theme.dart';
+import '../../shared/widgets/hero_header.dart';
 import '../../shared/widgets/shimmer_card.dart';
 import '../auth/auth_provider.dart';
 import 'home_provider.dart';
@@ -20,45 +21,41 @@ class HomeScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: Column(
-        children: [
-          // ── White header ──────────────────────────────────────────────
-          AppHeader(
-            greeting: greeting,
-            name: firstName,
-            subtitle: dateStr,
-            actions: [
-              _HeaderIconBtn(
-                icon: Icons.person_outline_rounded,
-                tooltip: 'Profile',
-                onTap: () => context.push('/profile'),
-              ),
-            ],
-          ),
-
-          // ── Body ──────────────────────────────────────────────────────
-          Expanded(
-            child: RefreshIndicator(
-              color: AppColors.accent,
-              onRefresh: () async => ref.invalidate(linkedStudentsProvider),
-              child: AnimatedSwitcher(
-                duration: AppMotion.slow,
-                switchInCurve: AppMotion.standard,
-                switchOutCurve: AppMotion.standard,
-                child: students.when(
-                  loading: () => const ShimmerList(
-                      key: ValueKey('loading'), count: 3, itemHeight: 130),
-                  error: (e, _) => _ErrorView(
-                      key: const ValueKey('error'),
-                      onRetry: () => ref.invalidate(linkedStudentsProvider)),
-                  data: (list) => list.isEmpty
-                      ? _EmptyState(key: const ValueKey('empty'))
-                      : _StudentList(key: const ValueKey('list'), students: list),
-                ),
+      body: RefreshIndicator(
+        color: AppColors.accent,
+        onRefresh: () async => ref.invalidate(linkedStudentsProvider),
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            HeroHeader(
+              greeting: greeting,
+              name: firstName,
+              subtitle: dateStr,
+              actionIcon: Icons.person_outline_rounded,
+              actionTooltip: 'Profile',
+              onActionTap: () => context.push('/profile'),
+              trailing: students.maybeWhen(
+                data: (list) => _LinkedCountChip(count: list.length),
+                orElse: () => null,
               ),
             ),
-          ),
-        ],
+            AnimatedSwitcher(
+              duration: AppMotion.slow,
+              switchInCurve: AppMotion.standard,
+              switchOutCurve: AppMotion.standard,
+              child: students.when(
+                loading: () => const _HomeLoadingList(key: ValueKey('loading')),
+                error: (e, _) => _ErrorView(
+                    key: const ValueKey('error'),
+                    onRetry: () => ref.invalidate(linkedStudentsProvider)),
+                data: (list) => list.isEmpty
+                    ? _EmptyState(key: const ValueKey('empty'))
+                    : _StudentListColumn(
+                        key: const ValueKey('list'), students: list),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -71,63 +68,70 @@ class HomeScreen extends ConsumerWidget {
   }
 }
 
-// ── Header icon button ────────────────────────────────────────────────────────
+// ── Student list ──────────────────────────────────────────────────────────────
 
-class _HeaderIconBtn extends StatelessWidget {
-  final IconData icon;
-  final String tooltip;
-  final VoidCallback onTap;
-
-  const _HeaderIconBtn(
-      {required this.icon, required this.tooltip, required this.onTap});
+class _StudentListColumn extends StatelessWidget {
+  final List<LinkedStudent> students;
+  const _StudentListColumn({super.key, required this.students});
 
   @override
-  Widget build(BuildContext context) => Semantics(
-        label: tooltip,
-        button: true,
-        child: Padding(
-          padding: const EdgeInsets.only(left: 4),
-          child: Container(
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              boxShadow: AppElevation.resting,
-            ),
-            child: IconButton(
-              icon: Icon(icon, size: 20),
-              tooltip: tooltip,
-              onPressed: onTap,
-              style: IconButton.styleFrom(
-                foregroundColor: AppColors.textSecondary,
-                backgroundColor: AppColors.surface,
-                shape: const CircleBorder(),
-                minimumSize: const Size(38, 38),
-                maximumSize: const Size(38, 38),
-                padding: EdgeInsets.zero,
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SectionLabel('YOUR CHILDREN TODAY'),
+            for (final s in students)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 14),
+                child: _StudentCard(student: s),
               ),
-              constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
+          ],
+        ),
+      );
+}
+
+class _HomeLoadingList extends StatelessWidget {
+  const _HomeLoadingList({super.key});
+
+  @override
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
+        child: Column(
+          children: List.generate(
+            3,
+            (_) => const Padding(
+              padding: EdgeInsets.only(bottom: 14),
+              child: ShimmerCard(height: 130),
             ),
           ),
         ),
       );
 }
 
-// ── Student list ──────────────────────────────────────────────────────────────
-
-class _StudentList extends StatelessWidget {
-  final List<LinkedStudent> students;
-  const _StudentList({super.key, required this.students});
+class _LinkedCountChip extends StatelessWidget {
+  final int count;
+  const _LinkedCountChip({required this.count});
 
   @override
-  Widget build(BuildContext context) => ListView.builder(
-        padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
-        itemCount: students.length + 1,
-        itemBuilder: (_, i) {
-          if (i == 0) return const SectionLabel('YOUR CHILDREN TODAY');
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 14),
-            child: _StudentCard(student: students[i - 1]),
-          );
-        },
+  Widget build(BuildContext context) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.16),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.family_restroom_rounded, size: 14, color: Colors.white),
+            const SizedBox(width: 6),
+            Text(
+              count == 1 ? '1 child linked' : '$count children linked',
+              style: AppTextStyles.custom(
+                  fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white),
+            ),
+          ],
+        ),
       );
 }
 
