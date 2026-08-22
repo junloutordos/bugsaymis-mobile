@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:atlasgo/src/core/theme.dart';
 import 'package:atlasgo/src/shared/widgets/hero_header.dart';
 
 void main() {
@@ -65,5 +66,33 @@ void main() {
     await tester.tap(find.byTooltip('Sign out'));
     await tester.pump();
     expect(tapped, isTrue);
+  });
+
+  testWidgets('renders as a fully-rounded, margined card using the hero gradient', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          backgroundColor: Colors.white,
+          body: HeroHeader(
+            greeting: 'Good morning,',
+            name: 'Maria',
+            subtitle: 'Monday',
+            actionIcon: Icons.person_outline_rounded,
+            actionTooltip: 'Profile',
+            onActionTap: () {},
+          ),
+        ),
+      ),
+    );
+
+    final container = tester.widget<Container>(find.byType(Container).first);
+    final decoration = container.decoration as BoxDecoration;
+    final radius = decoration.borderRadius as BorderRadius;
+
+    expect(decoration.gradient, AppGradients.hero);
+    expect(radius.topLeft, radius.bottomLeft);
+    expect(radius.topLeft, radius.topRight);
+    expect(radius.topLeft.x, greaterThan(0));
+    expect(container.margin, isNotNull);
   });
 }

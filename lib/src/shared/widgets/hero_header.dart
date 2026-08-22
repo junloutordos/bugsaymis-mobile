@@ -29,20 +29,19 @@ class HeroHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      decoration: const BoxDecoration(
-        gradient: AppGradients.authDecoration,
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(AppRadius.sheet),
-          bottomRight: Radius.circular(AppRadius.sheet),
+    return SafeArea(
+      bottom: false,
+      child: Container(
+        width: double.infinity,
+        margin: EdgeInsets.fromLTRB(
+            AppSpacing.lg, AppSpacing.md, AppSpacing.lg, 0),
+        decoration: BoxDecoration(
+          gradient: AppGradients.hero,
+          borderRadius: BorderRadius.circular(AppRadius.card),
         ),
-      ),
-      child: SafeArea(
-        bottom: false,
         child: Padding(
           padding: EdgeInsets.fromLTRB(
-              AppSpacing.xl, AppSpacing.lg, AppSpacing.xl, AppSpacing.xxl),
+              AppSpacing.xl, AppSpacing.lg, AppSpacing.xl, AppSpacing.xl),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
