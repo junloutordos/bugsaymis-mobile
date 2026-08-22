@@ -111,7 +111,7 @@ class ProfileScreen extends ConsumerWidget {
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: Text(
-                                  'Parent',
+                                  user?.isStudent == true ? 'Student' : 'Parent',
                                   style: AppTextStyles.custom(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.accent),
                                 ),
                               ),
@@ -125,11 +125,24 @@ class ProfileScreen extends ConsumerWidget {
                   const SizedBox(height: 24),
                   const SectionLabel('ACCOUNT'),
 
-                  _MenuItem(
-                    icon: Icons.people_alt_outlined,
-                    label: 'Manage Children',
-                    onTap: () => context.push('/children'),
-                  ),
+                  if (user?.isStudent == true) ...[
+                    _MenuItem(
+                      icon: Icons.badge_outlined,
+                      label: 'Digital Student ID',
+                      onTap: () => context.push('/student/id'),
+                    ),
+                    _MenuItem(
+                      icon: Icons.edit_note_rounded,
+                      label: 'Update My Information',
+                      onTap: () => context.push('/student/profile-update'),
+                    ),
+                  ] else ...[
+                    _MenuItem(
+                      icon: Icons.people_alt_outlined,
+                      label: 'Manage Children',
+                      onTap: () => context.push('/children'),
+                    ),
+                  ],
                   _MenuItem(
                     icon: Icons.notifications_outlined,
                     label: 'Notification Settings',
