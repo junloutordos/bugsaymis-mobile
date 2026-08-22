@@ -5,6 +5,7 @@ import '../../core/api_client.dart';
 import '../../core/theme.dart';
 import '../../shared/widgets/empty_state.dart';
 import '../../shared/widgets/shimmer_card.dart';
+import '../../shared/widgets/staggered_list.dart';
 import 'portal_provider.dart';
 import 'portal_widgets.dart';
 
@@ -205,83 +206,85 @@ class _ApplicationFormState extends ConsumerState<_ApplicationForm> {
   Widget build(BuildContext context) => ListView(
         padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
         children: [
-          Text(
-            'Apply for dormitory accommodation for S.Y. ${widget.data['school_year'] ?? '—'}.',
-            style: AppTextStyles.custom(fontSize: 13, color: AppColors.textSecondary, height: 1.5),
-          ),
-          const SizedBox(height: 16),
-          AppCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ChoicePicker(
-                  label: 'Preferred hall',
-                  options: const ['BRH', 'GRH'],
-                  optionLabels: const [
-                    "Boys' Residence Hall",
-                    "Girls' Residence Hall"
-                  ],
-                  value: _hall,
-                  onChanged: (v) => setState(() => _hall = v ?? 'BRH'),
-                ),
-                const SizedBox(height: 18),
-                TextField(
-                  controller: _province,
-                  style: AppTextStyles.custom(fontSize: 14),
-                  decoration:
-                      const InputDecoration(labelText: 'Home province'),
-                ),
-                const SizedBox(height: 14),
-                TextField(
-                  controller: _distance,
-                  keyboardType: TextInputType.number,
-                  style: AppTextStyles.custom(fontSize: 14),
-                  decoration: const InputDecoration(
-                      labelText: 'Estimated distance from campus (km)'),
-                ),
-                const SizedBox(height: 14),
-                TextField(
-                  controller: _scholarship,
-                  style: AppTextStyles.custom(fontSize: 14),
-                  decoration: const InputDecoration(
-                      labelText: 'Scholarship category (optional)'),
-                ),
-              ],
+          StaggeredList(children: [
+            Text(
+              'Apply for dormitory accommodation for S.Y. ${widget.data['school_year'] ?? '—'}.',
+              style: AppTextStyles.custom(fontSize: 13, color: AppColors.textSecondary, height: 1.5),
             ),
-          ),
-          const SizedBox(height: 16),
-          const SectionLabel('FOSTER PARENT / GUARDIAN IN THE AREA'),
-          AppCard(
-            child: Column(
-              children: [
-                TextField(
-                  controller: _fosterName,
-                  style: AppTextStyles.custom(fontSize: 14),
-                  decoration: const InputDecoration(labelText: 'Full name'),
-                ),
-                const SizedBox(height: 14),
-                TextField(
-                  controller: _fosterContact,
-                  keyboardType: TextInputType.phone,
-                  style: AppTextStyles.custom(fontSize: 14),
-                  decoration:
-                      const InputDecoration(labelText: 'Contact number'),
-                ),
-                const SizedBox(height: 14),
-                TextField(
-                  controller: _fosterAddress,
-                  style: AppTextStyles.custom(fontSize: 14),
-                  decoration: const InputDecoration(labelText: 'Address'),
-                ),
-              ],
+            const SizedBox(height: 16),
+            AppCard(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ChoicePicker(
+                    label: 'Preferred hall',
+                    options: const ['BRH', 'GRH'],
+                    optionLabels: const [
+                      "Boys' Residence Hall",
+                      "Girls' Residence Hall"
+                    ],
+                    value: _hall,
+                    onChanged: (v) => setState(() => _hall = v ?? 'BRH'),
+                  ),
+                  const SizedBox(height: 18),
+                  TextField(
+                    controller: _province,
+                    style: AppTextStyles.custom(fontSize: 14),
+                    decoration:
+                        const InputDecoration(labelText: 'Home province'),
+                  ),
+                  const SizedBox(height: 14),
+                  TextField(
+                    controller: _distance,
+                    keyboardType: TextInputType.number,
+                    style: AppTextStyles.custom(fontSize: 14),
+                    decoration: const InputDecoration(
+                        labelText: 'Estimated distance from campus (km)'),
+                  ),
+                  const SizedBox(height: 14),
+                  TextField(
+                    controller: _scholarship,
+                    style: AppTextStyles.custom(fontSize: 14),
+                    decoration: const InputDecoration(
+                        labelText: 'Scholarship category (optional)'),
+                  ),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: 20),
-          GradientButton(
-            text: 'Submit Application',
-            isLoading: _saving,
-            onPressed: _saving ? null : _submit,
-          ),
+            const SizedBox(height: 16),
+            const SectionLabel('FOSTER PARENT / GUARDIAN IN THE AREA'),
+            AppCard(
+              child: Column(
+                children: [
+                  TextField(
+                    controller: _fosterName,
+                    style: AppTextStyles.custom(fontSize: 14),
+                    decoration: const InputDecoration(labelText: 'Full name'),
+                  ),
+                  const SizedBox(height: 14),
+                  TextField(
+                    controller: _fosterContact,
+                    keyboardType: TextInputType.phone,
+                    style: AppTextStyles.custom(fontSize: 14),
+                    decoration:
+                        const InputDecoration(labelText: 'Contact number'),
+                  ),
+                  const SizedBox(height: 14),
+                  TextField(
+                    controller: _fosterAddress,
+                    style: AppTextStyles.custom(fontSize: 14),
+                    decoration: const InputDecoration(labelText: 'Address'),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            GradientButton(
+              text: 'Submit Application',
+              isLoading: _saving,
+              onPressed: _saving ? null : _submit,
+            ),
+          ]),
         ],
       );
 }

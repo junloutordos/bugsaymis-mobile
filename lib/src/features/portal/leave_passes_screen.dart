@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../../core/api_client.dart';
 import '../../core/theme.dart';
 import '../../shared/widgets/empty_state.dart';
+import '../../shared/widgets/pressable.dart';
 import '../../shared/widgets/shimmer_card.dart';
 import 'portal_provider.dart';
 import 'portal_widgets.dart';
@@ -124,35 +125,39 @@ class _PassCard extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
-      child: AppCard(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(_purposeLabels[purpose] ?? purpose,
-                      style: AppTextStyles.custom(fontSize: 14, fontWeight: FontWeight.w700)),
-                ),
-                PortalStatusChip.forStatus(
-                    pass['status']?.toString() ?? 'pending'),
-              ],
-            ),
-            const SizedBox(height: 8),
-            _InfoRow(
-                icon: Icons.place_rounded,
-                text: pass['destination']?.toString() ?? '—'),
-            _InfoRow(
-                icon: Icons.schedule_rounded,
-                text: 'Return by ${_fmt(pass['expected_return_at'])}'),
-            _InfoRow(
-                icon: Icons.history_rounded,
-                text: 'Filed ${_fmt(pass['created_at'])}'),
-            if ((pass['remarks']?.toString() ?? '').isNotEmpty)
+      child: Pressable(
+        onTap: () {},
+        borderRadius: BorderRadius.circular(AppRadius.card),
+        child: AppCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(_purposeLabels[purpose] ?? purpose,
+                        style: AppTextStyles.custom(fontSize: 14, fontWeight: FontWeight.w700)),
+                  ),
+                  PortalStatusChip.forStatus(
+                      pass['status']?.toString() ?? 'pending'),
+                ],
+              ),
+              const SizedBox(height: 8),
               _InfoRow(
-                  icon: Icons.comment_rounded,
-                  text: pass['remarks'].toString()),
-          ],
+                  icon: Icons.place_rounded,
+                  text: pass['destination']?.toString() ?? '—'),
+              _InfoRow(
+                  icon: Icons.schedule_rounded,
+                  text: 'Return by ${_fmt(pass['expected_return_at'])}'),
+              _InfoRow(
+                  icon: Icons.history_rounded,
+                  text: 'Filed ${_fmt(pass['created_at'])}'),
+              if ((pass['remarks']?.toString() ?? '').isNotEmpty)
+                _InfoRow(
+                    icon: Icons.comment_rounded,
+                    text: pass['remarks'].toString()),
+            ],
+          ),
         ),
       ),
     );

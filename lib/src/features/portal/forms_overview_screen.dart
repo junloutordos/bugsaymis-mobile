@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '../../core/theme.dart';
 import '../../shared/widgets/empty_state.dart';
 import '../../shared/widgets/shimmer_card.dart';
+import '../../shared/widgets/staggered_list.dart';
 import 'portal_provider.dart';
 import 'portal_widgets.dart';
 
@@ -55,51 +56,53 @@ class FormsOverviewScreen extends ConsumerWidget {
             return ListView(
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
               children: [
-                if (d.schoolYear != null)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 16),
-                    child: Text(
-                      'Please complete every section once for S.Y. ${d.schoolYear}.',
-                      style: AppTextStyles.custom(fontSize: 13, color: AppColors.textSecondary, height: 1.5),
+                StaggeredList(children: [
+                  if (d.schoolYear != null)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: Text(
+                        'Please complete every section once for S.Y. ${d.schoolYear}.',
+                        style: AppTextStyles.custom(fontSize: 13, color: AppColors.textSecondary, height: 1.5),
+                      ),
+                    ),
+                  const SectionLabel('GUIDANCE PROFILE'),
+                  AppCard(
+                    padding: EdgeInsets.zero,
+                    child: Column(
+                      children: [
+                        for (var i = 0; i < profile.length; i++) ...[
+                          if (i > 0) const Divider(height: 1, indent: 66),
+                          _SectionTile(
+                            section: profile[i],
+                            icon: _icons[profile[i].key] ??
+                                Icons.description_rounded,
+                            onTap: () => context.push(
+                                '/student/portal/forms/profile/${profile[i].key}'),
+                          ),
+                        ],
+                      ],
                     ),
                   ),
-                const SectionLabel('GUIDANCE PROFILE'),
-                AppCard(
-                  padding: EdgeInsets.zero,
-                  child: Column(
-                    children: [
-                      for (var i = 0; i < profile.length; i++) ...[
-                        if (i > 0) const Divider(height: 1, indent: 66),
-                        _SectionTile(
-                          section: profile[i],
-                          icon: _icons[profile[i].key] ??
-                              Icons.description_rounded,
-                          onTap: () => context.push(
-                              '/student/portal/forms/profile/${profile[i].key}'),
-                        ),
+                  const SizedBox(height: 20),
+                  const SectionLabel('MEDICAL RECORDS'),
+                  AppCard(
+                    padding: EdgeInsets.zero,
+                    child: Column(
+                      children: [
+                        for (var i = 0; i < medical.length; i++) ...[
+                          if (i > 0) const Divider(height: 1, indent: 66),
+                          _SectionTile(
+                            section: medical[i],
+                            icon: _icons[medical[i].key] ??
+                                Icons.description_rounded,
+                            onTap: () => context.push(
+                                '/student/portal/forms/medical/${medical[i].key}'),
+                          ),
+                        ],
                       ],
-                    ],
+                    ),
                   ),
-                ),
-                const SizedBox(height: 20),
-                const SectionLabel('MEDICAL RECORDS'),
-                AppCard(
-                  padding: EdgeInsets.zero,
-                  child: Column(
-                    children: [
-                      for (var i = 0; i < medical.length; i++) ...[
-                        if (i > 0) const Divider(height: 1, indent: 66),
-                        _SectionTile(
-                          section: medical[i],
-                          icon: _icons[medical[i].key] ??
-                              Icons.description_rounded,
-                          onTap: () => context.push(
-                              '/student/portal/forms/medical/${medical[i].key}'),
-                        ),
-                      ],
-                    ],
-                  ),
-                ),
+                ]),
               ],
             );
           },

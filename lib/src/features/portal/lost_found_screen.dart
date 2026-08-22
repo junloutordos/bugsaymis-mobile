@@ -8,6 +8,7 @@ import '../../core/api_client.dart';
 import '../../core/theme.dart';
 import '../../shared/widgets/empty_state.dart';
 import '../../shared/widgets/shimmer_card.dart';
+import '../../shared/widgets/staggered_list.dart';
 import 'portal_provider.dart';
 import 'portal_widgets.dart';
 
@@ -81,8 +82,10 @@ class _LostFoundScreenState extends ConsumerState<LostFoundScreen> {
                       ),
                     )
                   else
-                    ...board.map((item) => _BoardCard(
-                        item: item as Map<String, dynamic>)),
+                    StaggeredList(children: [
+                      for (final item in board)
+                        _BoardCard(item: item as Map<String, dynamic>),
+                    ]),
                 ] else ...[
                   if (myReports.isEmpty)
                     const Padding(
@@ -95,8 +98,10 @@ class _LostFoundScreenState extends ConsumerState<LostFoundScreen> {
                       ),
                     )
                   else
-                    ...myReports.map((item) => _ReportCard(
-                        item: item as Map<String, dynamic>)),
+                    StaggeredList(children: [
+                      for (final item in myReports)
+                        _ReportCard(item: item as Map<String, dynamic>),
+                    ]),
                 ],
               ],
             );

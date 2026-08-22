@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/theme.dart';
 import '../../shared/widgets/empty_state.dart';
 import '../../shared/widgets/shimmer_card.dart';
+import '../../shared/widgets/staggered_list.dart';
 import '../auth/auth_provider.dart';
 import 'portal_provider.dart';
 import 'portal_widgets.dart';
@@ -47,74 +48,76 @@ class ServicesScreen extends ConsumerWidget {
                 data: (d) => ListView(
                   padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
                   children: [
-                    const SectionLabel('ANNUAL FORMS'),
-                    _FormsCard(dashboard: d),
-                    const SizedBox(height: 20),
-                    const SectionLabel('RESIDENCE HALL'),
-                    _ServiceTile(
-                      icon: Icons.night_shelter_rounded,
-                      iconColor: const Color(0xFF7C3AED),
-                      iconBg: const Color(0xFFF3E8FF),
-                      title: 'Accommodation Application',
-                      subtitle: _rhSubtitle(d),
-                      trailing: d.rhApplication != null
-                          ? PortalStatusChip.forStatus(
-                              d.isDormer
-                                  ? 'active'
-                                  : (d.rhApplication!['status'] as String? ??
-                                      'pending'))
-                          : null,
-                      onTap: () => context.push('/student/portal/rh-application'),
-                    ),
-                    const SizedBox(height: 12),
-                    _ServiceTile(
-                      icon: Icons.assignment_return_rounded,
-                      iconColor: const Color(0xFF0D9488),
-                      iconBg: const Color(0xFFCCFBF1),
-                      title: 'Leave Passes',
-                      subtitle: d.isDormer
-                          ? 'File and track your dorm leave passes'
-                          : 'Available to active dormers',
-                      onTap: () => context.push('/student/portal/leave-passes'),
-                    ),
-                    const SizedBox(height: 20),
-                    const SectionLabel('CAMPUS'),
-                    _ServiceTile(
-                      icon: Icons.grid_view_rounded,
-                      iconColor: AppColors.accentMid,
-                      iconBg: AppColors.accentBg,
-                      title: 'Class Schedule',
-                      subtitle: 'Your weekly timetable',
-                      onTap: () => context.push('/student/schedule'),
-                    ),
-                    const SizedBox(height: 12),
-                    _ServiceTile(
-                      icon: Icons.travel_explore_rounded,
-                      iconColor: const Color(0xFFD97706),
-                      iconBg: const Color(0xFFFEF3C7),
-                      title: 'Lost & Found',
-                      subtitle:
-                          'Report items, browse GSU custody, earn honesty points',
-                      onTap: () => context.push('/student/portal/lost-found'),
-                    ),
-                    const SizedBox(height: 20),
-                    const SectionLabel('CLEARANCE'),
-                    _ServiceTile(
-                      icon: Icons.verified_rounded,
-                      iconColor: AppColors.success,
-                      iconBg: AppColors.successBg,
-                      title: 'Year-End Clearance',
-                      subtitle: d.clearance == null
-                          ? 'No clearance period yet'
-                          : d.clearance!.status == 'not_generated'
-                              ? '${d.clearance!.periodTitle ?? 'Clearance'} — not yet generated'
-                              : '${d.clearance!.done} of ${d.clearance!.total} requirements cleared',
-                      trailing: d.clearance != null &&
-                              d.clearance!.status != 'not_generated'
-                          ? PortalStatusChip.forStatus(d.clearance!.status)
-                          : null,
-                      onTap: () => context.push('/student/portal/clearance'),
-                    ),
+                    StaggeredList(children: [
+                      const SectionLabel('ANNUAL FORMS'),
+                      _FormsCard(dashboard: d),
+                      const SizedBox(height: 20),
+                      const SectionLabel('RESIDENCE HALL'),
+                      _ServiceTile(
+                        icon: Icons.night_shelter_rounded,
+                        iconColor: const Color(0xFF7C3AED),
+                        iconBg: const Color(0xFFF3E8FF),
+                        title: 'Accommodation Application',
+                        subtitle: _rhSubtitle(d),
+                        trailing: d.rhApplication != null
+                            ? PortalStatusChip.forStatus(
+                                d.isDormer
+                                    ? 'active'
+                                    : (d.rhApplication!['status'] as String? ??
+                                        'pending'))
+                            : null,
+                        onTap: () => context.push('/student/portal/rh-application'),
+                      ),
+                      const SizedBox(height: 12),
+                      _ServiceTile(
+                        icon: Icons.assignment_return_rounded,
+                        iconColor: const Color(0xFF0D9488),
+                        iconBg: const Color(0xFFCCFBF1),
+                        title: 'Leave Passes',
+                        subtitle: d.isDormer
+                            ? 'File and track your dorm leave passes'
+                            : 'Available to active dormers',
+                        onTap: () => context.push('/student/portal/leave-passes'),
+                      ),
+                      const SizedBox(height: 20),
+                      const SectionLabel('CAMPUS'),
+                      _ServiceTile(
+                        icon: Icons.grid_view_rounded,
+                        iconColor: AppColors.accentMid,
+                        iconBg: AppColors.accentBg,
+                        title: 'Class Schedule',
+                        subtitle: 'Your weekly timetable',
+                        onTap: () => context.push('/student/schedule'),
+                      ),
+                      const SizedBox(height: 12),
+                      _ServiceTile(
+                        icon: Icons.travel_explore_rounded,
+                        iconColor: const Color(0xFFD97706),
+                        iconBg: const Color(0xFFFEF3C7),
+                        title: 'Lost & Found',
+                        subtitle:
+                            'Report items, browse GSU custody, earn honesty points',
+                        onTap: () => context.push('/student/portal/lost-found'),
+                      ),
+                      const SizedBox(height: 20),
+                      const SectionLabel('CLEARANCE'),
+                      _ServiceTile(
+                        icon: Icons.verified_rounded,
+                        iconColor: AppColors.success,
+                        iconBg: AppColors.successBg,
+                        title: 'Year-End Clearance',
+                        subtitle: d.clearance == null
+                            ? 'No clearance period yet'
+                            : d.clearance!.status == 'not_generated'
+                                ? '${d.clearance!.periodTitle ?? 'Clearance'} — not yet generated'
+                                : '${d.clearance!.done} of ${d.clearance!.total} requirements cleared',
+                        trailing: d.clearance != null &&
+                                d.clearance!.status != 'not_generated'
+                            ? PortalStatusChip.forStatus(d.clearance!.status)
+                            : null,
+                        onTap: () => context.push('/student/portal/clearance'),
+                      ),
+                    ]),
                     const SizedBox(height: 20),
                     const SectionLabel('ACCOUNT'),
                     AppCard(

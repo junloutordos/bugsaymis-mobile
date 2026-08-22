@@ -8,6 +8,7 @@ import '../../core/api_client.dart';
 import '../../core/theme.dart';
 import '../../shared/widgets/empty_state.dart';
 import '../../shared/widgets/shimmer_card.dart';
+import '../../shared/widgets/staggered_list.dart';
 import 'portal_provider.dart';
 import 'portal_widgets.dart';
 
@@ -123,24 +124,26 @@ class _ClearanceScreenState extends ConsumerState<ClearanceScreen> {
             return ListView(
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
               children: [
-                _SummaryCard(
-                    period: period,
-                    clearance: clearance,
-                    done: done,
-                    total: items.length),
-                const SizedBox(height: 20),
-                const SectionLabel('REQUIREMENTS'),
-                AppCard(
-                  padding: EdgeInsets.zero,
-                  child: Column(
-                    children: [
-                      for (var i = 0; i < items.length; i++) ...[
-                        if (i > 0) const Divider(height: 1, indent: 52),
-                        _ItemTile(item: items[i] as Map<String, dynamic>),
+                StaggeredList(children: [
+                  _SummaryCard(
+                      period: period,
+                      clearance: clearance,
+                      done: done,
+                      total: items.length),
+                  const SizedBox(height: 20),
+                  const SectionLabel('REQUIREMENTS'),
+                  AppCard(
+                    padding: EdgeInsets.zero,
+                    child: Column(
+                      children: [
+                        for (var i = 0; i < items.length; i++) ...[
+                          if (i > 0) const Divider(height: 1, indent: 52),
+                          _ItemTile(item: items[i] as Map<String, dynamic>),
+                        ],
                       ],
-                    ],
+                    ),
                   ),
-                ),
+                ]),
               ],
             );
           },
