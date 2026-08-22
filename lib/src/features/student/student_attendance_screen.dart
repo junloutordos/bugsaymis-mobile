@@ -4,9 +4,12 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../core/api_client.dart';
 import '../../core/theme.dart';
+import '../../shared/widgets/radial_progress_ring.dart';
 import '../../shared/widgets/shimmer_card.dart';
+import '../../shared/widgets/trend_chart.dart';
 import '../attendance/attendance_screen.dart'
     show TimelineList, EmptyDayView;
+import 'attendance_summary_provider.dart';
 
 final _studentAttendanceProvider = FutureProvider.autoDispose
     .family<Map<String, dynamic>, String>((ref, date) async {
@@ -42,6 +45,7 @@ class _StudentAttendanceScreenState
   Widget build(BuildContext context) {
     final dateStr = DateFormat('yyyy-MM-dd').format(_selectedDate);
     final logs = ref.watch(_studentAttendanceProvider(dateStr));
+    final summary = ref.watch(attendanceSummaryProvider);
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -161,6 +165,39 @@ class _StudentAttendanceScreenState
             ),
           ),
           const Divider(height: 1),
+          summary.maybeWhen(
+            data: (s) => Padding(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 4),
+              child: Row(
+                children: [
+                  RadialProgressRing(
+                    value: s.monthPresent.toDouble(),
+                    max: s.monthSchoolDays.toDouble(),
+                    size: 72,
+                    strokeWidth: 8,
+                    colors: const [AppColors.success, Color(0xFF6EE7B7)],
+                    center: Text(
+                      s.monthRate != null ? '${(s.monthRate! * 100).round()}%' : '—',
+                      style: AppTextStyles.custom(
+                          fontSize: 15, fontWeight: FontWeight.w800, color: AppColors.success),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: TrendChart(
+                      values: s.weekly.map((w) => (w.rate ?? 0) * 100).toList(),
+                      labels: s.weekly
+                          .map((w) => DateFormat('M/d').format(DateTime.parse(w.weekStart)))
+                          .toList(),
+                      color: AppColors.success,
+                      height: 90,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            orElse: () => const SizedBox.shrink(),
+          ),
           Expanded(
             child: logs.when(
               loading: () => const ShimmerList(count: 4, itemHeight: 72),
