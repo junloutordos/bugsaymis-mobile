@@ -1,0 +1,56 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:atlasgo/src/core/theme.dart';
+import 'package:atlasgo/src/features/auth/auth_provider.dart';
+import 'package:atlasgo/src/features/grades/grades_provider.dart';
+import 'package:atlasgo/src/features/portal/portal_provider.dart';
+import 'package:atlasgo/src/features/student/student_dashboard_screen.dart';
+import 'package:atlasgo/src/features/student/student_provider.dart';
+import 'package:atlasgo/src/shared/widgets/hero_header.dart';
+
+class _FakeAuthNotifier extends AuthNotifier {
+  @override
+  Future<AuthUser?> build() async => const AuthUser(
+        id: 2,
+        name: 'Juan Dela Cruz',
+        email: 'juan@crc.pshs.edu.ph',
+        role: 'student',
+      );
+}
+
+void main() {
+  testWidgets('shows a HeroHeader with an attendance status badge, no AppHeader', (tester) async {
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authStateProvider.overrideWith(() => _FakeAuthNotifier()),
+          studentProfileProvider.overrideWith((ref) async => const StudentProfile(
+                id: 2,
+                name: 'Juan Dela Cruz',
+                gradeLevel: 8,
+                section: 'Curie',
+                schoolYear: '2026-2027',
+              )),
+          studentTodayProvider.overrideWith((ref) async =>
+              const StudentTodaySummary(lastStatus: 'in', totalScans: 1)),
+          studentGradesProvider.overrideWith((ref) async => const GradesData(grades: [])),
+          portalDashboardProvider.overrideWith((ref) async => const PortalDashboard(
+                gradeLevel: 8,
+                completion: [],
+                totalDone: 0,
+                total: 0,
+                clearance: null,
+                intern: null,
+              )),
+        ],
+        child: const MaterialApp(home: StudentDashboardScreen()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byType(HeroHeader), findsOneWidget);
+    expect(find.byType(AppHeader), findsNothing);
+    expect(find.byType(StatusBadge), findsOneWidget);
+  });
+}

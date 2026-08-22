@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../core/theme.dart';
+import '../../shared/widgets/hero_header.dart';
 import '../../shared/widgets/shimmer_card.dart';
 import '../auth/auth_provider.dart';
 import '../grades/grades_provider.dart';
@@ -27,49 +28,35 @@ class StudentDashboardScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: Column(
-        children: [
-          // ── Header ──────────────────────────────────────────────────────
-          AppHeader(
-            greeting: greeting,
-            name: firstName,
-            subtitle: dateStr,
-            actions: [
-              Padding(
-                padding: const EdgeInsets.only(left: 4),
-                child: IconButton(
-                  icon: const Icon(Icons.logout_rounded, size: 20),
-                  tooltip: 'Sign out',
-                  style: IconButton.styleFrom(
-                    foregroundColor: AppColors.textSecondary,
-                    backgroundColor: AppColors.neutralBg,
-                    shape: const CircleBorder(),
-                    minimumSize: const Size(38, 38),
-                    maximumSize: const Size(38, 38),
-                    padding: EdgeInsets.zero,
-                  ),
-                  constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
-                  onPressed: () async {
-                    await ref.read(authStateProvider.notifier).logout();
-                    if (context.mounted) context.go('/login');
-                  },
-                ),
-              ),
-            ],
-          ),
-
-          // ── Body ──────────────────────────────────────────────────────
-          Expanded(
-            child: RefreshIndicator(
-              color: AppColors.accent,
-              onRefresh: () async {
-                ref.invalidate(studentProfileProvider);
-                ref.invalidate(studentTodayProvider);
-                ref.invalidate(studentGradesProvider);
-                ref.invalidate(portalDashboardProvider);
+      body: RefreshIndicator(
+        color: AppColors.accent,
+        onRefresh: () async {
+          ref.invalidate(studentProfileProvider);
+          ref.invalidate(studentTodayProvider);
+          ref.invalidate(studentGradesProvider);
+          ref.invalidate(portalDashboardProvider);
+        },
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            HeroHeader(
+              greeting: greeting,
+              name: firstName,
+              subtitle: dateStr,
+              actionIcon: Icons.logout_rounded,
+              actionTooltip: 'Sign out',
+              onActionTap: () async {
+                await ref.read(authStateProvider.notifier).logout();
+                if (context.mounted) context.go('/login');
               },
-              child: ListView(
-                padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
+              trailing: today.maybeWhen(
+                data: (t) => StatusBadge(status: t.lastStatus),
+                orElse: () => null,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
+              child: Column(
                 children: [
                   // ── Profile card ────────────────────────────────────
                   profile.when(
@@ -143,8 +130,8 @@ class StudentDashboardScreen extends ConsumerWidget {
                 ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
