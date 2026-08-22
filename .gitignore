@@ -47,3 +47,4 @@ app.*.map.json
 # Release signing — never commit
 android/key.properties
 android/keystore/
+.worktrees/
