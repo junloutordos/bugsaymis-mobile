@@ -42,9 +42,9 @@ class HomeScreen extends ConsumerWidget {
               color: AppColors.accent,
               onRefresh: () async => ref.invalidate(linkedStudentsProvider),
               child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 300),
-                switchInCurve: Curves.easeOut,
-                switchOutCurve: Curves.easeIn,
+                duration: AppMotion.slow,
+                switchInCurve: AppMotion.standard,
+                switchOutCurve: AppMotion.standard,
                 child: students.when(
                   loading: () => const ShimmerList(
                       key: ValueKey('loading'), count: 3, itemHeight: 130),
@@ -87,19 +87,25 @@ class _HeaderIconBtn extends StatelessWidget {
         button: true,
         child: Padding(
           padding: const EdgeInsets.only(left: 4),
-          child: IconButton(
-            icon: Icon(icon, size: 20),
-            tooltip: tooltip,
-            onPressed: onTap,
-            style: IconButton.styleFrom(
-              foregroundColor: AppColors.textSecondary,
-              backgroundColor: AppColors.neutralBg,
-              shape: const CircleBorder(),
-              minimumSize: const Size(38, 38),
-              maximumSize: const Size(38, 38),
-              padding: EdgeInsets.zero,
+          child: Container(
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              boxShadow: AppElevation.resting,
             ),
-            constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
+            child: IconButton(
+              icon: Icon(icon, size: 20),
+              tooltip: tooltip,
+              onPressed: onTap,
+              style: IconButton.styleFrom(
+                foregroundColor: AppColors.textSecondary,
+                backgroundColor: AppColors.surface,
+                shape: const CircleBorder(),
+                minimumSize: const Size(38, 38),
+                maximumSize: const Size(38, 38),
+                padding: EdgeInsets.zero,
+              ),
+              constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
+            ),
           ),
         ),
       );
