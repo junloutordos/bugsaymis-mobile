@@ -95,4 +95,51 @@ void main() {
     expect(radius.topLeft.x, greaterThan(0));
     expect(container.margin, isNotNull);
   });
+
+  testWidgets('invokes onTap when the card body is tapped, when provided', (tester) async {
+    var tapped = false;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: HeroHeader(
+            greeting: 'Good morning,',
+            name: 'Maria',
+            subtitle: 'Monday',
+            actionIcon: Icons.person_outline_rounded,
+            actionTooltip: 'Profile',
+            onActionTap: () {},
+            onTap: () => tapped = true,
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Maria'));
+    await tester.pump();
+    expect(tapped, isTrue);
+  });
+
+  testWidgets('is not tappable when onTap is not provided', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: HeroHeader(
+            greeting: 'Good morning,',
+            name: 'Maria',
+            subtitle: 'Monday',
+            actionIcon: Icons.person_outline_rounded,
+            actionTooltip: 'Profile',
+            onActionTap: () {},
+          ),
+        ),
+      ),
+    );
+
+    // IconButton itself renders one internal InkWell for the action
+    // button — without a card-level onTap, that's the only one. (The
+    // "invokes onTap" test above proves a second one appears when onTap
+    // is provided, by successfully tapping the card body and observing
+    // the callback fire.)
+    expect(find.byType(InkWell), findsOneWidget);
+  });
 }

@@ -15,6 +15,7 @@ class HeroHeader extends StatelessWidget {
   final String actionTooltip;
   final VoidCallback onActionTap;
   final Widget? trailing;
+  final VoidCallback? onTap;
 
   const HeroHeader({
     super.key,
@@ -25,10 +26,61 @@ class HeroHeader extends StatelessWidget {
     required this.actionTooltip,
     required this.onActionTap,
     this.trailing,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
+    final content = Padding(
+      padding: EdgeInsets.fromLTRB(
+          AppSpacing.xl, AppSpacing.lg, AppSpacing.xl, AppSpacing.xl),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(greeting,
+                        style: AppTextStyles.custom(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white70)),
+                    const SizedBox(height: 2),
+                    Text(name,
+                        style: AppTextStyles.custom(
+                            fontSize: 26,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.white,
+                            letterSpacing: -0.3)),
+                    const SizedBox(height: 2),
+                    Text(subtitle,
+                        style: AppTextStyles.custom(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.white70)),
+                  ],
+                ),
+              ),
+              SizedBox(width: AppSpacing.md),
+              _HeroActionButton(
+                icon: actionIcon,
+                tooltip: actionTooltip,
+                onTap: onActionTap,
+              ),
+            ],
+          ),
+          if (trailing != null) ...[
+            SizedBox(height: AppSpacing.lg),
+            trailing!,
+          ],
+        ],
+      ),
+    );
+
     return SafeArea(
       bottom: false,
       child: Container(
@@ -39,55 +91,17 @@ class HeroHeader extends StatelessWidget {
           gradient: AppGradients.hero,
           borderRadius: BorderRadius.circular(AppRadius.card),
         ),
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(
-              AppSpacing.xl, AppSpacing.lg, AppSpacing.xl, AppSpacing.xl),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(greeting,
-                            style: AppTextStyles.custom(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.white70)),
-                        const SizedBox(height: 2),
-                        Text(name,
-                            style: AppTextStyles.custom(
-                                fontSize: 26,
-                                fontWeight: FontWeight.w800,
-                                color: Colors.white,
-                                letterSpacing: -0.3)),
-                        const SizedBox(height: 2),
-                        Text(subtitle,
-                            style: AppTextStyles.custom(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.white70)),
-                      ],
-                    ),
-                  ),
-                  SizedBox(width: AppSpacing.md),
-                  _HeroActionButton(
-                    icon: actionIcon,
-                    tooltip: actionTooltip,
-                    onTap: onActionTap,
-                  ),
-                ],
+        child: onTap == null
+            ? content
+            : Material(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(AppRadius.card),
+                child: InkWell(
+                  onTap: onTap,
+                  borderRadius: BorderRadius.circular(AppRadius.card),
+                  child: content,
+                ),
               ),
-              if (trailing != null) ...[
-                SizedBox(height: AppSpacing.lg),
-                trailing!,
-              ],
-            ],
-          ),
-        ),
       ),
     );
   }
