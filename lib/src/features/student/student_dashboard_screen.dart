@@ -8,6 +8,7 @@ import '../../shared/widgets/radial_progress_ring.dart';
 import '../../shared/widgets/shimmer_card.dart';
 import '../auth/auth_provider.dart';
 import '../grades/grades_provider.dart';
+import '../notices/notice_queue_dialog.dart';
 import '../portal/portal_provider.dart';
 import '../portal/portal_widgets.dart';
 import 'student_provider.dart';
@@ -17,6 +18,8 @@ class StudentDashboardScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    watchPendingNotices(context, ref);
+
     final user    = ref.watch(authStateProvider).value;
     final profile = ref.watch(studentProfileProvider);
     final today   = ref.watch(studentTodayProvider);

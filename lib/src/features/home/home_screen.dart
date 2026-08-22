@@ -6,6 +6,7 @@ import '../../core/theme.dart';
 import '../../shared/widgets/hero_header.dart';
 import '../../shared/widgets/shimmer_card.dart';
 import '../auth/auth_provider.dart';
+import '../notices/notice_queue_dialog.dart';
 import 'home_provider.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -13,6 +14,8 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    watchPendingNotices(context, ref);
+
     final user     = ref.watch(authStateProvider).value;
     final students = ref.watch(linkedStudentsProvider);
     final greeting = _greeting();
