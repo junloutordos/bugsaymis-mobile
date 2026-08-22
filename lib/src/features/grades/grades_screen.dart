@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/theme.dart';
 import '../../shared/widgets/empty_state.dart';
+import '../../shared/widgets/hero_header.dart';
 import '../../shared/widgets/shimmer_card.dart';
 import '../home/home_provider.dart';
 import 'grades_provider.dart';
@@ -40,50 +41,43 @@ class _GradesScreenState extends ConsumerState<GradesScreen>
       backgroundColor: AppColors.background,
       body: Column(
         children: [
-          // ── Header ────────────────────────────────────────────────────
+          const HeroHeader(
+            greeting: 'Track progress',
+            name: 'Grades',
+            subtitle: 'Quarterly and final marks',
+          ),
           Container(
             color: Colors.white,
-            child: SafeArea(
-              bottom: false,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-                    child: Text(
-                      'Grades',
-                      style: AppTextStyles.screenTitle,
-                    ),
-                  ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Child selector chips (if multiple children)
+                students.maybeWhen(
+                  data: (list) => list.length > 1
+                      ? _ChildChips(
+                          students: list,
+                          selected: _selectedStudentIndex,
+                          onSelect: (i) =>
+                              setState(() => _selectedStudentIndex = i),
+                        )
+                      : const SizedBox(height: 12),
+                  orElse: () => const SizedBox(height: 12),
+                ),
 
-                  // Child selector chips (if multiple children)
-                  students.maybeWhen(
-                    data: (list) => list.length > 1
-                        ? _ChildChips(
-                            students: list,
-                            selected: _selectedStudentIndex,
-                            onSelect: (i) =>
-                                setState(() => _selectedStudentIndex = i),
-                          )
-                        : const SizedBox(height: 12),
-                    orElse: () => const SizedBox(height: 12),
-                  ),
-
-                  // Quarter tabs
-                  TabBar(
-                    controller: _tabCtrl,
-                    isScrollable: false,
-                    labelColor: AppColors.accent,
-                    unselectedLabelColor: AppColors.textSecondary,
-                    indicatorColor: AppColors.accent,
-                    indicatorSize: TabBarIndicatorSize.label,
-                    labelStyle: AppTextStyles.custom(fontSize: 13, fontWeight: FontWeight.w700),
-                    unselectedLabelStyle: AppTextStyles.custom(fontSize: 13, fontWeight: FontWeight.w500),
-                    tabs: _quarters.map((q) => Tab(text: q)).toList(),
-                  ),
-                  const Divider(height: 1),
-                ],
-              ),
+                // Quarter tabs
+                TabBar(
+                  controller: _tabCtrl,
+                  isScrollable: false,
+                  labelColor: AppColors.accent,
+                  unselectedLabelColor: AppColors.textSecondary,
+                  indicatorColor: AppColors.accent,
+                  indicatorSize: TabBarIndicatorSize.label,
+                  labelStyle: AppTextStyles.custom(fontSize: 13, fontWeight: FontWeight.w700),
+                  unselectedLabelStyle: AppTextStyles.custom(fontSize: 13, fontWeight: FontWeight.w500),
+                  tabs: _quarters.map((q) => Tab(text: q)).toList(),
+                ),
+                const Divider(height: 1),
+              ],
             ),
           ),
 
