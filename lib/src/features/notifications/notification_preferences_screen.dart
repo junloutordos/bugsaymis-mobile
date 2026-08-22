@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../core/api_client.dart';
 import '../../core/theme.dart';
 import '../../shared/widgets/shimmer_card.dart';
+import '../../shared/widgets/staggered_list.dart';
 
 // ── Model ─────────────────────────────────────────────────────────────────────
 
@@ -87,6 +89,12 @@ class _NotificationPreferencesScreenState
             greeting: 'Configure',
             name: 'Notifications',
             subtitle: 'Control how you receive alerts',
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back_ios_new_rounded,
+                  color: AppColors.textPrimary, size: 20),
+              onPressed: () =>
+                  context.canPop() ? context.pop() : context.go('/profile'),
+            ),
           ),
 
           Expanded(
@@ -123,21 +131,23 @@ class _NotificationPreferencesScreenState
                     const SizedBox(height: 24),
                     const SectionLabel('ALERT METHODS'),
 
-                    _PrefTile(
-                      icon: Icons.notifications_active_outlined,
-                      title: 'Push Notifications',
-                      subtitle: 'Instant alert on this device',
-                      value: _notifyPush ?? prefs.notifyPush,
-                      onChanged: (v) => setState(() => _notifyPush = v),
-                    ),
-                    const SizedBox(height: 10),
-                    _PrefTile(
-                      icon: Icons.email_outlined,
-                      title: 'Email Notifications',
-                      subtitle: 'Summary sent to your email',
-                      value: _notifyEmail ?? prefs.notifyEmail,
-                      onChanged: (v) => setState(() => _notifyEmail = v),
-                    ),
+                    StaggeredList(children: [
+                      _PrefTile(
+                        icon: Icons.notifications_active_outlined,
+                        title: 'Push Notifications',
+                        subtitle: 'Instant alert on this device',
+                        value: _notifyPush ?? prefs.notifyPush,
+                        onChanged: (v) => setState(() => _notifyPush = v),
+                      ),
+                      const SizedBox(height: 10),
+                      _PrefTile(
+                        icon: Icons.email_outlined,
+                        title: 'Email Notifications',
+                        subtitle: 'Summary sent to your email',
+                        value: _notifyEmail ?? prefs.notifyEmail,
+                        onChanged: (v) => setState(() => _notifyEmail = v),
+                      ),
+                    ]),
 
                     const SizedBox(height: 32),
 
