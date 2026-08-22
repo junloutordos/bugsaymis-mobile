@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../core/theme.dart';
 import '../../shared/widgets/hero_header.dart';
+import '../../shared/widgets/radial_progress_ring.dart';
 import '../../shared/widgets/shimmer_card.dart';
 import '../auth/auth_provider.dart';
 import '../grades/grades_provider.dart';
@@ -336,15 +337,15 @@ class _GradeSummaryCard extends StatelessWidget {
                       style: AppTextStyles.custom(fontSize: 12, color: AppColors.textSecondary)),
                   const Spacer(),
                   if (gwa != null)
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 3),
-                      decoration: BoxDecoration(
-                        color: _gwaColor(gwa).withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text('GWA ${gwa.toStringAsFixed(2)}',
-                          style: AppTextStyles.custom(fontSize: 12, fontWeight: FontWeight.w700, color: _gwaColor(gwa))),
+                    RadialProgressRing(
+                      value: 5.0 - gwa,
+                      max: 4.0,
+                      size: 40,
+                      strokeWidth: 5,
+                      colors: [_gwaColor(gwa), _gwaColor(gwa).withValues(alpha: 0.5)],
+                      center: Text(gwa.toStringAsFixed(2),
+                          style: AppTextStyles.custom(
+                              fontSize: 10, fontWeight: FontWeight.w800, color: _gwaColor(gwa))),
                     ),
                   const SizedBox(width: 8),
                   const Icon(Icons.chevron_right_rounded,
