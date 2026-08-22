@@ -484,51 +484,51 @@ class AppHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        boxShadow: AppElevation.resting,
+      ),
       child: SafeArea(
         bottom: false,
-        child: Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.fromLTRB(leading == null ? 20 : 8, 16, 8, 16),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  if (leading != null) ...[
-                    leading!,
-                    const SizedBox(width: 4),
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(
+              leading == null ? AppSpacing.xl : AppSpacing.sm,
+              AppSpacing.lg, AppSpacing.sm, AppSpacing.lg),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              if (leading != null) ...[
+                leading!,
+                SizedBox(width: AppSpacing.xs),
+              ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(greeting,
+                        style: _pjs(
+                            size: 12,
+                            weight: FontWeight.w400,
+                            color: AppColors.textSecondary)),
+                    const SizedBox(height: 2),
+                    Text(name,
+                        style: _pjs(
+                            size: 22,
+                            weight: FontWeight.w800,
+                            color: AppColors.textPrimary,
+                            letterSpacing: -0.3)),
+                    const SizedBox(height: 2),
+                    Text(subtitle,
+                        style: _pjs(
+                            size: 12,
+                            weight: FontWeight.w400,
+                            color: AppColors.textSecondary)),
                   ],
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(greeting,
-                            style: _pjs(
-                                size: 12,
-                                weight: FontWeight.w400,
-                                color: AppColors.textSecondary)),
-                        const SizedBox(height: 2),
-                        Text(name,
-                            style: _pjs(
-                                size: 22,
-                                weight: FontWeight.w800,
-                                color: AppColors.textPrimary,
-                                letterSpacing: -0.3)),
-                        const SizedBox(height: 2),
-                        Text(subtitle,
-                            style: _pjs(
-                                size: 12,
-                                weight: FontWeight.w400,
-                                color: AppColors.textSecondary)),
-                      ],
-                    ),
-                  ),
-                  ...actions,
-                ],
+                ),
               ),
-            ),
-            const Divider(height: 1),
-          ],
+              ...actions,
+            ],
+          ),
         ),
       ),
     );

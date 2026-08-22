@@ -170,8 +170,8 @@ class _NavItem extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                curve: Curves.easeOut,
+                duration: AppMotion.base,
+                curve: AppMotion.standard,
                 width: 56,
                 height: 30,
                 decoration: BoxDecoration(
