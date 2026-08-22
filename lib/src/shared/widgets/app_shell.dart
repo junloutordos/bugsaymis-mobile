@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/theme.dart';
+import '../../features/sos/sos_trigger_sheet.dart';
 
 enum ShellRole { parent, student }
 
@@ -48,9 +49,7 @@ class AppShell extends StatelessWidget {
             i,
             initialLocation: i == shell.currentIndex,
           ),
-          centerButton: role == ShellRole.student
-              ? _IdCenterButton(onTap: () => context.push('/student/id'))
-              : null,
+          centerButton: role == ShellRole.student ? const _SosCenterButton() : null,
         ),
       );
 }
@@ -115,7 +114,7 @@ class AppNavBar extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.only(top: 38),
                         child: Text(
-                          'My ID',
+                          'SOS',
                           textAlign: TextAlign.center,
                           style: AppTextStyles.label
                               .copyWith(fontSize: 11, letterSpacing: 0),
@@ -200,27 +199,26 @@ class _NavItem extends StatelessWidget {
       );
 }
 
-/// Raised circular gradient button docked in the nav's center — opens the
-/// digital student ID.
-class _IdCenterButton extends StatelessWidget {
-  final VoidCallback onTap;
-
-  const _IdCenterButton({required this.onTap});
+/// Raised circular button docked in the nav's center — opens the SOS
+/// trigger flow. Tap opens the category picker; long-press triggers the
+/// silent/duress flow (no visible UI change beyond a haptic pulse).
+class _SosCenterButton extends StatelessWidget {
+  const _SosCenterButton();
 
   @override
   Widget build(BuildContext context) => Semantics(
         button: true,
-        label: 'Digital student ID',
+        label: 'SOS Emergency',
         child: Container(
           width: 58,
           height: 58,
           decoration: BoxDecoration(
-            gradient: AppGradients.button,
+            color: Colors.red.shade600,
             shape: BoxShape.circle,
             border: Border.all(color: Colors.white, width: 3),
             boxShadow: [
               BoxShadow(
-                color: AppColors.accent.withValues(alpha: 0.28),
+                color: Colors.red.shade600.withValues(alpha: 0.32),
                 blurRadius: 14,
                 offset: const Offset(0, 5),
               ),
@@ -231,9 +229,9 @@ class _IdCenterButton extends StatelessWidget {
             shape: const CircleBorder(),
             child: InkWell(
               customBorder: const CircleBorder(),
-              onTap: onTap,
-              child: const Icon(Icons.qr_code_2_rounded,
-                  color: Colors.white, size: 26),
+              onTap: () => showSosTriggerSheet(context, silent: false),
+              onLongPress: () => showSosTriggerSheet(context, silent: true),
+              child: const Icon(Icons.warning_rounded, color: Colors.white, size: 28),
             ),
           ),
         ),
