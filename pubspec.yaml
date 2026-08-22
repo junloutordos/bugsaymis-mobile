@@ -58,6 +58,7 @@ dependencies:
   # Digital student ID (barcode rendering + max brightness at the gate)
   barcode_widget: ^2.0.4
   screen_brightness: ^2.1.0
+  fl_chart: ^1.2.0
 
 dev_dependencies:
   flutter_test:
