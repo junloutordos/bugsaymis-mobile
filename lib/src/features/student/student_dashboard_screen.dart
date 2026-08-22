@@ -415,9 +415,10 @@ class _PortalTodoSection extends StatelessWidget {
         iconColor: AppColors.accent,
         iconBg: AppColors.accentBg,
         title: 'Annual forms',
-        subtitle:
-            '${portal.totalDone} of ${portal.total} sections completed — tap to continue',
+        subtitle: 'Tap to continue',
         route: '/student/portal/forms',
+        completionDone: portal.totalDone,
+        completionTotal: portal.total,
       ));
     }
 
@@ -431,8 +432,10 @@ class _PortalTodoSection extends StatelessWidget {
         title: c.periodTitle ?? 'Year-End Clearance',
         subtitle: c.holds > 0
             ? '${c.pending} pending · ${c.holds} on hold'
-            : '${c.done} of ${c.total} requirements cleared',
+            : 'Tap to view details',
         route: '/student/portal/clearance',
+        completionDone: c.done,
+        completionTotal: c.total,
       ));
     }
 
@@ -478,6 +481,8 @@ class _PortalTodoSection extends StatelessWidget {
     required String title,
     required String subtitle,
     required String route,
+    int? completionDone,
+    int? completionTotal,
   }) =>
       InkWell(
         onTap: () => context.push(route),
@@ -504,6 +509,16 @@ class _PortalTodoSection extends StatelessWidget {
                   ],
                 ),
               ),
+              if (completionTotal != null && completionTotal > 0) ...[
+                RadialProgressRing(
+                  value: (completionDone ?? 0).toDouble(),
+                  max: completionTotal.toDouble(),
+                  size: 32,
+                  strokeWidth: 4,
+                  colors: const [AppColors.accent, AppColors.accentMid],
+                ),
+                const SizedBox(width: 8),
+              ],
               const Icon(Icons.chevron_right_rounded,
                   size: 18, color: AppColors.textDisabled),
             ],

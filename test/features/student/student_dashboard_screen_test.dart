@@ -89,4 +89,33 @@ void main() {
     expect(find.byType(RadialProgressRing), findsWidgets);
     expect(find.textContaining('GWA'), findsNothing);
   });
+
+  testWidgets('shows a completion RadialProgressRing on the annual-forms todo row',
+      (tester) async {
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authStateProvider.overrideWith(() => _FakeAuthNotifier()),
+          studentProfileProvider.overrideWith((ref) async => const StudentProfile(
+                id: 2, name: 'Juan Dela Cruz', gradeLevel: 8, section: 'Curie', schoolYear: '2026-2027')),
+          studentTodayProvider.overrideWith((ref) async =>
+              const StudentTodaySummary(lastStatus: 'in', totalScans: 1)),
+          studentGradesProvider.overrideWith((ref) async => const GradesData(grades: [])),
+          portalDashboardProvider.overrideWith((ref) async => const PortalDashboard(
+                gradeLevel: 8,
+                completion: [],
+                totalDone: 3,
+                total: 10,
+                clearance: null,
+                intern: null,
+              )),
+        ],
+        child: const MaterialApp(home: StudentDashboardScreen()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Annual forms'), findsOneWidget);
+    expect(find.byType(RadialProgressRing), findsWidgets);
+  });
 }
