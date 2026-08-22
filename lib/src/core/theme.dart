@@ -31,6 +31,9 @@ class AppColors {
   static const successText = Color(0xFF14532D);
   static const warningText = Color(0xFF78350F);
 
+  static const dangerBg   = Color(0xFFFEE2E2);
+  static const dangerText = Color(0xFF991B1B);
+
   // Legacy — kept for any remaining references
   static const gradientStart = Color(0xFF1A3557);
   static const gradientEnd   = Color(0xFF1A4480);
@@ -94,26 +97,35 @@ class AppGradients {
     stops: [0.0, 0.6, 1.0],
   );
 
+  /// Contained-hero gradient — used by HeroHeader. Navy start reuses the
+  /// existing brand color for continuity; emerald end matches the
+  /// reference design's soft data-visualization palette.
+  static const hero = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF1A3557), Color(0xFF34D399)],
+  );
+
   /// Per-feature-area identity gradients — used on section headers, stat
   /// cards, and icon chips for that area. Distinct from [button] (the one
-  /// universal action-gradient) and [authDecoration] (the app's own brand
-  /// chrome, reused by HeroHeader).
+  /// universal action-gradient) and [hero] (the app's own brand chrome,
+  /// used by HeroHeader).
   static const portal = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [Color(0xFF7C3AED), Color(0xFF4F46E5)],
+    colors: [Color(0xFF6366F1), Color(0xFF818CF8)],
   );
 
   static const attendance = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [Color(0xFF0D9488), Color(0xFF10B981)],
+    colors: [Color(0xFF10B981), Color(0xFF6EE7B7)],
   );
 
   static const grades = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [Color(0xFFD97706), Color(0xFFF59E0B)],
+    colors: [Color(0xFFF59E0B), Color(0xFFFCD34D)],
   );
 }
 
