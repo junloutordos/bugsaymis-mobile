@@ -13,6 +13,8 @@ class LoginScreen extends ConsumerStatefulWidget {
   ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
+enum _LoginStep { choose, parentForm }
+
 class _LoginScreenState extends ConsumerState<LoginScreen>
     with SingleTickerProviderStateMixin {
   final _formKey   = GlobalKey<FormState>();
@@ -20,6 +22,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
   final _passCtrl  = TextEditingController();
   bool _obscure = true;
   bool _googleLoading = false;
+  _LoginStep _step = _LoginStep.choose;
 
   late final AnimationController _introCtrl;
   late final Animation<double> _brandAnim;
@@ -128,7 +131,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             child: Container(
               height: 280,
               decoration: const BoxDecoration(
-                gradient: AppGradients.authDecoration,
+                gradient: AppGradients.hero,
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(40),
                   bottomRight: Radius.circular(40),
@@ -147,7 +150,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                   const SizedBox(height: 28),
                   _Entrance(animation: _brandAnim, child: _brandBlock()),
                   const SizedBox(height: 36),
-                  _Entrance(animation: _cardAnim, child: _formCard(busy, isLoading)),
+                  _Entrance(
+                    animation: _cardAnim,
+                    child: AnimatedSwitcher(
+                      duration: AppMotion.base,
+                      switchInCurve: AppMotion.standard,
+                      switchOutCurve: AppMotion.standard,
+                      child: _step == _LoginStep.choose
+                          ? _roleChooser(key: const ValueKey('choose'))
+                          : _parentFormCard(busy, isLoading, key: const ValueKey('form')),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -184,7 +197,44 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
         ),
       );
 
-  Widget _formCard(bool busy, bool isLoading) => Container(
+  Widget _roleChooser({Key? key}) => Container(
+        key: key,
+        padding: const EdgeInsets.all(20),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(AppRadius.sheet)),
+          boxShadow: kFormShadow,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text('Welcome back',
+                style: AppTextStyles.screenTitle.copyWith(fontSize: 20)),
+            const SizedBox(height: 4),
+            Text("Who's signing in?", style: AppTextStyles.cardSubtitle),
+            const SizedBox(height: 20),
+            if (_googleAvailable) ...[
+              _RoleCard(
+                icon: Icons.school_rounded,
+                title: "I'm a Scholar",
+                subtitle: 'Sign in with your school Google account',
+                busy: _googleLoading,
+                onTap: _googleLoading ? null : _googleSignIn,
+              ),
+              const SizedBox(height: 12),
+            ],
+            _RoleCard(
+              icon: Icons.family_restroom_rounded,
+              title: "I'm a Parent",
+              subtitle: 'Sign in with email and password',
+              onTap: () => setState(() => _step = _LoginStep.parentForm),
+            ),
+          ],
+        ),
+      );
+
+  Widget _parentFormCard(bool busy, bool isLoading, {Key? key}) => Container(
+        key: key,
         padding: const EdgeInsets.all(24),
         decoration: const BoxDecoration(
           color: Colors.white,
@@ -197,55 +247,26 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Welcome back',
-                    style: AppTextStyles.screenTitle.copyWith(fontSize: 20)),
-                const SizedBox(height: 4),
-                Text('Sign in to your account',
-                    style: AppTextStyles.cardSubtitle),
+                Row(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 18),
+                      onPressed: () => setState(() => _step = _LoginStep.choose),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                      color: AppColors.textSecondary,
+                    ),
+                    const SizedBox(width: 8),
+                    Text('Parent Sign In',
+                        style: AppTextStyles.screenTitle.copyWith(fontSize: 20)),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 26, top: 4),
+                  child: Text('Sign in to your account', style: AppTextStyles.cardSubtitle),
+                ),
 
                 const SizedBox(height: 24),
-
-                // ── Student: Google sign-in ───────────────────────────
-                if (_googleAvailable) ...[
-                  SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: OutlinedButton.icon(
-                      onPressed: busy ? null : _googleSignIn,
-                      icon: _googleLoading
-                          ? const SizedBox(
-                              width: 18,
-                              height: 18,
-                              child:
-                                  CircularProgressIndicator(strokeWidth: 2))
-                          : const Icon(Icons.school_rounded, size: 20),
-                      label: Text(
-                        'Student — Continue with Google',
-                        style: AppTextStyles.bodySemibold
-                            .copyWith(color: AppColors.accent),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Center(
-                    child: Text('Use your @crc.pshs.edu.ph account',
-                        style: AppTextStyles.caption.copyWith(fontSize: 11)),
-                  ),
-                  const SizedBox(height: 18),
-                  Row(
-                    children: [
-                      const Expanded(child: Divider()),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        child: Text('parents sign in with email',
-                            style:
-                                AppTextStyles.caption.copyWith(fontSize: 11)),
-                      ),
-                      const Expanded(child: Divider()),
-                    ],
-                  ),
-                  const SizedBox(height: 18),
-                ],
 
                 // ── Email ─────────────────────────────────────────────
                 LabelledField(
@@ -332,6 +353,61 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                     ),
                   ],
                 ),
+              ],
+            ),
+          ),
+        ),
+      );
+}
+
+class _RoleCard extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final VoidCallback? onTap;
+  final bool busy;
+
+  const _RoleCard({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+    this.busy = false,
+  });
+
+  @override
+  Widget build(BuildContext context) => Material(
+        color: AppColors.background,
+        borderRadius: BorderRadius.circular(AppRadius.card),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(AppRadius.card),
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: const BoxDecoration(color: AppColors.accentBg, shape: BoxShape.circle),
+                  child: busy
+                      ? const Padding(
+                          padding: EdgeInsets.all(12),
+                          child: CircularProgressIndicator(strokeWidth: 2))
+                      : Icon(icon, color: AppColors.accent, size: 22),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(title, style: AppTextStyles.cardTitle),
+                      const SizedBox(height: 2),
+                      Text(subtitle, style: AppTextStyles.cardSubtitle),
+                    ],
+                  ),
+                ),
+                const Icon(Icons.chevron_right_rounded, color: AppColors.textDisabled),
               ],
             ),
           ),
