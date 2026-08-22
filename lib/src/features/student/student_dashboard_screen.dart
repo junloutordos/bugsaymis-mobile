@@ -8,6 +8,7 @@ import '../../shared/widgets/radial_progress_ring.dart';
 import '../../shared/widgets/shimmer_card.dart';
 import '../auth/auth_provider.dart';
 import '../grades/grades_provider.dart';
+import '../notices/announcements_card.dart';
 import '../notices/notice_queue_dialog.dart';
 import '../portal/portal_provider.dart';
 import '../portal/portal_widgets.dart';
@@ -55,6 +56,10 @@ class StudentDashboardScreen extends ConsumerWidget {
               },
               onTap: () => context.push('/profile'),
               trailing: _dashboardHeroTrailing(today, profile),
+            ),
+            const Padding(
+              padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
+              child: AnnouncementsCard(),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),

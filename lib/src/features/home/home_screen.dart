@@ -6,6 +6,7 @@ import '../../core/theme.dart';
 import '../../shared/widgets/hero_header.dart';
 import '../../shared/widgets/shimmer_card.dart';
 import '../auth/auth_provider.dart';
+import '../notices/announcements_card.dart';
 import '../notices/notice_queue_dialog.dart';
 import 'home_provider.dart';
 
@@ -41,6 +42,10 @@ class HomeScreen extends ConsumerWidget {
                 data: (list) => _LinkedCountChip(count: list.length),
                 orElse: () => null,
               ),
+            ),
+            const Padding(
+              padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
+              child: AnnouncementsCard(),
             ),
             AnimatedSwitcher(
               duration: AppMotion.slow,
