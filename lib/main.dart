@@ -4,9 +4,12 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'firebase_options.dart';
+import 'src/core/api_client.dart';
 import 'src/core/router.dart';
 import 'src/core/theme.dart';
 import 'src/features/auth/auth_provider.dart';
+import 'src/features/notices/notice_queue_dialog.dart';
+import 'src/features/notices/notices_provider.dart';
 import 'src/features/notifications/fcm_service.dart';
 
 void main() async {
@@ -59,6 +62,38 @@ class AtlasGoApp extends ConsumerWidget {
         router.go(user?.isStudent == true ? '/student/home' : '/home');
       }
       ref.read(pendingNotificationProvider.notifier).state = null;
+    });
+
+    // Emergency alert arrived while the app is foregrounded — interrupt
+    // immediately via a full-screen takeover, don't wait for a tap.
+    ref.listen<Map<String, dynamic>?>(pendingEmergencyAlertProvider, (_, data) {
+      if (data == null) return;
+      final navigatorContext = router.routerDelegate.navigatorKey.currentContext;
+      if (navigatorContext != null) {
+        final item = NoticeItem(
+          id: int.tryParse(data['emergency_alert_id']?.toString() ?? '') ?? 0,
+          title: data['title']?.toString() ?? 'Emergency Alert',
+          body: data['message']?.toString() ?? '',
+          kind: 'emergency-alert',
+        );
+        showDialog<void>(
+          context: navigatorContext,
+          barrierDismissible: false,
+          builder: (dialogContext) => PopScope(
+            canPop: false,
+            child: NoticeQueueDialog(
+              item: item,
+              position: '',
+              showPosition: false,
+              onAcknowledge: () async {
+                await acknowledgeNotice(ref.read(apiClientProvider), item);
+                if (dialogContext.mounted) Navigator.of(dialogContext).pop();
+              },
+            ),
+          ),
+        );
+      }
+      ref.read(pendingEmergencyAlertProvider.notifier).state = null;
     });
 
     return MaterialApp.router(

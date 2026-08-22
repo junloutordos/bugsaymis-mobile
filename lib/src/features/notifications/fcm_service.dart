@@ -15,6 +15,14 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 final pendingNotificationProvider =
     StateProvider<Map<String, dynamic>?>((ref) => null);
 
+/// Set the instant an emergency-alert push arrives in the foreground —
+/// unlike pendingNotificationProvider (which only fires on a notification
+/// tap), this must interrupt immediately, matching the web takeover's
+/// real-time behavior. AtlasGo has no persistent socket connection, so
+/// this push IS the mobile real-time channel.
+final pendingEmergencyAlertProvider =
+    StateProvider<Map<String, dynamic>?>((ref) => null);
+
 final fcmServiceProvider = Provider<FcmService>((ref) {
   return FcmService(ref.read(apiClientProvider), ref);
 });
@@ -58,6 +66,11 @@ class FcmService {
 
     // Show notification when app is in foreground
     FirebaseMessaging.onMessage.listen((message) {
+      if (message.data['type'] == 'emergency_alert') {
+        _ref.read(pendingEmergencyAlertProvider.notifier).state = message.data;
+        return; // the takeover overlay handles this — no local notification needed
+      }
+
       final notification = message.notification;
       if (notification == null) return;
 
