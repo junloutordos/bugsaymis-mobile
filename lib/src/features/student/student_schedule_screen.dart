@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/theme.dart';
 import '../../shared/widgets/empty_state.dart';
+import '../../shared/widgets/hero_header.dart';
 import '../../shared/widgets/shimmer_card.dart';
 import '../schedule/schedule_provider.dart';
 import '../schedule/schedule_screen.dart' show ClassCard, InfoChip;
@@ -45,69 +46,56 @@ class _StudentScheduleScreenState
       backgroundColor: AppColors.background,
       body: Column(
         children: [
+          HeroHeader(
+            leading: HeroBackButton(
+              onTap: () =>
+                  context.canPop() ? context.pop() : context.go('/student/home'),
+            ),
+            greeting: 'This week',
+            name: 'My Schedule',
+            subtitle: 'Weekly timetable',
+          ),
           Container(
             color: Colors.white,
-            child: SafeArea(
-              bottom: false,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(4, 8, 20, 0),
-                    child: Row(
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.arrow_back_ios_new_rounded,
-                              color: AppColors.textPrimary, size: 20),
-                          onPressed: () => context.canPop()
-                              ? context.pop()
-                              : context.go('/student/home'),
-                        ),
-                        Text(
-                          'My Schedule',
-                          style: AppTextStyles.stat,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  TabBar(
-                    controller: _tabCtrl,
-                    isScrollable: false,
-                    labelColor: AppColors.accent,
-                    unselectedLabelColor: AppColors.textSecondary,
-                    indicatorColor: AppColors.accent,
-                    indicatorSize: TabBarIndicatorSize.label,
-                    labelStyle: AppTextStyles.custom(fontSize: 13, fontWeight: FontWeight.w700),
-                    unselectedLabelStyle: AppTextStyles.custom(fontSize: 13, fontWeight: FontWeight.w500),
-                    tabs: List.generate(
-                      _days.length,
-                      (i) => Tab(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(_dayLabels[i]),
-                              if (i == todayIdx)
-                                Container(
-                                  margin: const EdgeInsets.only(top: 3),
-                                  width: 4,
-                                  height: 4,
-                                  decoration: const BoxDecoration(
-                                    color: AppColors.accent,
-                                    shape: BoxShape.circle,
-                                  ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TabBar(
+                  controller: _tabCtrl,
+                  isScrollable: false,
+                  labelColor: AppColors.accent,
+                  unselectedLabelColor: AppColors.textSecondary,
+                  indicatorColor: AppColors.accent,
+                  indicatorSize: TabBarIndicatorSize.label,
+                  labelStyle: AppTextStyles.custom(fontSize: 13, fontWeight: FontWeight.w700),
+                  unselectedLabelStyle: AppTextStyles.custom(fontSize: 13, fontWeight: FontWeight.w500),
+                  tabs: List.generate(
+                    _days.length,
+                    (i) => Tab(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(_dayLabels[i]),
+                            if (i == todayIdx)
+                              Container(
+                                margin: const EdgeInsets.only(top: 3),
+                                width: 4,
+                                height: 4,
+                                decoration: const BoxDecoration(
+                                  color: AppColors.accent,
+                                  shape: BoxShape.circle,
                                 ),
-                            ],
-                          ),
+                              ),
+                          ],
                         ),
                       ),
                     ),
                   ),
-                  const Divider(height: 1),
-                ],
-              ),
+                ),
+                const Divider(height: 1),
+              ],
             ),
           ),
           Expanded(
