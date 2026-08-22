@@ -54,7 +54,13 @@ class TrendChart extends StatelessWidget {
             bottomTitles: AxisTitles(
               sideTitles: SideTitles(
                 showTitles: true,
+                interval: 1,
                 getTitlesWidget: (value, meta) {
+                  // fl_chart probes fractional x-positions too (for layout
+                  // sizing); only render a label exactly on a whole index —
+                  // without this guard, values like 0.5 truncate to the same
+                  // index as 0 and duplicate that label.
+                  if (value != value.roundToDouble()) return const SizedBox.shrink();
                   final i = value.toInt();
                   if (i < 0 || i >= labels.length) return const SizedBox.shrink();
                   return Padding(
