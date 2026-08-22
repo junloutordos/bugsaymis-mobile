@@ -50,26 +50,13 @@ class StudentDashboardScreen extends ConsumerWidget {
                 await ref.read(authStateProvider.notifier).logout();
                 if (context.mounted) context.go('/login');
               },
-              trailing: today.maybeWhen(
-                data: (t) => StatusBadge(status: t.lastStatus),
-                orElse: () => null,
-              ),
+              onTap: () => context.push('/profile'),
+              trailing: _dashboardHeroTrailing(today, profile),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
               child: Column(
                 children: [
-                  // ── Profile card ────────────────────────────────────
-                  profile.when(
-                    loading: () => const ShimmerCard(height: 100),
-                    error: (_, _) => const SizedBox.shrink(),
-                    data: (p) => _ProfileCard(
-                      profile: p,
-                      onTap: () => context.push('/profile'),
-                    ),
-                  ),
-
-                  const SizedBox(height: 20),
                   const SectionLabel("TODAY'S GATE STATUS"),
 
                   // ── Today status ────────────────────────────────────
@@ -145,84 +132,45 @@ class StudentDashboardScreen extends ConsumerWidget {
   }
 }
 
-class _ProfileCard extends StatelessWidget {
-  final StudentProfile profile;
-  final VoidCallback onTap;
-  const _ProfileCard({required this.profile, required this.onTap});
+/// Composes the HeroHeader's trailing content on Student Dashboard: the
+/// attendance status badge (if loaded) plus a compact grade/section + S.Y.
+/// line (if the profile is loaded) — replaces the old standalone
+/// _ProfileCard, whose name/avatar were redundant with the greeting
+/// HeroHeader already shows large above this.
+Widget? _dashboardHeroTrailing(
+  AsyncValue<StudentTodaySummary> today,
+  AsyncValue<StudentProfile> profile,
+) {
+  final statusBadge = today.maybeWhen(
+    data: (t) => StatusBadge(status: t.lastStatus),
+    orElse: () => null,
+  );
 
-  @override
-  Widget build(BuildContext context) => Container(
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Color(0xFF1A3557), Color(0xFF2563EB)],
-          ),
-          borderRadius: BorderRadius.circular(AppRadius.card),
-          boxShadow: const [
-            BoxShadow(
-                color: Color(0x282563EB),
-                blurRadius: 20,
-                offset: Offset(0, 6)),
-          ],
-        ),
-        child: Material(
-          color: Colors.transparent,
-          borderRadius: BorderRadius.circular(AppRadius.card),
-          child: InkWell(
-            onTap: onTap,
-            borderRadius: BorderRadius.circular(AppRadius.card),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-          children: [
-            Container(
-              width: 52,
-              height: 52,
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.2),
-                shape: BoxShape.circle,
-              ),
-              child: Center(
-                child: Text(
-                  profile.name.isNotEmpty ? profile.name[0] : '?',
-                  style: AppTextStyles.custom(fontSize: 22, fontWeight: FontWeight.w800, color: Colors.white),
-                ),
-              ),
-            ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(profile.name,
-                      style: AppTextStyles.cardTitle.copyWith(color: Colors.white)),
-                  if (profile.gradeLevel != null && profile.section != null)
-                    Text('Grade ${profile.gradeLevel} — ${profile.section}',
-                        style: AppTextStyles.custom(fontSize: 12, color: Colors.white70)),
-                  if (profile.schoolYear != null)
-                    Text('S.Y. ${profile.schoolYear}',
-                        style: AppTextStyles.custom(fontSize: 11, color: Colors.white54)),
-                ],
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Text('Student',
-                  style: AppTextStyles.custom(fontSize: 11, fontWeight: FontWeight.w600, color: Colors.white)),
-            ),
-            const SizedBox(width: 8),
-            const Icon(Icons.chevron_right_rounded, color: Colors.white70, size: 20),
-          ],
-              ),
-            ),
-          ),
-        ),
-      );
+  final identityLine = profile.maybeWhen(
+    data: (p) {
+      final parts = <String>[
+        if (p.gradeLevel != null && p.section != null) 'Grade ${p.gradeLevel} — ${p.section}',
+        if (p.schoolYear != null) 'S.Y. ${p.schoolYear}',
+      ];
+      return parts.isEmpty ? null : parts.join(' · ');
+    },
+    orElse: () => null,
+  );
+
+  if (statusBadge == null && identityLine == null) return null;
+
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      ?statusBadge,
+      if (identityLine != null) ...[
+        if (statusBadge != null) const SizedBox(height: 8),
+        Text(identityLine,
+            style: AppTextStyles.custom(
+                fontSize: 12, fontWeight: FontWeight.w500, color: Colors.white70)),
+      ],
+    ],
+  );
 }
 
 class _TodayCard extends StatelessWidget {
