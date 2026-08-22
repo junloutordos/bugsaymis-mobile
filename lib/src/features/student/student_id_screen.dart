@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import '../../core/theme.dart';
+import '../../shared/widgets/pressable.dart';
 import 'student_provider.dart';
 
 /// The physical school IDs' symbology is not verifiable from this repo —
@@ -50,11 +51,14 @@ class _StudentIdScreenState extends ConsumerState<StudentIdScreen> {
               alignment: Alignment.centerRight,
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(8, 8, 12, 0),
-                child: IconButton(
-                  icon: const Icon(Icons.close_rounded,
-                      color: Colors.white, size: 26),
-                  tooltip: 'Close',
-                  onPressed: () => context.pop(),
+                child: Pressable(
+                  onTap: () => context.pop(),
+                  borderRadius: BorderRadius.circular(24),
+                  child: const Padding(
+                    padding: EdgeInsets.all(8),
+                    child: Icon(Icons.close_rounded,
+                        color: Colors.white, size: 26),
+                  ),
                 ),
               ),
             ),
