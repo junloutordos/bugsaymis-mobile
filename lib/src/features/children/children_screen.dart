@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/api_client.dart';
 import '../../core/theme.dart';
+import '../../shared/widgets/hero_header.dart';
 import '../../shared/widgets/shimmer_card.dart';
+import '../../shared/widgets/staggered_list.dart';
 import '../home/home_provider.dart';
 
 class ChildrenScreen extends ConsumerWidget {
@@ -15,38 +17,24 @@ class ChildrenScreen extends ConsumerWidget {
       backgroundColor: AppColors.background,
       body: Column(
         children: [
-          // ── White header ──────────────────────────────────────────────
-          AppHeader(
+          HeroHeader(
+            leading: HeroBackButton(
+              onTap: () => context.canPop() ? context.pop() : context.go('/home'),
+            ),
             greeting: 'Manage',
             name: 'My Children',
-            subtitle: 'Linked student accounts',
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios_new_rounded,
-                  color: AppColors.textPrimary, size: 20),
-              onPressed: () =>
-                  context.canPop() ? context.pop() : context.go('/home'),
-            ),
-            actions: [
-              Padding(
-                padding: const EdgeInsets.only(left: 4, right: 8),
-                child: IconButton(
-                  icon: const Icon(Icons.add_rounded, size: 20),
-                  tooltip: 'Link a child',
-                  style: IconButton.styleFrom(
-                    foregroundColor: AppColors.accent,
-                    backgroundColor: AppColors.accentBg,
-                    shape: const CircleBorder(),
-                    minimumSize: const Size(38, 38),
-                    maximumSize: const Size(38, 38),
-                    padding: EdgeInsets.zero,
-                  ),
-                  onPressed: () async {
-                    await context.push('/children/link');
-                    ref.invalidate(linkedStudentsProvider);
-                  },
-                ),
-              ),
-            ],
+            subtitle: () {
+              final count = ref.watch(linkedStudentsProvider).value?.length ?? 0;
+              return count == 0
+                  ? 'No children linked yet'
+                  : '$count linked ${count == 1 ? 'child' : 'children'}';
+            }(),
+            actionIcon: Icons.add_rounded,
+            actionTooltip: 'Link a child',
+            onActionTap: () async {
+              await context.push('/children/link');
+              ref.invalidate(linkedStudentsProvider);
+            },
           ),
 
           // ── Body ──────────────────────────────────────────────────────
@@ -329,11 +317,14 @@ class _ChildrenBody extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SectionLabel('LINKED CHILDREN'),
-                  ...list.map((s) => Padding(
+                  StaggeredList(children: [
+                    for (final s in list)
+                      Padding(
                         padding: const EdgeInsets.only(bottom: 12),
                         child: _ChildCard(
                             student: s, onUnlink: () => onUnlink(s)),
-                      )),
+                      ),
+                  ]),
                 ],
               );
             },

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import '../../core/api_client.dart';
 import '../../core/theme.dart';
+import '../../shared/widgets/pressable.dart';
 import '../home/home_provider.dart';
 
 class LinkChildScreen extends ConsumerStatefulWidget {
@@ -394,8 +395,9 @@ class _Chip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isSelected = selected == value;
-    return GestureDetector(
+    return Pressable(
       onTap: () => onTap(value),
+      borderRadius: BorderRadius.circular(10),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
