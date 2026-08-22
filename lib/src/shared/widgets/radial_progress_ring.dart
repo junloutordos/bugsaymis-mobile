@@ -43,7 +43,7 @@ class RadialProgressRing extends StatelessWidget {
               strokeWidth: strokeWidth,
             ),
           ),
-          if (center != null) center!,
+          ?center,
         ],
       ),
     );
