@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'page_transition.dart';
 import '../features/auth/auth_provider.dart';
 import '../shared/widgets/app_shell.dart';
 import '../features/auth/login_screen.dart';
@@ -139,23 +139,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       // ── Full-screen routes (cover the bottom nav) ──────────────────────
       GoRoute(
         path: '/student/id',
-        pageBuilder: (ctx, st) => CustomTransitionPage(
-          key: st.pageKey,
+        pageBuilder: (ctx, st) => appPageTransition(
+          pageKey: st.pageKey,
           fullscreenDialog: true,
-          transitionDuration: const Duration(milliseconds: 220),
-          reverseTransitionDuration: const Duration(milliseconds: 180),
           child: const StudentIdScreen(),
-          transitionsBuilder: (ctx, anim, _, child) {
-            final curved =
-                CurvedAnimation(parent: anim, curve: Curves.easeOutCubic);
-            return FadeTransition(
-              opacity: curved,
-              child: ScaleTransition(
-                scale: Tween(begin: 0.92, end: 1.0).animate(curved),
-                child: child,
-              ),
-            );
-          },
         ),
       ),
       GoRoute(path: '/student/schedule', builder: (ctx, st) => const StudentScheduleScreen()),
