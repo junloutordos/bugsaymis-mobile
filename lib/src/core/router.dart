@@ -14,6 +14,7 @@ import '../features/grades/grades_screen.dart';
 import '../features/home/home_screen.dart';
 import '../features/notifications/notification_preferences_screen.dart';
 import '../features/profile/profile_screen.dart';
+import '../features/profile/profile_update_screen.dart';
 import '../features/portal/clearance_screen.dart';
 import '../features/portal/forms_overview_screen.dart';
 import '../features/portal/leave_passes_screen.dart';
@@ -162,6 +163,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/children/link',  builder: (ctx, st) => const LinkChildScreen()),
       GoRoute(path: '/notification-preferences', builder: (ctx, st) => const NotificationPreferencesScreen()),
       GoRoute(path: '/profile',        builder: (ctx, st) => const ProfileScreen()),
+      GoRoute(path: '/student/profile-update', builder: (ctx, st) => const ProfileUpdateScreen()),
 
       // ── Student portal (forms, RH, clearance) ──────────────────────────
       GoRoute(path: '/student/portal/forms', builder: (ctx, st) => const FormsOverviewScreen()),
