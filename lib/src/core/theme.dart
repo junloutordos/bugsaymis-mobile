@@ -93,6 +93,28 @@ class AppGradients {
     colors: [Color(0xFF1A3557), Color(0xFF2563EB), Color(0xFF38BDF8)],
     stops: [0.0, 0.6, 1.0],
   );
+
+  /// Per-feature-area identity gradients — used on section headers, stat
+  /// cards, and icon chips for that area. Distinct from [button] (the one
+  /// universal action-gradient) and [authDecoration] (the app's own brand
+  /// chrome, reused by HeroHeader).
+  static const portal = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF7C3AED), Color(0xFF4F46E5)],
+  );
+
+  static const attendance = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF0D9488), Color(0xFF10B981)],
+  );
+
+  static const grades = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFFD97706), Color(0xFFF59E0B)],
+  );
 }
 
 // ── Typography helpers ────────────────────────────────────────────────────────
