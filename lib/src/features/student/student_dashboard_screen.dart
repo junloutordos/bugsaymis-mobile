@@ -75,7 +75,10 @@ class StudentDashboardScreen extends ConsumerWidget {
                   profile.when(
                     loading: () => const ShimmerCard(height: 100),
                     error: (_, _) => const SizedBox.shrink(),
-                    data: (p) => _ProfileCard(profile: p),
+                    data: (p) => _ProfileCard(
+                      profile: p,
+                      onTap: () => context.push('/profile'),
+                    ),
                   ),
 
                   const SizedBox(height: 20),
@@ -156,11 +159,11 @@ class StudentDashboardScreen extends ConsumerWidget {
 
 class _ProfileCard extends StatelessWidget {
   final StudentProfile profile;
-  const _ProfileCard({required this.profile});
+  final VoidCallback onTap;
+  const _ProfileCard({required this.profile, required this.onTap});
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           gradient: const LinearGradient(
             begin: Alignment.topLeft,
@@ -175,7 +178,15 @@ class _ProfileCard extends StatelessWidget {
                 offset: Offset(0, 6)),
           ],
         ),
-        child: Row(
+        child: Material(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(AppRadius.card),
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(AppRadius.card),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
           children: [
             Container(
               width: 52,
@@ -216,7 +227,12 @@ class _ProfileCard extends StatelessWidget {
               child: Text('Student',
                   style: AppTextStyles.custom(fontSize: 11, fontWeight: FontWeight.w600, color: Colors.white)),
             ),
+            const SizedBox(width: 8),
+            const Icon(Icons.chevron_right_rounded, color: Colors.white70, size: 20),
           ],
+              ),
+            ),
+          ),
         ),
       );
 }

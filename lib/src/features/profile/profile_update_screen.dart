@@ -15,6 +15,7 @@ class ProfileUpdateScreen extends ConsumerStatefulWidget {
 
 class _ProfileUpdateScreenState extends ConsumerState<ProfileUpdateScreen> {
   final Map<String, TextEditingController> _controllers = {};
+  final Map<String, String> _originalValues = {};
   bool _saving = false;
 
   @override
@@ -26,13 +27,27 @@ class _ProfileUpdateScreenState extends ConsumerState<ProfileUpdateScreen> {
   }
 
   TextEditingController _controllerFor(String field, String? current) {
+    _originalValues[field] = current ?? '';
     return _controllers.putIfAbsent(field, () => TextEditingController(text: current ?? ''));
   }
 
   Future<void> _submit() async {
+    // Only send fields the student actually edited — sending every rendered
+    // field (including ones left untouched/blank) would let approval wipe
+    // out real data in columns the student never meant to change.
     final changes = <String, String>{};
     for (final entry in _controllers.entries) {
-      changes[entry.key] = entry.value.text.trim();
+      final value = entry.value.text.trim();
+      if (value != (_originalValues[entry.key] ?? '')) {
+        changes[entry.key] = value;
+      }
+    }
+
+    if (changes.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No changes to submit.')),
+      );
+      return;
     }
 
     setState(() => _saving = true);
