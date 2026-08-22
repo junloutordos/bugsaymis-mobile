@@ -8,23 +8,25 @@ import '../../core/theme.dart';
 /// icon/tooltip/callback rather than a hardcoded "profile" action), and one
 /// optional glanceable stat.
 class HeroHeader extends StatelessWidget {
+  final Widget? leading;
   final String greeting;
   final String name;
   final String subtitle;
-  final IconData actionIcon;
-  final String actionTooltip;
-  final VoidCallback onActionTap;
+  final IconData? actionIcon;
+  final String? actionTooltip;
+  final VoidCallback? onActionTap;
   final Widget? trailing;
   final VoidCallback? onTap;
 
   const HeroHeader({
     super.key,
+    this.leading,
     required this.greeting,
     required this.name,
     required this.subtitle,
-    required this.actionIcon,
-    required this.actionTooltip,
-    required this.onActionTap,
+    this.actionIcon,
+    this.actionTooltip,
+    this.onActionTap,
     this.trailing,
     this.onTap,
   });
@@ -40,6 +42,10 @@ class HeroHeader extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              if (leading != null) ...[
+                leading!,
+                SizedBox(width: AppSpacing.sm),
+              ],
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,12 +71,14 @@ class HeroHeader extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(width: AppSpacing.md),
-              _HeroActionButton(
-                icon: actionIcon,
-                tooltip: actionTooltip,
-                onTap: onActionTap,
-              ),
+              if (actionIcon != null && onActionTap != null) ...[
+                SizedBox(width: AppSpacing.md),
+                _HeroActionButton(
+                  icon: actionIcon!,
+                  tooltip: actionTooltip ?? '',
+                  onTap: onActionTap!,
+                ),
+              ],
             ],
           ),
           if (trailing != null) ...[
@@ -137,6 +145,35 @@ class _HeroActionButton extends StatelessWidget {
             ),
             constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
           ),
+        ),
+      );
+}
+
+/// Translucent-white circular icon button for use as [HeroHeader.leading]
+/// (a back button on the gradient) — visually matches [_HeroActionButton]
+/// but is exposed for the leading slot instead of the trailing action slot.
+class HeroBackButton extends StatelessWidget {
+  final VoidCallback onTap;
+  const HeroBackButton({super.key, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) => Container(
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.16),
+          shape: BoxShape.circle,
+        ),
+        child: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 18),
+          tooltip: 'Back',
+          onPressed: onTap,
+          style: IconButton.styleFrom(
+            foregroundColor: Colors.white,
+            shape: const CircleBorder(),
+            minimumSize: const Size(40, 40),
+            maximumSize: const Size(40, 40),
+            padding: EdgeInsets.zero,
+          ),
+          constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
         ),
       );
 }
