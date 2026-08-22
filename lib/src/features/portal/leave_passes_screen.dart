@@ -24,9 +24,8 @@ class LeavePassesScreen extends ConsumerWidget {
     final data = ref.watch(leavePassesProvider);
     final isDormer = data.value?['intern'] != null;
 
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(title: const Text('Leave Passes')),
+    return PortalSubScreen(
+      title: 'Leave Passes',
       floatingActionButton: isDormer
           ? FloatingActionButton.extended(
               backgroundColor: AppColors.accent,

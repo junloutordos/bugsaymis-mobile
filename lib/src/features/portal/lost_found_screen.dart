@@ -28,9 +28,8 @@ class _LostFoundScreenState extends ConsumerState<LostFoundScreen> {
   Widget build(BuildContext context) {
     final data = ref.watch(lostFoundProvider);
 
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(title: const Text('Lost & Found')),
+    return PortalSubScreen(
+      title: 'Lost & Found',
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: AppColors.accent,
         foregroundColor: Colors.white,
