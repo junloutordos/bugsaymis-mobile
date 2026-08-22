@@ -97,13 +97,15 @@ class AppGradients {
     stops: [0.0, 0.6, 1.0],
   );
 
-  /// Contained-hero gradient — used by HeroHeader. Navy start reuses the
-  /// existing brand color for continuity; emerald end matches the
-  /// reference design's soft data-visualization palette.
+  /// Contained-hero gradient — used by HeroHeader and the Login banner.
+  /// Medium-saturated blue to soft pastel green, matching the reference
+  /// design exactly (blue-dominant, green as the secondary accent). The
+  /// blue stop is deliberately not ultra-pale — it needs to stay dark
+  /// enough for the white greeting/name text drawn on top of it.
   static const hero = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [Color(0xFF1A3557), Color(0xFF34D399)],
+    colors: [Color(0xFF4F86E8), Color(0xFF8FE3A9)],
   );
 
   /// Per-feature-area identity gradients — used on section headers, stat
