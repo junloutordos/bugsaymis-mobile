@@ -215,8 +215,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
           ),
           const SizedBox(height: 14),
           Text(
-            'AtlasGo is the Mobile app of Philippine Science High '
-            'School – Caraga Region Campus in Butuan City',
+            'AtlasGo — the mobile app companion of Atlas, the PSHS-CRC '
+            'Centralized Campus Management Information System.',
             textAlign: TextAlign.center,
             style: AppTextStyles.caption,
           ),

@@ -84,30 +84,29 @@ class AppMotion {
 class AppGradients {
   AppGradients._();
 
-  /// Same pastel blue-green treatment as [hero] (blue solid through 75%,
-  /// blending to green only in the final quarter) — kept horizontal since
+  /// Same pastel blue-green treatment as [hero] (blue solid through 60%,
+  /// blending to green over the final 40%) — kept horizontal since
   /// buttons are wide/short and a left-to-right read suits that shape
   /// better than the diagonal [hero] uses.
   static const button = LinearGradient(
     begin: Alignment.centerLeft,
     end: Alignment.centerRight,
-    colors: [Color(0xFF4F86E8), Color(0xFF4F86E8), Color(0xFF8FE3A9)],
-    stops: [0.0, 0.75, 1.0],
+    colors: [Color(0xFF6C97EA), Color(0xFF6C97EA), Color(0xFFA0E7BB)],
+    stops: [0.0, 0.6, 1.0],
   );
 
   /// Contained-hero gradient — used by HeroHeader and the Login banner.
-  /// Medium-saturated blue to soft pastel green, matching the reference
-  /// design (blue-dominant, green as the secondary accent) — blue stays
-  /// solid through 75% of the diagonal, then blends into green over the
-  /// final quarter, so green reads as a corner accent rather than an
-  /// equal partner. The blue stop is deliberately not ultra-pale — it
-  /// needs to stay dark enough for the white greeting/name text drawn on
-  /// top of it.
+  /// Soft, gently desaturated pastel blue to pastel green (blue-dominant,
+  /// green as the secondary accent) — blue stays solid through 60% of the
+  /// diagonal, then blends into green over the final 40%, a 60/40 split
+  /// so green reads as a clear secondary rather than an equal partner.
+  /// The blue stop is deliberately not ultra-pale — it needs to stay dark
+  /// enough for the white greeting/name text drawn on top of it.
   static const hero = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [Color(0xFF4F86E8), Color(0xFF4F86E8), Color(0xFF8FE3A9)],
-    stops: [0.0, 0.75, 1.0],
+    colors: [Color(0xFF6C97EA), Color(0xFF6C97EA), Color(0xFFA0E7BB)],
+    stops: [0.0, 0.6, 1.0],
   );
 
   /// Per-feature-area identity gradients — used on section headers, stat

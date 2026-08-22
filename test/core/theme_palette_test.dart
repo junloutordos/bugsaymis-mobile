@@ -4,8 +4,8 @@ import 'package:atlasgo/src/core/theme.dart';
 
 void main() {
   test('hero gradient goes from pastel blue to pastel green', () {
-    expect(AppGradients.hero.colors.first, const Color(0xFF4F86E8));
-    expect(AppGradients.hero.colors.last, const Color(0xFF8FE3A9));
+    expect(AppGradients.hero.colors.first, const Color(0xFF6C97EA));
+    expect(AppGradients.hero.colors.last, const Color(0xFFA0E7BB));
   });
 
   test('hero and button gradients keep blue dominant over green', () {
@@ -16,8 +16,8 @@ void main() {
     final buttonBlendStart = AppGradients.button.stops![1];
     expect(heroBlendStart, greaterThanOrEqualTo(0.5));
     expect(buttonBlendStart, greaterThanOrEqualTo(0.5));
-    expect(AppGradients.button.colors.first, const Color(0xFF4F86E8));
-    expect(AppGradients.button.colors.last, const Color(0xFF8FE3A9));
+    expect(AppGradients.button.colors.first, const Color(0xFF6C97EA));
+    expect(AppGradients.button.colors.last, const Color(0xFFA0E7BB));
   });
 
   test('soft-danger status tokens exist and are distinct from warning', () {

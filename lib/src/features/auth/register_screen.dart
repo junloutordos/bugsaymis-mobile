@@ -77,7 +77,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             Positioned(
               top: 0, left: 0, right: 0,
               child: Container(
-                height: 240,
+                height: 272,
                 decoration: const BoxDecoration(
                   gradient: AppGradients.hero,
                   borderRadius: BorderRadius.only(
@@ -119,30 +119,23 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     Center(
                       child: Column(
                         children: [
-                          Container(
-                            width: 72,
-                            height: 72,
-                            decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.15),
-                              shape: BoxShape.circle,
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: Image.asset(
-                                'assets/images/atlas_arrow.png',
-                                fit: BoxFit.contain,
-                                errorBuilder: (_, _, _) => const Icon(
-                                    Icons.navigation_rounded,
-                                    color: Colors.white,
-                                    size: 40),
-                              ),
+                          SizedBox(
+                            width: 56,
+                            height: 56,
+                            child: Image.asset(
+                              'assets/images/atlas_arrow.png',
+                              fit: BoxFit.contain,
+                              errorBuilder: (_, _, _) => const Icon(
+                                  Icons.navigation_rounded,
+                                  color: Colors.white,
+                                  size: 40),
                             ),
                           ),
                           const SizedBox(height: 12),
                           Text('Create Account',
                               style: AppTextStyles.screenTitle.copyWith(
                                   color: Colors.white, fontSize: 24)),
-                          const SizedBox(height: 2),
+                          const SizedBox(height: 4),
                           Text('AtlasGo',
                               style: AppTextStyles.cardSubtitle
                                   .copyWith(color: Colors.white60)),
