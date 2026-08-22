@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/theme.dart';
+import '../../shared/widgets/hero_header.dart';
+import '../../shared/widgets/staggered_list.dart';
 import '../auth/auth_provider.dart';
 
 class ProfileScreen extends ConsumerWidget {
@@ -15,35 +17,22 @@ class ProfileScreen extends ConsumerWidget {
       backgroundColor: AppColors.background,
       body: Column(
         children: [
-          // ── Header ──────────────────────────────────────────────────────
-          Container(
-            color: Colors.white,
-            child: SafeArea(
-              bottom: false,
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(4, 8, 8, 16),
-                    child: Row(
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.arrow_back_ios_new_rounded,
-                              size: 20, color: AppColors.textPrimary),
-                          onPressed: () => context.canPop()
-                              ? context.pop()
-                              : context.go('/home'),
-                        ),
-                        Expanded(
-                          child: Text(
-                            'My Profile',
-                            style: AppTextStyles.title,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const Divider(height: 1),
-                ],
+          HeroHeader(
+            leading: HeroBackButton(
+              onTap: () => context.canPop() ? context.pop() : context.go('/home'),
+            ),
+            greeting: 'My Profile',
+            name: user?.name ?? '—',
+            subtitle: user?.email ?? '—',
+            trailing: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.16),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                user?.isStudent == true ? 'Student' : 'Parent',
+                style: AppTextStyles.custom(fontSize: 11, fontWeight: FontWeight.w600, color: Colors.white),
               ),
             ),
           ),
@@ -55,93 +44,29 @@ class ProfileScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Avatar + name card
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(AppRadius.card),
-                      boxShadow: kCardShadow,
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 60,
-                          height: 60,
-                          decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                Color(0xFF2563EB),
-                                Color(0xFF0EA5E9),
-                              ],
-                            ),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Center(
-                            child: Text(
-                              user?.name.isNotEmpty == true
-                                  ? user!.name[0].toUpperCase()
-                                  : '?',
-                              style: AppTextStyles.custom(fontSize: 24, fontWeight: FontWeight.w800, color: Colors.white),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                user?.name ?? '—',
-                                style: AppTextStyles.custom(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.textPrimary),
-                              ),
-                              const SizedBox(height: 3),
-                              Text(
-                                user?.email ?? '—',
-                                style: AppTextStyles.custom(fontSize: 13, color: AppColors.textSecondary),
-                              ),
-                              const SizedBox(height: 6),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 3),
-                                decoration: BoxDecoration(
-                                  color: AppColors.accentBg,
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: Text(
-                                  user?.isStudent == true ? 'Student' : 'Parent',
-                                  style: AppTextStyles.custom(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.accent),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 24),
                   const SectionLabel('ACCOUNT'),
 
                   if (user?.isStudent == true) ...[
-                    _MenuItem(
-                      icon: Icons.badge_outlined,
-                      label: 'Digital Student ID',
-                      onTap: () => context.push('/student/id'),
-                    ),
-                    _MenuItem(
-                      icon: Icons.edit_note_rounded,
-                      label: 'Update My Information',
-                      onTap: () => context.push('/student/profile-update'),
-                    ),
+                    StaggeredList(children: [
+                      _MenuItem(
+                        icon: Icons.badge_outlined,
+                        label: 'Digital Student ID',
+                        onTap: () => context.push('/student/id'),
+                      ),
+                      _MenuItem(
+                        icon: Icons.edit_note_rounded,
+                        label: 'Update My Information',
+                        onTap: () => context.push('/student/profile-update'),
+                      ),
+                    ]),
                   ] else ...[
-                    _MenuItem(
-                      icon: Icons.people_alt_outlined,
-                      label: 'Manage Children',
-                      onTap: () => context.push('/children'),
-                    ),
+                    StaggeredList(children: [
+                      _MenuItem(
+                        icon: Icons.people_alt_outlined,
+                        label: 'Manage Children',
+                        onTap: () => context.push('/children'),
+                      ),
+                    ]),
                   ],
                   _MenuItem(
                     icon: Icons.notifications_outlined,
