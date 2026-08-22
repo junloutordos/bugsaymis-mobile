@@ -3,26 +3,72 @@ import 'package:flutter/material.dart';
 import '../../core/theme.dart';
 export '../../shared/widgets/app_card.dart';
 
-/// Standard sub-screen scaffold for portal pages: white app bar with back
-/// button + title, slate background body.
+/// Standard sub-screen scaffold for portal pages: soft-shadow white header
+/// with back button + title (matching the app's other pushed-screen
+/// headers), slate background body.
 class PortalSubScreen extends StatelessWidget {
   final String title;
+  final String? subtitle;
   final Widget body;
   final Widget? bottomBar;
+  final Widget? floatingActionButton;
+  final List<Widget> actions;
 
   const PortalSubScreen({
     super.key,
     required this.title,
+    this.subtitle,
     required this.body,
     this.bottomBar,
+    this.floatingActionButton,
+    this.actions = const [],
   });
 
   @override
   Widget build(BuildContext context) => Scaffold(
         backgroundColor: AppColors.background,
-        appBar: AppBar(title: Text(title)),
-        body: body,
+        body: Column(
+          children: [
+            Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                boxShadow: AppElevation.resting,
+              ),
+              child: SafeArea(
+                bottom: false,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(4, 8, 12, 12),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.arrow_back_ios_new_rounded,
+                            color: AppColors.textPrimary, size: 20),
+                        onPressed: () => Navigator.of(context).maybePop(),
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(title, style: AppTextStyles.title),
+                            if (subtitle != null)
+                              Text(subtitle!,
+                                  style: AppTextStyles.custom(
+                                      fontSize: 12,
+                                      color: AppColors.textSecondary)),
+                          ],
+                        ),
+                      ),
+                      ...actions,
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Expanded(child: body),
+          ],
+        ),
         bottomNavigationBar: bottomBar,
+        floatingActionButton: floatingActionButton,
       );
 }
 
