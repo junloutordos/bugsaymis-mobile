@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/theme.dart';
 import '../../shared/widgets/empty_state.dart';
 import '../../shared/widgets/shimmer_card.dart';
+import '../../shared/widgets/trend_chart.dart';
 import '../grades/grades_provider.dart';
 import '../grades/grades_screen.dart' show GradeCard;
 
@@ -139,6 +140,23 @@ class _StudentGradesTab extends ConsumerWidget {
                     ],
                   ),
                 ),
+              if (quarterIndex == 0 && d.grades.isNotEmpty) ...[
+                const SectionLabel('GWA TREND'),
+                Builder(builder: (context) {
+                  const quarterLabels = ['Q1', 'Q2', 'Q3', 'Q4'];
+                  final points = <double>[];
+                  final labels = <String>[];
+                  for (var q = 1; q <= 4; q++) {
+                    final v = _quarterGwa(d.grades, q);
+                    if (v != null) {
+                      points.add(v);
+                      labels.add(quarterLabels[q - 1]);
+                    }
+                  }
+                  return TrendChart(values: points, labels: labels, color: AppColors.accent);
+                }),
+                const SizedBox(height: 20),
+              ],
               const SectionLabel('SUBJECTS'),
               ...d.grades.map((g) => Padding(
                     padding: const EdgeInsets.only(bottom: 10),
