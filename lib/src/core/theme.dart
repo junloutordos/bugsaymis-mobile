@@ -47,6 +47,35 @@ class AppRadius {
   static const double sheet  = 24;
 }
 
+// ── Spacing scale ─────────────────────────────────────────────────────────────
+
+/// Named spacing scale — replaces ad hoc EdgeInsets/SizedBox magic numbers
+/// in screens built or upgraded as part of the design-system foundation.
+class AppSpacing {
+  AppSpacing._();
+
+  static const double xs = 4;
+  static const double sm = 8;
+  static const double md = 12;
+  static const double lg = 16;
+  static const double xl = 24;
+  static const double xxl = 32;
+}
+
+// ── Motion tokens ────────────────────────────────────────────────────────────
+
+/// Named animation durations/curves — replaces scattered per-widget
+/// `Duration(milliseconds: N)` literals in screens built or upgraded as
+/// part of the design-system foundation.
+class AppMotion {
+  AppMotion._();
+
+  static const Duration fast = Duration(milliseconds: 150);
+  static const Duration base = Duration(milliseconds: 220);
+  static const Duration slow = Duration(milliseconds: 320);
+  static const Curve standard = Curves.easeOutCubic;
+}
+
 // ── Gradients ─────────────────────────────────────────────────────────────────
 
 class AppGradients {
@@ -331,6 +360,34 @@ const kNavShadow = [
     offset: Offset(0, -1),
   ),
 ];
+
+// ── Elevation scale ──────────────────────────────────────────────────────────
+
+/// Named elevation tiers for the design-system foundation. `resting` and
+/// `raised` alias the existing [kCardShadow]/[kFormShadow] values so every
+/// current usage of those constants stays visually identical — this only
+/// gives the scale a name. `floating` is new: a deeper tier for elements
+/// that must read as detached from the page (e.g. a raised nav button).
+class AppElevation {
+  AppElevation._();
+
+  static const List<BoxShadow> resting = kCardShadow;
+  static const List<BoxShadow> raised = kFormShadow;
+  static const List<BoxShadow> floating = [
+    BoxShadow(
+      color: Color(0x1A000000),
+      blurRadius: 28,
+      spreadRadius: 0,
+      offset: Offset(0, 10),
+    ),
+    BoxShadow(
+      color: Color(0x0A000000),
+      blurRadius: 8,
+      spreadRadius: 0,
+      offset: Offset(0, 2),
+    ),
+  ];
+}
 
 // ── Gradient button ───────────────────────────────────────────────────────────
 
