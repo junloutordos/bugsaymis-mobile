@@ -52,6 +52,9 @@ dependencies:
   # Lost & Found photo attachment (camera/gallery -> base64 JSON upload)
   image_picker: ^1.1.2
 
+  # One-time location read for the SOS on-campus check (Phase B)
+  geolocator: ^13.0.2
+
   # Digital student ID (barcode rendering + max brightness at the gate)
   barcode_widget: ^2.0.4
   screen_brightness: ^2.1.0

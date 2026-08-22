@@ -41,6 +41,8 @@
 	<string>Used to scan your child's ID card barcode when linking their account, and to photograph lost-and-found items you report.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Used to attach a photo of a lost-and-found item you report.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Used once, only when you trigger SOS, to confirm you're on campus so the right responders are notified.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
