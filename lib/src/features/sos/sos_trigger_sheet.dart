@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:go_router/go_router.dart';
 import '../../core/api_client.dart';
 import '../../core/theme.dart';
 import 'sos_provider.dart';
@@ -95,15 +96,28 @@ class _SosSheetState extends ConsumerState<_SosSheet> {
         t.cancel();
         _dispatch(context, alertType: _category!, isSilent: false).then((result) {
           if (!mounted) return;
-          setState(() {
-            if (result.$1) {
+
+          if (result.$1) {
+            setState(() {
               _phase = _Phase.blocked;
               _blockedMessage = result.$2;
               _hotline = result.$3;
-            } else {
-              _phase = _Phase.sent;
-            }
-          });
+            });
+            return;
+          }
+
+          final alertId = result.$4;
+          if (alertId == null) {
+            // Defensive fallback — the backend contract always returns
+            // alert_id on success, but degrade to the static confirmation
+            // rather than navigate nowhere if that ever changes.
+            setState(() => _phase = _Phase.sent);
+            return;
+          }
+
+          final router = GoRouter.of(context);
+          Navigator.of(context).pop();
+          router.push('/sos/active/$alertId');
         });
       }
     });
@@ -143,7 +157,7 @@ class _SosSheetState extends ConsumerState<_SosSheet> {
   }
 }
 
-Future<(bool, String?, String?)> _dispatch(
+Future<(bool, String?, String?, int?)> _dispatch(
   BuildContext context, {
   required String alertType,
   required bool isSilent,
@@ -152,7 +166,7 @@ Future<(bool, String?, String?)> _dispatch(
   final coords = await _captureLocation();
 
   try {
-    await container.read(apiClientProvider).post(
+    final response = await container.read(apiClientProvider).post(
       '/student/portal/sos/trigger',
       data: {
         'alert_type': alertType,
@@ -162,13 +176,15 @@ Future<(bool, String?, String?)> _dispatch(
         'accuracy': coords?.accuracy,
       },
     );
-    return (false, null, null);
+    final alertId = (response.data as Map)['alert_id'] as int?;
+    return (false, null, null, alertId);
   } on DioException catch (e) {
     if (e.response?.statusCode == 422 && e.response?.data?['blocked'] == true) {
       return (
         true,
         e.response?.data['message'] as String?,
         e.response?.data['emergency_hotline'] as String?,
+        null,
       );
     }
     rethrow;

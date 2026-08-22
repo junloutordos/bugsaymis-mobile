@@ -24,6 +24,7 @@ import '../features/portal/profile_section_form_screen.dart';
 import '../features/portal/rh_application_screen.dart';
 import '../features/portal/services_screen.dart';
 import '../features/schedule/schedule_screen.dart';
+import '../features/sos/sos_active_status_screen.dart';
 import '../features/student/student_dashboard_screen.dart';
 import '../features/student/student_grades_screen.dart';
 import '../features/student/student_id_screen.dart';
@@ -143,6 +144,16 @@ final routerProvider = Provider<GoRouter>((ref) {
           pageKey: st.pageKey,
           fullscreenDialog: true,
           child: const StudentIdScreen(),
+        ),
+      ),
+      GoRoute(
+        path: '/sos/active/:alertId',
+        pageBuilder: (ctx, st) => appPageTransition(
+          pageKey: st.pageKey,
+          fullscreenDialog: true,
+          child: SosActiveStatusScreen(
+            alertId: int.parse(st.pathParameters['alertId']!),
+          ),
         ),
       ),
       GoRoute(path: '/student/schedule', builder: (ctx, st) => const StudentScheduleScreen()),
