@@ -51,6 +51,12 @@ class AtlasGoApp extends ConsumerWidget {
             'studentName': data['student_name']?.toString() ?? '',
           });
         }
+      } else if (data['type'] == 'announcement') {
+        // No dedicated announcement-detail screen exists yet — route to
+        // whichever dashboard the current role uses, where the unread
+        // queue dialog surfaces it on load.
+        final user = ref.read(authStateProvider).value;
+        router.go(user?.isStudent == true ? '/student/home' : '/home');
       }
       ref.read(pendingNotificationProvider.notifier).state = null;
     });
