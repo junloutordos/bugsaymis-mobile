@@ -6,6 +6,10 @@ import 'package:go_router/go_router.dart';
 import '../../core/theme.dart';
 import 'auth_provider.dart';
 
+/// Manually bumped alongside pubspec.yaml's `version:` — this screen has no
+/// runtime package-info dependency for the sake of a single footer label.
+const _appVersion = '1.2.0';
+
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
@@ -161,13 +165,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                           : _parentFormCard(busy, isLoading, key: const ValueKey('form')),
                     ),
                   ),
-                  const SizedBox(height: 24),
-                  Text(
-                    'AtlasGo is the Mobile app of Philippine Science High '
-                    'School – Caraga Region Campus in Butuan City',
-                    textAlign: TextAlign.center,
-                    style: AppTextStyles.caption,
-                  ),
+                  const SizedBox(height: 28),
+                  _footer(),
                 ],
               ),
             ),
@@ -202,6 +201,37 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                     .copyWith(color: Colors.white60)),
           ],
         ),
+      );
+
+  Widget _footer() => Column(
+        children: [
+          Container(
+            width: 32,
+            height: 3,
+            decoration: BoxDecoration(
+              gradient: AppGradients.hero,
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(height: 14),
+          Text(
+            'AtlasGo is the Mobile app of Philippine Science High '
+            'School – Caraga Region Campus in Butuan City',
+            textAlign: TextAlign.center,
+            style: AppTextStyles.caption,
+          ),
+          const SizedBox(height: 6),
+          Text(
+            'v$_appVersion  ·  © ${DateTime.now().year} PSHS-CRC',
+            textAlign: TextAlign.center,
+            style: AppTextStyles.custom(
+              fontSize: 10.5,
+              fontWeight: FontWeight.w500,
+              color: AppColors.textDisabled,
+              letterSpacing: 0.4,
+            ),
+          ),
+        ],
       );
 
   Widget _roleChooser({Key? key}) => Container(
