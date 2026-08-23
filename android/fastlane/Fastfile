@@ -1,0 +1,42 @@
+default_platform(:android)
+
+platform :android do
+  desc "Build, sign, and publish AtlasGo: Play Store production track + self-hosted APK to S3"
+  lane :release do
+    build_name = ENV.fetch("BUILD_NAME") { UI.user_error!("BUILD_NAME env var is required") }
+    build_number = ENV.fetch("BUILD_NUMBER") { UI.user_error!("BUILD_NUMBER env var is required") }
+
+    # App bundle for the Play Store, via Shorebird so this release is patchable.
+    sh(
+      "shorebird", "release", "android",
+      "--artifact=aab",
+      "--build-name=#{build_name}",
+      "--build-number=#{build_number}",
+      chdir: ".."
+    )
+
+    upload_to_play_store(
+      track: "production",
+      aab: "../build/app/outputs/bundle/release/app-release.aab",
+      release_status: "completed",
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true
+    )
+
+    # Plain installable APK for the self-hosted direct-download path.
+    sh(
+      "shorebird", "release", "android",
+      "--artifact=apk",
+      "--build-name=#{build_name}",
+      "--build-number=#{build_number}",
+      chdir: ".."
+    )
+
+    sh(
+      "aws", "s3", "cp",
+      "../build/app/outputs/flutter-apk/app-release.apk",
+      "s3://crcmis-mis-storage/atlas-app-releases/atlasgo-latest.apk"
+    )
+  end
+end

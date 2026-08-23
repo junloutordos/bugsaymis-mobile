@@ -48,3 +48,14 @@ app.*.map.json
 android/key.properties
 android/keystore/
 .worktrees/
+
+# fastlane
+**/fastlane/report.xml
+**/fastlane/Preview.html
+**/fastlane/screenshots/**/*.png
+**/fastlane/test_output
+android/play-service-account.json
+
+# Bundler local install path (used on this machine's old system Ruby; CI installs fresh)
+**/vendor/bundle/
+**/.bundle/
