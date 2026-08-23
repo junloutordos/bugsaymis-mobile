@@ -15,7 +15,7 @@ on:
 
 jobs:
   patch:
-    runs-on: ${{ inputs.platform == 'ios' && 'macos-14' || 'ubuntu-latest' }}
+    runs-on: ${{ inputs.platform == 'ios' && 'macos-15' || 'ubuntu-latest' }}
     steps:
       - uses: actions/checkout@v4
 
