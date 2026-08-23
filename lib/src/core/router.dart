@@ -12,6 +12,7 @@ import '../features/children/children_screen.dart';
 import '../features/children/link_child_screen.dart';
 import '../features/grades/grades_screen.dart';
 import '../features/home/home_screen.dart';
+import '../features/notices/announcement_list_screen.dart';
 import '../features/notifications/notification_preferences_screen.dart';
 import '../features/profile/profile_screen.dart';
 import '../features/profile/profile_update_screen.dart';
@@ -160,6 +161,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/children',       builder: (ctx, st) => const ChildrenScreen()),
       GoRoute(path: '/children/link',  builder: (ctx, st) => const LinkChildScreen()),
       GoRoute(path: '/notification-preferences', builder: (ctx, st) => const NotificationPreferencesScreen()),
+      GoRoute(path: '/announcements', builder: (ctx, st) => const AnnouncementListScreen()),
       GoRoute(path: '/profile',        builder: (ctx, st) => const ProfileScreen()),
       GoRoute(path: '/student/profile-update', builder: (ctx, st) => const ProfileUpdateScreen()),
 
