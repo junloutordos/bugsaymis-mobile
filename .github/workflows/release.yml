@@ -36,6 +36,7 @@ jobs:
         run: |
           curl --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/shorebirdtech/install/main/install.sh | bash
           echo "$HOME/.shorebird/bin" >> "$GITHUB_PATH"
+          echo "$HOME/.config/shorebird/bin" >> "$GITHUB_PATH"
 
       - name: Decode Android keystore
         run: |
@@ -83,6 +84,7 @@ jobs:
         run: |
           curl --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/shorebirdtech/install/main/install.sh | bash
           echo "$HOME/.shorebird/bin" >> "$GITHUB_PATH"
+          echo "$HOME/.config/shorebird/bin" >> "$GITHUB_PATH"
 
       - uses: webfactory/ssh-agent@v0.9.0
         with:
@@ -97,6 +99,10 @@ jobs:
           brew install cocoapods || brew reinstall cocoapods
           which pod
           pod --version
+
+      - name: pod install
+        working-directory: ios
+        run: pod install --repo-update
 
       - name: fastlane release
         working-directory: ios
