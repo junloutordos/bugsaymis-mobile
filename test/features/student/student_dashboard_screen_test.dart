@@ -191,4 +191,31 @@ void main() {
 
     expect(find.text('Profile Page'), findsOneWidget);
   });
+
+  testWidgets('shows initials in the hero avatar when the student has no photo', (tester) async {
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          authStateProvider.overrideWith(() => _FakeAuthNotifier()),
+          studentProfileProvider.overrideWith((ref) async => const StudentProfile(
+                id: 2, name: 'Juan Dela Cruz', gradeLevel: 8, section: 'Curie', schoolYear: '2026-2027')),
+          studentTodayProvider.overrideWith((ref) async =>
+              const StudentTodaySummary(lastStatus: 'in', totalScans: 1)),
+          studentGradesProvider.overrideWith((ref) async => const GradesData(grades: [])),
+          portalDashboardProvider.overrideWith((ref) async => const PortalDashboard(
+                gradeLevel: 8,
+                completion: [],
+                totalDone: 0,
+                total: 0,
+                clearance: null,
+                intern: null,
+              )),
+        ],
+        child: const MaterialApp(home: StudentDashboardScreen()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('J'), findsOneWidget);
+  });
 }

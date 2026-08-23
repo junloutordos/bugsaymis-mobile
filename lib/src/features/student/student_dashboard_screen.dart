@@ -12,6 +12,7 @@ import '../notices/announcements_card.dart';
 import '../notices/notice_queue_dialog.dart';
 import '../portal/portal_provider.dart';
 import '../portal/portal_widgets.dart';
+import 'student_photo_image.dart';
 import 'student_provider.dart';
 
 class StudentDashboardScreen extends ConsumerWidget {
@@ -45,6 +46,10 @@ class StudentDashboardScreen extends ConsumerWidget {
           padding: EdgeInsets.zero,
           children: [
             HeroHeader(
+              leading: _HeroAvatar(
+                firstName: firstName,
+                hasPhoto: profile.valueOrNull?.hasPhoto ?? false,
+              ),
               greeting: greeting,
               name: firstName,
               subtitle: dateStr,
@@ -144,7 +149,8 @@ class StudentDashboardScreen extends ConsumerWidget {
 /// attendance status badge (if loaded) plus a compact grade/section + S.Y.
 /// line (if the profile is loaded) — replaces the old standalone
 /// _ProfileCard, whose name/avatar were redundant with the greeting
-/// HeroHeader already shows large above this.
+/// HeroHeader already shows large above this (the photo avatar now lives
+/// in HeroHeader.leading instead, so it isn't redundant).
 Widget? _dashboardHeroTrailing(
   AsyncValue<StudentTodaySummary> today,
   AsyncValue<StudentProfile> profile,
@@ -179,6 +185,35 @@ Widget? _dashboardHeroTrailing(
       ],
     ],
   );
+}
+
+/// Circular avatar for the Student Dashboard's HeroHeader — the student's
+/// own photo when they have one on file, otherwise their first initial
+/// (same fallback the old, since-removed standalone profile card used).
+class _HeroAvatar extends StatelessWidget {
+  final String firstName;
+  final bool hasPhoto;
+
+  const _HeroAvatar({required this.firstName, required this.hasPhoto});
+
+  @override
+  Widget build(BuildContext context) {
+    final fallback = Center(
+      child: Text(
+        firstName.isNotEmpty ? firstName[0].toUpperCase() : '?',
+        style: AppTextStyles.custom(
+            fontSize: 18, fontWeight: FontWeight.w700, color: Colors.white),
+      ),
+    );
+
+    return Container(
+      width: 44,
+      height: 44,
+      decoration: const BoxDecoration(color: Colors.white24, shape: BoxShape.circle),
+      clipBehavior: Clip.antiAlias,
+      child: hasPhoto ? StudentPhotoImage(child: fallback) : fallback,
+    );
+  }
 }
 
 class _TodayCard extends StatelessWidget {
