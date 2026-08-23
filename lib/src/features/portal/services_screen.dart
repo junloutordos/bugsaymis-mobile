@@ -121,32 +121,65 @@ class ServicesScreen extends ConsumerWidget {
                     const SizedBox(height: 20),
                     const SectionLabel('ACCOUNT'),
                     AppCard(
-                      padding: EdgeInsets.zero,
-                      child: Column(
+                      child: Row(
                         children: [
-                          ListTile(
-                            leading: const Icon(Icons.person_rounded,
-                                color: AppColors.textSecondary, size: 20),
-                            title: Text(user?.name ?? 'Student',
-                                style: AppTextStyles.custom(fontSize: 14, fontWeight: FontWeight.w600)),
-                            subtitle: Text(user?.email ?? '',
-                                style: AppTextStyles.custom(fontSize: 12, color: AppColors.textSecondary)),
-                          ),
-                          const Divider(height: 1),
-                          ListTile(
-                            leading: const Icon(Icons.logout_rounded,
-                                color: Colors.redAccent, size: 20),
-                            title: Text('Sign out',
-                                style: AppTextStyles.bodySemibold.copyWith(color: Colors.redAccent)),
-                            onTap: () async {
-                              await ref
-                                  .read(authStateProvider.notifier)
-                                  .logout();
-                              if (context.mounted) context.go('/login');
-                            },
+                          const Icon(Icons.person_rounded,
+                              color: AppColors.textSecondary, size: 20),
+                          const SizedBox(width: 14),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(user?.name ?? 'Student',
+                                    style: AppTextStyles.custom(fontSize: 14, fontWeight: FontWeight.w600)),
+                                Text(user?.email ?? '',
+                                    style: AppTextStyles.custom(fontSize: 12, color: AppColors.textSecondary)),
+                              ],
+                            ),
                           ),
                         ],
                       ),
+                    ),
+                    const SizedBox(height: 12),
+                    _ServiceTile(
+                      icon: Icons.badge_outlined,
+                      iconColor: AppColors.accentMid,
+                      iconBg: AppColors.accentBg,
+                      title: 'Digital Student ID',
+                      subtitle: 'Show this at the gate scanner',
+                      onTap: () => context.push('/student/id'),
+                    ),
+                    const SizedBox(height: 12),
+                    _ServiceTile(
+                      icon: Icons.edit_note_rounded,
+                      iconColor: AppColors.accentMid,
+                      iconBg: AppColors.accentBg,
+                      title: 'Update My Information',
+                      subtitle: 'Request changes to your personal info',
+                      onTap: () => context.push('/student/profile-update'),
+                    ),
+                    const SizedBox(height: 12),
+                    _ServiceTile(
+                      icon: Icons.notifications_outlined,
+                      iconColor: AppColors.accentMid,
+                      iconBg: AppColors.accentBg,
+                      title: 'Notification Settings',
+                      subtitle: 'Push & email preferences',
+                      onTap: () => context.push('/notification-preferences'),
+                    ),
+                    const SizedBox(height: 12),
+                    _ServiceTile(
+                      icon: Icons.logout_rounded,
+                      iconColor: Colors.redAccent,
+                      iconBg: const Color(0xFFFEE2E2),
+                      titleColor: Colors.redAccent,
+                      title: 'Sign out',
+                      subtitle: 'End your current session',
+                      showChevron: false,
+                      onTap: () async {
+                        await ref.read(authStateProvider.notifier).logout();
+                        if (context.mounted) context.go('/login');
+                      },
                     ),
                   ],
                 ),
@@ -241,8 +274,10 @@ class _ServiceTile extends StatelessWidget {
   final Color iconColor;
   final Color iconBg;
   final String title;
+  final Color? titleColor;
   final String subtitle;
   final Widget? trailing;
+  final bool showChevron;
   final VoidCallback onTap;
 
   const _ServiceTile({
@@ -250,8 +285,10 @@ class _ServiceTile extends StatelessWidget {
     required this.iconColor,
     required this.iconBg,
     required this.title,
+    this.titleColor,
     required this.subtitle,
     this.trailing,
+    this.showChevron = true,
     required this.onTap,
   });
 
@@ -278,7 +315,8 @@ class _ServiceTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(title,
-                          style: AppTextStyles.custom(fontSize: 14, fontWeight: FontWeight.w700)),
+                          style: AppTextStyles.custom(
+                              fontSize: 14, fontWeight: FontWeight.w700, color: titleColor)),
                       const SizedBox(height: 2),
                       Text(subtitle,
                           style: AppTextStyles.custom(fontSize: 12, color: AppColors.textSecondary)),
@@ -289,8 +327,9 @@ class _ServiceTile extends StatelessWidget {
                   trailing!,
                   const SizedBox(width: 4),
                 ],
-                const Icon(Icons.chevron_right_rounded,
-                    color: AppColors.textDisabled),
+                if (showChevron)
+                  const Icon(Icons.chevron_right_rounded,
+                      color: AppColors.textDisabled),
               ],
             ),
           ),
