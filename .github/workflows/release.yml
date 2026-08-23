@@ -94,6 +94,9 @@ jobs:
         working-directory: ios
         run: bundle install
 
+      - name: Disable Swift Package Manager integration
+        run: flutter config --no-enable-swift-package-manager
+
       - name: Install CocoaPods
         env:
           LANG: en_US.UTF-8
