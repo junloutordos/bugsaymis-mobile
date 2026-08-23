@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../core/api_client.dart';
+import '../../core/constants.dart';
 
 class NoticeItem {
   final int id;
@@ -62,3 +64,12 @@ final noticesProvider = FutureProvider.autoDispose<NoticesData>((ref) async {
 
 Future<void> acknowledgeNotice(ApiClient api, NoticeItem item) =>
     api.post('/notices/${item.kind}/${item.id}/acknowledge');
+
+/// Bearer token as HTTP headers, for authenticated poster image requests —
+/// CachedNetworkImage takes a plain header map, not a Dio interceptor, so
+/// this duplicates the one line of ApiClient's auth logic that images need.
+final posterAuthHeadersProvider = FutureProvider<Map<String, String>>((ref) async {
+  const storage = FlutterSecureStorage();
+  final token = await storage.read(key: AppConstants.tokenKey);
+  return token != null ? {'Authorization': 'Bearer $token'} : {};
+});
