@@ -93,7 +93,10 @@ jobs:
         run: bundle install
 
       - name: Install CocoaPods
-        run: gem install cocoapods
+        run: |
+          brew install cocoapods || brew reinstall cocoapods
+          which pod
+          pod --version
 
       - name: fastlane release
         working-directory: ios
