@@ -1,0 +1,2 @@
+app_identifier("ph.edu.pshs.crc.bugsaymis_mobile")
+team_id(ENV["APPLE_TEAM_ID"])
