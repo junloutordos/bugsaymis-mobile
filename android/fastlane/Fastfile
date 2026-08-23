@@ -12,6 +12,7 @@ platform :android do
       "--artifact=aab",
       "--build-name=#{build_name}",
       "--build-number=#{build_number}",
+      "--flutter-version=3.41.6",
       chdir: ".."
     )
 
@@ -30,6 +31,7 @@ platform :android do
       "--artifact=apk",
       "--build-name=#{build_name}",
       "--build-number=#{build_number}",
+      "--flutter-version=3.41.6",
       chdir: ".."
     )
 

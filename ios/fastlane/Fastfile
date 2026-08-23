@@ -25,6 +25,7 @@ platform :ios do
       "shorebird", "release", "ios",
       "--build-name=#{build_name}",
       "--build-number=#{build_number}",
+      "--flutter-version=3.41.6",
       chdir: ".."
     )
 
