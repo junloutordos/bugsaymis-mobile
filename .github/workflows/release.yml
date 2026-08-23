@@ -99,7 +99,7 @@ jobs:
           LANG: en_US.UTF-8
           LC_ALL: en_US.UTF-8
         run: |
-          brew install cocoapods || brew reinstall cocoapods
+          sudo gem install cocoapods -n /usr/local/bin
           which pod
           pod --version
 
