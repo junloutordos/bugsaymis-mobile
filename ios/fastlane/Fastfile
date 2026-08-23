@@ -39,11 +39,29 @@ platform :ios do
       )
     end
 
+    # The Xcode project has a hardcoded provisioning profile specifier
+    # ("AtlasGo App Store") that doesn't match match's dynamically-named
+    # profile. That mismatch breaks the *archive* step (xcodebuild reads it
+    # straight from the pbxproj), so it must be patched before build_app
+    # runs — passing export_options to build_app alone only affects the
+    # later export-to-IPA step, not the archive.
+    update_code_signing_settings(
+      use_automatic_signing: false,
+      path: "Runner.xcodeproj",
+      code_sign_identity: "Apple Distribution",
+      profile_name: lane_context[SharedValues::MATCH_PROVISIONING_PROFILE_MAPPING]["ph.edu.pshs.crc.bugsaymisMobile"],
+      team_id: ENV["APPLE_TEAM_ID"],
+      targets: "Runner"
+    )
+
     build_app(
       workspace: "Runner.xcworkspace",
       scheme: "Runner",
       export_method: "app-store",
-      output_directory: "../build/ios/ipa"
+      output_directory: "../build/ios/ipa",
+      export_options: {
+        provisioningProfiles: lane_context[SharedValues::MATCH_PROVISIONING_PROFILE_MAPPING]
+      }
     )
 
     ipa_path = Dir.glob("../build/ios/ipa/*.ipa").first
