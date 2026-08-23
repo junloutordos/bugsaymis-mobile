@@ -33,6 +33,7 @@ jobs:
 
       - name: Decode Android keystore
         run: |
+          mkdir -p android/keystore
           echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android/keystore/atlasgo-release.jks
           cat > android/key.properties <<EOF
           storeFile=../keystore/atlasgo-release.jks
