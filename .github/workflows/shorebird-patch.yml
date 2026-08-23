@@ -1,0 +1,39 @@
+name: Shorebird Patch
+
+on:
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: 'Platform to patch'
+        required: true
+        type: choice
+        options: [android, ios]
+      release-version:
+        description: 'Exact released version to patch (e.g. 1.3.0)'
+        required: true
+        type: string
+
+jobs:
+  patch:
+    runs-on: ${{ inputs.platform == 'ios' && 'macos-14' || 'ubuntu-latest' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.41.6'
+          channel: 'stable'
+
+      - name: Install Shorebird
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/shorebirdtech/install/main/install.sh | bash
+          echo "$HOME/.shorebird/bin" >> "$GITHUB_PATH"
+
+      - name: shorebird patch
+        env:
+          SHOREBIRD_TOKEN: ${{ secrets.SHOREBIRD_TOKEN }}
+          PATCH_PLATFORM: ${{ inputs.platform }}
+          PATCH_RELEASE_VERSION: ${{ inputs.release-version }}
+        run: |
+          shorebird patch "$PATCH_PLATFORM" \
+            --release-version="$PATCH_RELEASE_VERSION"
