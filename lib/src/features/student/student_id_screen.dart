@@ -1,18 +1,21 @@
-import 'package:barcode_widget/barcode_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:screen_brightness/screen_brightness.dart';
+import 'dart:math' as math;
 import '../../core/theme.dart';
 import '../../shared/widgets/pressable.dart';
+import 'student_id_card_back.dart';
+import 'student_id_card_front.dart';
 import 'student_provider.dart';
 
-/// The physical school IDs' symbology is not verifiable from this repo —
-/// flip to Barcode.code39() if the gate scanners reject Code 128.
-final _idSymbology = Barcode.code128();
-
-/// Full-screen digital student ID, opened from the nav's center button.
-/// Boosts screen brightness while visible so gate scanners can read it.
+/// Full-screen digital student ID, opened from Profile → "Digital Student
+/// ID". Mirrors the physical CR-80 card printed via
+/// resources/js/Pages/Students/IdCard.vue field-for-field (see
+/// StudentIdCardFront/StudentIdCardBack); the button below the card flips
+/// between the front and back faces the same way the physical card's two
+/// sides do. Boosts screen brightness while visible so gate scanners can
+/// read the front's barcode.
 class StudentIdScreen extends ConsumerStatefulWidget {
   const StudentIdScreen({super.key});
 
@@ -20,11 +23,15 @@ class StudentIdScreen extends ConsumerStatefulWidget {
   ConsumerState<StudentIdScreen> createState() => _StudentIdScreenState();
 }
 
-class _StudentIdScreenState extends ConsumerState<StudentIdScreen> {
+class _StudentIdScreenState extends ConsumerState<StudentIdScreen>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _flipController;
+  bool _showingBack = false;
+
   @override
   void initState() {
     super.initState();
-    // Application-level brightness auto-restores when the app backgrounds.
+    _flipController = AnimationController(vsync: this, duration: AppMotion.slow);
     ScreenBrightness.instance
         .setApplicationScreenBrightness(1.0)
         .catchError((_) {});
@@ -32,15 +39,25 @@ class _StudentIdScreenState extends ConsumerState<StudentIdScreen> {
 
   @override
   void dispose() {
+    _flipController.dispose();
     ScreenBrightness.instance
         .resetApplicationScreenBrightness()
         .catchError((_) {});
     super.dispose();
   }
 
+  void _flip() {
+    setState(() => _showingBack = !_showingBack);
+    if (_showingBack) {
+      _flipController.forward();
+    } else {
+      _flipController.reverse();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final profile = ref.watch(studentProfileProvider);
+    final card = ref.watch(studentIdCardProvider);
 
     return Scaffold(
       backgroundColor: AppColors.primary,
@@ -56,23 +73,70 @@ class _StudentIdScreenState extends ConsumerState<StudentIdScreen> {
                   borderRadius: BorderRadius.circular(24),
                   child: const Padding(
                     padding: EdgeInsets.all(8),
-                    child: Icon(Icons.close_rounded,
-                        color: Colors.white, size: 26),
+                    child: Icon(Icons.close_rounded, color: Colors.white, size: 26),
                   ),
                 ),
               ),
             ),
             Expanded(
               child: Center(
-                child: profile.when(
+                child: card.when(
                   loading: () => const CircularProgressIndicator(
                       color: Colors.white, strokeWidth: 2.5),
                   error: (_, _) => _ErrorView(
-                    onRetry: () => ref.invalidate(studentProfileProvider),
+                    onRetry: () => ref.invalidate(studentIdCardProvider),
                   ),
-                  data: (p) => SingleChildScrollView(
-                    padding: const EdgeInsets.fromLTRB(28, 8, 28, 24),
-                    child: _IdCard(profile: p),
+                  data: (c) => LayoutBuilder(
+                    builder: (context, constraints) {
+                      final cardWidth = constraints.maxWidth < 236
+                          ? constraints.maxWidth
+                          : 236.0;
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            AnimatedBuilder(
+                              animation: _flipController,
+                              builder: (context, _) {
+                                final angle = _flipController.value * math.pi;
+                                final isBackHalf = _flipController.value >= 0.5;
+                                return Transform(
+                                  alignment: Alignment.center,
+                                  transform: Matrix4.identity()
+                                    ..setEntry(3, 2, 0.0015)
+                                    ..rotateY(angle),
+                                  child: isBackHalf
+                                      ? Transform(
+                                          alignment: Alignment.center,
+                                          transform: Matrix4.identity()..rotateY(math.pi),
+                                          child: StudentIdCardBack(card: c, cardWidth: cardWidth),
+                                        )
+                                      : StudentIdCardFront(card: c, cardWidth: cardWidth),
+                                );
+                              },
+                            ),
+                            SizedBox(height: AppSpacing.lg),
+                            OutlinedButton.icon(
+                              onPressed: _flip,
+                              icon: const Icon(Icons.flip_camera_ios_outlined, color: Colors.white, size: 18),
+                              label: Text(
+                                _showingBack ? 'Show Front' : 'Show Back',
+                                style: AppTextStyles.custom(
+                                    fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),
+                              ),
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: Colors.white,
+                                side: const BorderSide(color: Colors.white38),
+                                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(AppRadius.button)),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
                   ),
                 ),
               ),
@@ -80,162 +144,6 @@ class _StudentIdScreenState extends ConsumerState<StudentIdScreen> {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _IdCard extends StatelessWidget {
-  final StudentProfile profile;
-  const _IdCard({required this.profile});
-
-  @override
-  Widget build(BuildContext context) => Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(AppRadius.sheet)),
-          boxShadow: kFormShadow,
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _header(),
-            Container(height: 4, decoration: const BoxDecoration(gradient: AppGradients.button)),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(24, 24, 24, 20),
-              child: Column(
-                children: [
-                  _avatar(),
-                  const SizedBox(height: 14),
-                  Text(profile.name,
-                      textAlign: TextAlign.center,
-                      style: AppTextStyles.screenTitle.copyWith(fontSize: 20)),
-                  const SizedBox(height: 4),
-                  Text(
-                    (profile.gradeLevel != null && profile.section != null)
-                        ? 'Grade ${profile.gradeLevel} — ${profile.section}'
-                        : 'Student',
-                    style: AppTextStyles.bodyMedium
-                        .copyWith(color: AppColors.textSecondary),
-                  ),
-                  if (profile.schoolYear != null) ...[
-                    const SizedBox(height: 2),
-                    Text('S.Y. ${profile.schoolYear}',
-                        style: AppTextStyles.caption),
-                  ],
-                  const SizedBox(height: 20),
-                  _barcodeBlock(),
-                ],
-              ),
-            ),
-            Container(
-              width: double.infinity,
-              color: AppColors.background,
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-              child: Text(
-                'Present this screen at the campus gate scanner',
-                textAlign: TextAlign.center,
-                style: AppTextStyles.caption,
-              ),
-            ),
-          ],
-        ),
-      );
-
-  Widget _header() => Container(
-        color: AppColors.primary,
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-        child: Row(
-          children: [
-            Image.asset(
-              'assets/images/pshs_logo.png',
-              height: 36,
-              errorBuilder: (_, _, _) => const Icon(Icons.school_rounded,
-                  color: Colors.white, size: 32),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Philippine Science High School',
-                      style: AppTextStyles.caption.copyWith(
-                          color: Colors.white70, fontSize: 11)),
-                  Text('Caraga Region Campus',
-                      style: AppTextStyles.cardTitle
-                          .copyWith(color: Colors.white, fontSize: 13)),
-                ],
-              ),
-            ),
-            Image.asset(
-              'assets/images/atlasgo_mark.png',
-              height: 24,
-              errorBuilder: (_, _, _) => const SizedBox.shrink(),
-            ),
-          ],
-        ),
-      );
-
-  Widget _avatar() => Container(
-        width: 72,
-        height: 72,
-        decoration: const BoxDecoration(
-          gradient: AppGradients.button,
-          shape: BoxShape.circle,
-        ),
-        child: Center(
-          child: Text(
-            profile.name.isNotEmpty ? profile.name[0].toUpperCase() : '?',
-            style: AppTextStyles.screenTitle
-                .copyWith(color: Colors.white, fontSize: 30),
-          ),
-        ),
-      );
-
-  Widget _barcodeBlock() {
-    final barcode = profile.barcode;
-    if (barcode == null || barcode.isEmpty) {
-      return Column(
-        children: [
-          const Icon(Icons.qr_code_2_rounded,
-              size: 48, color: AppColors.textDisabled),
-          const SizedBox(height: 8),
-          Text('No ID barcode on file',
-              style: AppTextStyles.bodySemibold
-                  .copyWith(color: AppColors.textSecondary)),
-          const SizedBox(height: 4),
-          Text('Contact the MIS office to have your ID activated',
-              textAlign: TextAlign.center, style: AppTextStyles.caption),
-        ],
-      );
-    }
-
-    // White padding all around = the quiet zone scanners need.
-    return Column(
-      children: [
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(AppRadius.field),
-            border: Border.all(color: AppColors.borderLight),
-          ),
-          child: BarcodeWidget(
-            barcode: _idSymbology,
-            data: barcode,
-            height: 88,
-            drawText: false,
-            color: Colors.black,
-            errorBuilder: (_, _) => Text(barcode,
-                textAlign: TextAlign.center,
-                style: AppTextStyles.bodySemibold),
-          ),
-        ),
-        const SizedBox(height: 8),
-        Text(barcode,
-            style: AppTextStyles.bodyMedium.copyWith(letterSpacing: 2)),
-      ],
     );
   }
 }
