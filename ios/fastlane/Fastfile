@@ -21,24 +21,23 @@ platform :ios do
       force_legacy_encryption: true
     )
 
-    # `shorebird release ios` has a confirmed upstream bug: it falsely reports
-    # CocoaPods as broken even when it works fine (verified: plain `flutter
-    # build ipa` in the identical CI environment completes pod install and
-    # the archive successfully every time; `shorebird release ios` fails at
-    # the same check every time regardless of CocoaPods version/install
-    # method/Xcode version). Until Shorebird fixes this, iOS builds go
-    # through plain `flutter build ios` + fastlane's own `build_app` (gym),
-    # which correctly picks up match's provisioning profile via the
-    # MATCH_PROVISIONING_PROFILE_MAPPING lane context. iOS does not get
-    # Shorebird OTA patching for now — Android still does.
-    sh(
-      "flutter", "build", "ios",
-      "--release",
-      "--no-codesign",
-      "--build-name=#{build_name}",
-      "--build-number=#{build_number}",
-      chdir: ".."
-    )
+    # A subprocess spawned via fastlane's sh() from inside `bundle exec`
+    # inherits Bundler's GEM_HOME/GEM_PATH/BUNDLE_GEMFILE — so a Ruby-based
+    # tool like `pod`, invoked here as a subprocess, tries to resolve against
+    # fastlane's own bundle sandbox instead of its real gem install and
+    # reports itself broken. Bundler.with_original_env strips that leaked
+    # environment before shelling out, matching the plain (non-bundled)
+    # GitHub Actions steps where this exact build already works fine.
+    Bundler.with_original_env do
+      sh(
+        "flutter", "build", "ios",
+        "--release",
+        "--no-codesign",
+        "--build-name=#{build_name}",
+        "--build-number=#{build_number}",
+        chdir: ".."
+      )
+    end
 
     build_app(
       workspace: "Runner.xcworkspace",
