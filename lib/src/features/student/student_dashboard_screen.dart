@@ -46,19 +46,13 @@ class StudentDashboardScreen extends ConsumerWidget {
           padding: EdgeInsets.zero,
           children: [
             HeroHeader(
-              leading: _HeroAvatar(
+              trailingAction: _HeroAvatar(
                 firstName: firstName,
                 hasPhoto: profile.valueOrNull?.hasPhoto ?? false,
               ),
               greeting: greeting,
               name: firstName,
               subtitle: dateStr,
-              actionIcon: Icons.logout_rounded,
-              actionTooltip: 'Sign out',
-              onActionTap: () async {
-                await ref.read(authStateProvider.notifier).logout();
-                if (context.mounted) context.go('/login');
-              },
               onTap: () => context.push('/profile'),
               trailing: _dashboardHeroTrailing(today, profile),
             ),
@@ -150,7 +144,7 @@ class StudentDashboardScreen extends ConsumerWidget {
 /// line (if the profile is loaded) — replaces the old standalone
 /// _ProfileCard, whose name/avatar were redundant with the greeting
 /// HeroHeader already shows large above this (the photo avatar now lives
-/// in HeroHeader.leading instead, so it isn't redundant).
+/// in HeroHeader.trailingAction instead, so it isn't redundant).
 Widget? _dashboardHeroTrailing(
   AsyncValue<StudentTodaySummary> today,
   AsyncValue<StudentProfile> profile,
@@ -202,13 +196,13 @@ class _HeroAvatar extends StatelessWidget {
       child: Text(
         firstName.isNotEmpty ? firstName[0].toUpperCase() : '?',
         style: AppTextStyles.custom(
-            fontSize: 18, fontWeight: FontWeight.w700, color: Colors.white),
+            fontSize: 26, fontWeight: FontWeight.w700, color: Colors.white),
       ),
     );
 
     return Container(
-      width: 44,
-      height: 44,
+      width: 64,
+      height: 64,
       decoration: const BoxDecoration(color: Colors.white24, shape: BoxShape.circle),
       clipBehavior: Clip.antiAlias,
       child: hasPhoto ? StudentPhotoImage(child: fallback) : fallback,
