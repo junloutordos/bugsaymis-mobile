@@ -95,6 +95,9 @@ jobs:
         run: bundle install
 
       - name: Install CocoaPods
+        env:
+          LANG: en_US.UTF-8
+          LC_ALL: en_US.UTF-8
         run: |
           brew install cocoapods || brew reinstall cocoapods
           which pod
@@ -103,13 +106,17 @@ jobs:
       - name: flutter pub get
         run: flutter pub get
 
-      - name: pod install
-        working-directory: ios
-        run: pod install --repo-update
+      - name: flutter doctor
+        env:
+          LANG: en_US.UTF-8
+          LC_ALL: en_US.UTF-8
+        run: flutter doctor -v
 
       - name: fastlane release
         working-directory: ios
         env:
+          LANG: en_US.UTF-8
+          LC_ALL: en_US.UTF-8
           SHOREBIRD_TOKEN: ${{ secrets.SHOREBIRD_TOKEN }}
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
