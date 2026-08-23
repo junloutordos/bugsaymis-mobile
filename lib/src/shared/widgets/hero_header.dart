@@ -4,9 +4,9 @@ import '../../core/theme.dart';
 /// Replaces the pinned white `AppHeader` on screens that show a real
 /// personalized greeting (Home, Student Dashboard) with a scrolling
 /// gradient hero: greeting/name/date, a translucent circular action button
-/// (profile on Home, sign-out on Student Dashboard — hence the generic
-/// icon/tooltip/callback rather than a hardcoded "profile" action), and one
-/// optional glanceable stat.
+/// (profile on Home — hence the generic icon/tooltip/callback rather than a
+/// hardcoded "profile" action), and one optional glanceable stat. Student
+/// Dashboard instead puts its own avatar in this slot via [trailingAction].
 class HeroHeader extends StatelessWidget {
   final Widget? leading;
   final String greeting;
@@ -15,6 +15,10 @@ class HeroHeader extends StatelessWidget {
   final IconData? actionIcon;
   final String? actionTooltip;
   final VoidCallback? onActionTap;
+
+  /// A custom widget for the trailing slot (e.g. a photo avatar) —
+  /// overrides [actionIcon]'s default translucent icon button when given.
+  final Widget? trailingAction;
   final Widget? trailing;
   final VoidCallback? onTap;
 
@@ -27,6 +31,7 @@ class HeroHeader extends StatelessWidget {
     this.actionIcon,
     this.actionTooltip,
     this.onActionTap,
+    this.trailingAction,
     this.trailing,
     this.onTap,
   });
@@ -68,10 +73,20 @@ class HeroHeader extends StatelessWidget {
                             fontSize: 13,
                             fontWeight: FontWeight.w400,
                             color: Colors.white70)),
+                    // Lives inside this Column (not as a sibling below the
+                    // whole Row) so it lines up under greeting/name/subtitle
+                    // even when `leading` pushes this column right of x=0.
+                    if (trailing != null) ...[
+                      SizedBox(height: AppSpacing.lg),
+                      trailing!,
+                    ],
                   ],
                 ),
               ),
-              if (actionIcon != null && onActionTap != null) ...[
+              if (trailingAction != null) ...[
+                SizedBox(width: AppSpacing.md),
+                trailingAction!,
+              ] else if (actionIcon != null && onActionTap != null) ...[
                 SizedBox(width: AppSpacing.md),
                 _HeroActionButton(
                   icon: actionIcon!,
@@ -81,10 +96,6 @@ class HeroHeader extends StatelessWidget {
               ],
             ],
           ),
-          if (trailing != null) ...[
-            SizedBox(height: AppSpacing.lg),
-            trailing!,
-          ],
         ],
       ),
     );

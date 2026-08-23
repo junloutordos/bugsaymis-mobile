@@ -142,4 +142,24 @@ void main() {
     // the callback fire.)
     expect(find.byType(InkWell), findsOneWidget);
   });
+
+  testWidgets('trailing content left-aligns with name/subtitle, not the card edge, when leading is present', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: HeroHeader(
+            leading: HeroBackButton(onTap: () {}),
+            greeting: 'My Profile',
+            name: 'Maria',
+            subtitle: 'maria@example.com',
+            trailing: const Text('Student'),
+          ),
+        ),
+      ),
+    );
+
+    final nameLeft = tester.getTopLeft(find.text('Maria')).dx;
+    final trailingLeft = tester.getTopLeft(find.text('Student')).dx;
+    expect(trailingLeft, nameLeft);
+  });
 }
