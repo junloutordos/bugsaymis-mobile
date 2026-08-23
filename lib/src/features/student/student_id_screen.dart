@@ -88,11 +88,19 @@ class _StudentIdScreenState extends ConsumerState<StudentIdScreen>
                   ),
                   data: (c) => LayoutBuilder(
                     builder: (context, constraints) {
-                      final cardWidth = constraints.maxWidth < 236
-                          ? constraints.maxWidth
-                          : 236.0;
+                      // Nearly fills the screen: fit by width, then by
+                      // whatever height is left after the flip button
+                      // below it, whichever is smaller — keeps the card
+                      // at its true 54:86 CR-80 aspect ratio on every
+                      // device instead of overflowing vertically.
+                      const cardAspect = 54 / 86;
+                      final widthBudget = constraints.maxWidth - 24;
+                      final heightBudget = constraints.maxHeight - 80;
+                      final cardWidth = widthBudget < heightBudget * cardAspect
+                          ? widthBudget
+                          : heightBudget * cardAspect;
                       return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
