@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/api_client.dart';
 import 'notices_provider.dart';
+import 'recent_announcements_provider.dart';
 
 /// Call unconditionally near the top of a dashboard screen's `build()` —
 /// shows the full unread queue (emergency alerts first) as a sequence of
@@ -13,6 +14,21 @@ import 'notices_provider.dart';
 /// `noticesProvider`, not on every rebuild of the calling screen.
 void watchPendingNotices(BuildContext context, WidgetRef ref) {
   ref.listen<AsyncValue<NoticesData>>(noticesProvider, (previous, next) {
+    // _showQueue's own onAcknowledge calls ref.invalidate(noticesProvider) to
+    // refresh the dashboard card — that refetch resolving is itself a state
+    // transition, so without this guard it re-enters here and starts a
+    // second, overlapping _showQueue walk for whatever's left in the queue,
+    // stacking dialogs on top of the one the first walk is already showing.
+    // Confirmed via a real Simulator click-through: with 3+ queued items,
+    // tapping "Mark as Read" once stacked 3 dialogs, which read as the
+    // background going black and the notice appearing to loop.
+    if (_showingQueue) return;
+    // AsyncValue carries the previous resolved value through a reload
+    // (copyWithPrevious) — during the transient loading state right after
+    // our own invalidate, next.value can still be the stale, pre-acknowledge
+    // queue. Wait for a settled result before acting on it, or the tail end
+    // of the walk re-shows an item that was just acknowledged.
+    if (next.isLoading) return;
     final data = next.value;
     if (data == null || data.queue.isEmpty) return;
     if (!context.mounted) return;
@@ -20,8 +36,14 @@ void watchPendingNotices(BuildContext context, WidgetRef ref) {
   });
 }
 
+bool _showingQueue = false;
+
 Future<void> _showQueue(BuildContext context, WidgetRef ref, List<NoticeItem> queue) async {
-  if (queue.isEmpty) return;
+  if (queue.isEmpty) {
+    _showingQueue = false;
+    return;
+  }
+  _showingQueue = true;
   final item = queue.first;
 
   await showDialog<void>(
@@ -40,6 +62,11 @@ Future<void> _showQueue(BuildContext context, WidgetRef ref, List<NoticeItem> qu
           // screen fully rebuilds — confirmed via a real Simulator
           // click-through, not just reasoned about.
           ref.invalidate(noticesProvider);
+          // recentAnnouncementsProvider (the card's own read+unread source)
+          // has its own copy of this item's is_read flag — keep it in sync
+          // too, so the unread dot/badge clears without waiting for a
+          // separate refresh.
+          ref.invalidate(recentAnnouncementsProvider);
           if (dialogContext.mounted) Navigator.of(dialogContext).pop();
         },
       ),
@@ -48,6 +75,8 @@ Future<void> _showQueue(BuildContext context, WidgetRef ref, List<NoticeItem> qu
 
   if (context.mounted) {
     await _showQueue(context, ref, queue.sublist(1));
+  } else {
+    _showingQueue = false;
   }
 }
 
