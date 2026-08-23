@@ -5,22 +5,24 @@ import '../../core/api_client.dart';
 import '../../core/theme.dart';
 import '../../shared/widgets/app_card.dart';
 import 'announcement_detail_sheet.dart';
+import 'announcement_list_item.dart';
 import 'announcement_poster_image.dart';
 import 'notices_provider.dart';
+import 'recent_announcements_provider.dart';
 
 class AnnouncementsCard extends ConsumerWidget {
   const AnnouncementsCard({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final notices = ref.watch(noticesProvider);
+    final recent = ref.watch(recentAnnouncementsProvider);
 
-    return notices.when(
+    return recent.when(
       loading: () => const SizedBox.shrink(),
       error: (_, _) => const SizedBox.shrink(),
-      data: (data) {
-        if (data.announcements.isEmpty) return const SizedBox.shrink();
-        final items = data.announcements.take(5).toList();
+      data: (items) {
+        if (items.isEmpty) return const SizedBox.shrink();
+        final unreadCount = items.where((i) => !i.isRead).length;
 
         return AppCard(
           child: Column(
@@ -29,18 +31,20 @@ class AnnouncementsCard extends ConsumerWidget {
               Row(
                 children: [
                   Text('Announcements', style: AppTextStyles.cardTitle),
-                  const SizedBox(width: 8),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: AppColors.accentBg,
-                      borderRadius: BorderRadius.circular(999),
+                  if (unreadCount > 0) ...[
+                    const SizedBox(width: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: AppColors.accentBg,
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                      child: Text(
+                        '$unreadCount new',
+                        style: AppTextStyles.custom(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.accent),
+                      ),
                     ),
-                    child: Text(
-                      '${data.announcements.length}',
-                      style: AppTextStyles.custom(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.accent),
-                    ),
-                  ),
+                  ],
                   const Spacer(),
                   GestureDetector(
                     onTap: () => context.push('/announcements'),
@@ -67,22 +71,27 @@ class AnnouncementsCard extends ConsumerWidget {
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 6),
                       child: _AnnouncementSquareCard(
-                        title: item.title,
-                        posterPath: item.posterPath,
+                        item: item,
                         onTap: () => showAnnouncementDetail(
                           context,
                           title: item.title,
                           body: item.body,
                           posterPath: item.posterPath,
-                          isRead: false,
-                          onAcknowledge: () async {
-                            await acknowledgeNotice(ref.read(apiClientProvider), item);
-                            // Without this, the dashboard card keeps showing the
-                            // now-acknowledged item until the screen fully
-                            // rebuilds — same gotcha already fixed once for the
-                            // forced notice queue (notice_queue_dialog.dart:38-41).
-                            ref.invalidate(noticesProvider);
-                          },
+                          publishedAt: item.publishedAt,
+                          isRead: item.isRead,
+                          onAcknowledge: item.isRead
+                              ? null
+                              : () async {
+                                  await ref
+                                      .read(apiClientProvider)
+                                      .post('/notices/announcement/${item.id}/acknowledge');
+                                  // Both providers read the same acknowledgment
+                                  // state from different endpoints (pending vs.
+                                  // history) — invalidate both so the forced
+                                  // queue modal and this card agree afterward.
+                                  ref.invalidate(noticesProvider);
+                                  ref.invalidate(recentAnnouncementsProvider);
+                                },
                         ),
                       ),
                     );
@@ -98,11 +107,10 @@ class AnnouncementsCard extends ConsumerWidget {
 }
 
 class _AnnouncementSquareCard extends StatelessWidget {
-  final String title;
-  final String? posterPath;
+  final AnnouncementListItem item;
   final VoidCallback onTap;
 
-  const _AnnouncementSquareCard({required this.title, required this.posterPath, required this.onTap});
+  const _AnnouncementSquareCard({required this.item, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -115,8 +123,8 @@ class _AnnouncementSquareCard extends StatelessWidget {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              if (posterPath != null)
-                AnnouncementPosterImage(posterPath: posterPath!)
+              if (item.posterPath != null)
+                AnnouncementPosterImage(posterPath: item.posterPath!)
               else
                 Container(
                   color: AppColors.accentBg,
@@ -138,13 +146,23 @@ class _AnnouncementSquareCard extends StatelessWidget {
                     ),
                   ),
                   child: Text(
-                    title,
+                    item.title,
                     style: AppTextStyles.custom(fontSize: 13, fontWeight: FontWeight.w700, color: Colors.white),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ),
+              if (!item.isRead)
+                Positioned(
+                  top: 8,
+                  right: 8,
+                  child: Container(
+                    width: 10,
+                    height: 10,
+                    decoration: const BoxDecoration(color: AppColors.accent, shape: BoxShape.circle),
+                  ),
+                ),
             ],
           ),
         ),

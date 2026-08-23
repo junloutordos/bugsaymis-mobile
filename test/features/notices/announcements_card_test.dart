@@ -24,19 +24,27 @@ class _StaticAdapter implements HttpClientAdapter {
   void close({bool force = false}) {}
 }
 
+Map<String, dynamic> _item(int id, {bool isRead = false, String? title, String? body}) => {
+      'id': id,
+      'title': title ?? 'Announcement $id',
+      'body': body ?? 'Body $id',
+      'poster_path': null,
+      'published_at': null,
+      'is_read': isRead,
+    };
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   const secureStorageChannel = MethodChannel('plugins.it_nomads.com/flutter_secure_storage');
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
       .setMockMethodCallHandler(secureStorageChannel, (call) async => null);
 
-  testWidgets('caps the swipeable cards at 5, and See all navigates to /announcements', (tester) async {
+  testWidgets('caps the swipeable cards at 5, includes already-read items, and See all navigates to /announcements',
+      (tester) async {
     final apiClient = ApiClient();
     apiClient.dio.httpClientAdapter = _StaticAdapter(jsonEncode({
-      'emergency_alerts': [],
-      'announcements': List.generate(7, (i) => {
-            'id': i, 'title': 'Announcement $i', 'body': 'Body $i', 'poster_path': null,
-          }),
+      'data': List.generate(7, (i) => _item(i, isRead: i.isEven)),
+      'next_page_url': 'x',
     }));
 
     final router = GoRouter(routes: [
@@ -52,6 +60,8 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    // Item 0 is read (isEven), still shown — this is the whole point of the
+    // history-backed card: it doesn't empty out once things are acknowledged.
     expect(find.text('Announcement 0'), findsOneWidget);
     expect(find.text('Announcement 5'), findsNothing);
     expect(find.text('Announcement 6'), findsNothing);
@@ -65,10 +75,8 @@ void main() {
   testWidgets('tapping a card opens the detail sheet for that announcement', (tester) async {
     final apiClient = ApiClient();
     apiClient.dio.httpClientAdapter = _StaticAdapter(jsonEncode({
-      'emergency_alerts': [],
-      'announcements': [
-        {'id': 1, 'title': 'Tap Me', 'body': 'Full body text.', 'poster_path': null},
-      ],
+      'data': [_item(1, title: 'Tap Me', body: 'Full body text.')],
+      'next_page_url': null,
     }));
 
     final router = GoRouter(routes: [
