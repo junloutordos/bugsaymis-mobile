@@ -60,4 +60,60 @@ void main() {
     expect(find.byType(RadialProgressRing), findsOneWidget);
     expect(find.byType(TrendChart), findsOneWidget);
   });
+
+  testWidgets('tapping the previous-week chevron moves the day strip into the past', (tester) async {
+    final apiClient = ApiClient();
+    apiClient.dio.httpClientAdapter = _PathRoutedAdapter();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          apiClientProvider.overrideWithValue(apiClient),
+          attendanceSummaryProvider.overrideWith((ref) async => const AttendanceSummary(
+                monthPresent: 12,
+                monthSchoolDays: 15,
+                monthRate: 0.8,
+                weekly: [],
+              )),
+        ],
+        child: const MaterialApp(home: StudentAttendanceScreen()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('This week'), findsOneWidget);
+
+    await tester.tap(find.byTooltip('Previous week'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('This week'), findsNothing);
+    // The next-week chevron re-enables once we're no longer on the
+    // window that ends today.
+    final nextButton = tester.widget<IconButton>(find.widgetWithIcon(IconButton, Icons.chevron_right_rounded));
+    expect(nextButton.onPressed, isNotNull);
+  });
+
+  testWidgets('the next-week chevron is disabled while showing the current week', (tester) async {
+    final apiClient = ApiClient();
+    apiClient.dio.httpClientAdapter = _PathRoutedAdapter();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          apiClientProvider.overrideWithValue(apiClient),
+          attendanceSummaryProvider.overrideWith((ref) async => const AttendanceSummary(
+                monthPresent: 12,
+                monthSchoolDays: 15,
+                monthRate: 0.8,
+                weekly: [],
+              )),
+        ],
+        child: const MaterialApp(home: StudentAttendanceScreen()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final nextButton = tester.widget<IconButton>(find.widgetWithIcon(IconButton, Icons.chevron_right_rounded));
+    expect(nextButton.onPressed, isNull);
+  });
 }

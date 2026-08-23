@@ -36,9 +36,24 @@ class _StudentAttendanceScreenState
     _selectedDate = DateTime.now();
   }
 
-  List<DateTime> get _weekDays {
+  /// Rolling 7-day window ending at [_selectedDate] — not a fixed
+  /// calendar week, and not hardcoded to "today", so paging the selected
+  /// date backward (via the chevrons or the date picker) moves the whole
+  /// strip into past weeks/months instead of always showing the current
+  /// week regardless of what's selected.
+  List<DateTime> get _weekDays => List.generate(
+      7, (i) => _selectedDate.subtract(Duration(days: 6 - i)));
+
+  bool get _isCurrentWeek {
     final today = DateTime.now();
-    return List.generate(7, (i) => today.subtract(Duration(days: 6 - i)));
+    return DateFormat('yyyy-MM-dd').format(_selectedDate) ==
+        DateFormat('yyyy-MM-dd').format(today);
+  }
+
+  void _shiftWeek(int days) {
+    final next = _selectedDate.add(Duration(days: days));
+    if (next.isAfter(DateTime.now())) return;
+    setState(() => _selectedDate = next);
   }
 
   @override
@@ -94,6 +109,37 @@ class _StudentAttendanceScreenState
                               setState(() => _selectedDate = picked);
                             }
                           },
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+                    child: Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.chevron_left_rounded,
+                              color: AppColors.textSecondary),
+                          tooltip: 'Previous week',
+                          onPressed: () => _shiftWeek(-7),
+                        ),
+                        Expanded(
+                          child: Text(
+                            _isCurrentWeek
+                                ? 'This week'
+                                : '${DateFormat('MMM d').format(_weekDays.first)} – ${DateFormat('MMM d').format(_weekDays.last)}',
+                            textAlign: TextAlign.center,
+                            style: AppTextStyles.custom(
+                                fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textSecondary),
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.chevron_right_rounded,
+                              color: AppColors.textSecondary),
+                          tooltip: 'Next week',
+                          onPressed: _selectedDate.add(const Duration(days: 7)).isAfter(DateTime.now())
+                              ? null
+                              : () => _shiftWeek(7),
                         ),
                       ],
                     ),
