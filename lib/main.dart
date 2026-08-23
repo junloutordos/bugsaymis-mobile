@@ -87,6 +87,7 @@ class AtlasGoApp extends ConsumerWidget {
               showPosition: false,
               onAcknowledge: () async {
                 await acknowledgeNotice(ref.read(apiClientProvider), item);
+                ref.invalidate(noticesProvider);
                 if (dialogContext.mounted) Navigator.of(dialogContext).pop();
               },
             ),

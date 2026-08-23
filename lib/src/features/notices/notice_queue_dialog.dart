@@ -35,6 +35,11 @@ Future<void> _showQueue(BuildContext context, WidgetRef ref, List<NoticeItem> qu
         showPosition: queue.length > 1,
         onAcknowledge: () async {
           await acknowledgeNotice(ref.read(apiClientProvider), item);
+          // Without this, the dashboard card (which watches the same
+          // provider) keeps showing the now-acknowledged item until the
+          // screen fully rebuilds — confirmed via a real Simulator
+          // click-through, not just reasoned about.
+          ref.invalidate(noticesProvider);
           if (dialogContext.mounted) Navigator.of(dialogContext).pop();
         },
       ),
