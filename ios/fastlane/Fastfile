@@ -21,12 +21,30 @@ platform :ios do
       force_legacy_encryption: true
     )
 
+    # `shorebird release ios` has a confirmed upstream bug: it falsely reports
+    # CocoaPods as broken even when it works fine (verified: plain `flutter
+    # build ipa` in the identical CI environment completes pod install and
+    # the archive successfully every time; `shorebird release ios` fails at
+    # the same check every time regardless of CocoaPods version/install
+    # method/Xcode version). Until Shorebird fixes this, iOS builds go
+    # through plain `flutter build ios` + fastlane's own `build_app` (gym),
+    # which correctly picks up match's provisioning profile via the
+    # MATCH_PROVISIONING_PROFILE_MAPPING lane context. iOS does not get
+    # Shorebird OTA patching for now — Android still does.
     sh(
-      "shorebird", "release", "ios",
+      "flutter", "build", "ios",
+      "--release",
+      "--no-codesign",
       "--build-name=#{build_name}",
       "--build-number=#{build_number}",
-      "--flutter-version=3.41.6",
       chdir: ".."
+    )
+
+    build_app(
+      workspace: "Runner.xcworkspace",
+      scheme: "Runner",
+      export_method: "app-store",
+      output_directory: "../build/ios/ipa"
     )
 
     ipa_path = Dir.glob("../build/ios/ipa/*.ipa").first
