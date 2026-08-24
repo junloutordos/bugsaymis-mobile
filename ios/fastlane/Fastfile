@@ -77,16 +77,14 @@ platform :ios do
       )
     end
 
-    # Retry briefly: the exported .ipa can appear on disk a beat after gym's
-    # "Successfully exported" log line — a real race hit once during manual
-    # local testing (file existed moments later; a bare Dir.glob missed it).
-    ipa_path = nil
-    10.times do
-      ipa_path = Dir.glob("../build/ios/ipa/*.ipa").first
-      break if ipa_path
-      sleep 1
-    end
-    UI.user_error!("No .ipa found under build/ios/ipa") unless ipa_path
+    # build_app already records exactly where it wrote the ipa — use that
+    # directly instead of globbing for it. (A prior version of this lane
+    # globbed "../build/ios/ipa/*.ipa" and unreliably reported "no .ipa
+    # found" even once a short retry loop was added, despite the file
+    # genuinely being there — a cwd assumption gone wrong somewhere, not a
+    # real timing race. This sidesteps the question entirely.)
+    ipa_path = lane_context[SharedValues::IPA_OUTPUT_PATH]
+    UI.user_error!("No .ipa found — IPA_OUTPUT_PATH was not set by build_app") unless ipa_path && File.exist?(ipa_path)
 
     upload_to_testflight(
       ipa: ipa_path,
