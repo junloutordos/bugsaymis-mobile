@@ -56,15 +56,21 @@ platform :ios do
 
     # xcodebuild's own "Run Script" build phase re-invokes Flutter tooling
     # internally (Flutter's xcode_backend.sh). That nested Flutter call hangs
-    # indefinitely (not a clean error) when it inherits the same leaked
-    # Bundler env described above — build_app spawns xcodebuild, so it needs
-    # the same with_original_env wrapper as the direct flutter build call.
+    # indefinitely (not a clean error, confirmed reproducible even with
+    # Bundler.with_original_env applied here too) specifically during the
+    # *archive* action, never during a plain `build` action (which is what
+    # the flutter build ios step above already does successfully). Xcode's
+    # newer "User Script Sandboxing" (stricter for Archive than Build, and
+    # new territory since switching this job to macos-15/Xcode 16) can
+    # silently block things a script needs — e.g. network access — causing a
+    # hang rather than a clean rejection. Disabling it targets that directly.
     Bundler.with_original_env do
       build_app(
         workspace: "Runner.xcworkspace",
         scheme: "Runner",
         export_method: "app-store",
         output_directory: "../build/ios/ipa",
+        xcargs: "ENABLE_USER_SCRIPT_SANDBOXING=NO",
         export_options: {
           provisioningProfiles: lane_context[SharedValues::MATCH_PROVISIONING_PROFILE_MAPPING]
         }
