@@ -54,15 +54,22 @@ platform :ios do
       targets: "Runner"
     )
 
-    build_app(
-      workspace: "Runner.xcworkspace",
-      scheme: "Runner",
-      export_method: "app-store",
-      output_directory: "../build/ios/ipa",
-      export_options: {
-        provisioningProfiles: lane_context[SharedValues::MATCH_PROVISIONING_PROFILE_MAPPING]
-      }
-    )
+    # xcodebuild's own "Run Script" build phase re-invokes Flutter tooling
+    # internally (Flutter's xcode_backend.sh). That nested Flutter call hangs
+    # indefinitely (not a clean error) when it inherits the same leaked
+    # Bundler env described above — build_app spawns xcodebuild, so it needs
+    # the same with_original_env wrapper as the direct flutter build call.
+    Bundler.with_original_env do
+      build_app(
+        workspace: "Runner.xcworkspace",
+        scheme: "Runner",
+        export_method: "app-store",
+        output_directory: "../build/ios/ipa",
+        export_options: {
+          provisioningProfiles: lane_context[SharedValues::MATCH_PROVISIONING_PROFILE_MAPPING]
+        }
+      )
+    end
 
     ipa_path = Dir.glob("../build/ios/ipa/*.ipa").first
     UI.user_error!("No .ipa found under build/ios/ipa") unless ipa_path
