@@ -1,8 +1,44 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
+import 'package:atlasgo/src/core/api_client.dart';
 import 'package:atlasgo/src/features/auth/login_screen.dart';
+
+/// Throws a fixed [DioException] from `post` instead of calling the network,
+/// so tests can drive the login screen's error-handling branches directly.
+class _ThrowingApiClient extends ApiClient {
+  final DioException Function() build;
+  _ThrowingApiClient(this.build);
+
+  @override
+  Future<Response> post(String path, {dynamic data}) async => throw build();
+}
+
+DioException _badResponse(int statusCode, Map<String, dynamic>? data) {
+  final options = RequestOptions(path: '/login');
+  return DioException(
+    requestOptions: options,
+    type: DioExceptionType.badResponse,
+    response: Response(requestOptions: options, statusCode: statusCode, data: data),
+  );
+}
+
+DioException _connectionError() => DioException(
+      requestOptions: RequestOptions(path: '/login'),
+      type: DioExceptionType.connectionError,
+    );
+
+Future<void> _fillParentFormAndSubmit(WidgetTester tester) async {
+  await tester.tap(find.text("I'm a Parent"));
+  await tester.pumpAndSettle();
+  await tester.enterText(find.byType(TextFormField).first, 'parent@crc.pshs.edu.ph');
+  await tester.enterText(find.byType(TextFormField).last, 'somepassword');
+  await tester.tap(find.text('Sign In'));
+  await tester.pumpAndSettle();
+}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -84,5 +120,80 @@ void main() {
     // SnackBar — that SnackBar appearing is proof the Google path was
     // actually invoked (not just that the button exists).
     expect(find.byType(SnackBar), findsOneWidget);
+  });
+
+  testWidgets('shows the server message for a 403 (e.g. inactive account)', (tester) async {
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          apiClientProvider.overrideWithValue(_ThrowingApiClient(
+            () => _badResponse(403, {'message': 'Account is inactive.'}),
+          )),
+        ],
+        child: const MaterialApp(home: LoginScreen()),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await _fillParentFormAndSubmit(tester);
+
+    expect(find.text('Account is inactive.'), findsOneWidget);
+    expect(find.text('Login failed. Check your connection and try again.'), findsNothing);
+  });
+
+  testWidgets('redirects to /verify-email for a 403 requiring verification', (tester) async {
+    final router = GoRouter(routes: [
+      GoRoute(path: '/', builder: (c, s) => const LoginScreen()),
+      GoRoute(path: '/verify-email', builder: (c, s) => const Scaffold(body: Text('Verify Page'))),
+    ]);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          apiClientProvider.overrideWithValue(_ThrowingApiClient(
+            () => _badResponse(403, {
+              'message': 'Please verify your email before signing in.',
+              'requires_verification': true,
+            }),
+          )),
+        ],
+        child: MaterialApp.router(routerConfig: router),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await _fillParentFormAndSubmit(tester);
+
+    expect(find.text('Verify Page'), findsOneWidget);
+  });
+
+  testWidgets('shows "Incorrect email or password." for a 401', (tester) async {
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          apiClientProvider.overrideWithValue(_ThrowingApiClient(
+            () => _badResponse(401, {'message': 'Unauthenticated.'}),
+          )),
+        ],
+        child: const MaterialApp(home: LoginScreen()),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await _fillParentFormAndSubmit(tester);
+
+    expect(find.text('Incorrect email or password.'), findsOneWidget);
+  });
+
+  testWidgets('shows the connection message for a real network failure', (tester) async {
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          apiClientProvider.overrideWithValue(_ThrowingApiClient(() => _connectionError())),
+        ],
+        child: const MaterialApp(home: LoginScreen()),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await _fillParentFormAndSubmit(tester);
+
+    expect(find.text('Login failed. Check your connection and try again.'), findsOneWidget);
   });
 }

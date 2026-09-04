@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -110,18 +111,41 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
 
     ref.listen(authStateProvider, (_, next) {
       if (!next.hasError) return;
-      final err = next.error.toString();
+      final error = next.error;
 
-      if (err.contains('requires_verification') || err.contains('verify your email')) {
-        context.push('/verify-email', extra: {'email': _emailCtrl.text.trim()});
+      // Inspect the server's actual status code + JSON body rather than
+      // DioException.toString() — that string only ever contains generic
+      // boilerplate ("...status code of 403...") and never the response
+      // body, so it can't distinguish "wrong password" from "account
+      // inactive" from "please verify your email" from a real dropped
+      // connection.
+      if (error is DioException) {
+        final statusCode = error.response?.statusCode;
+        final data = error.response?.data;
+        final serverMessage = data is Map ? data['message'] as String? : null;
+        final requiresVerification = data is Map && data['requires_verification'] == true;
+
+        if (requiresVerification) {
+          context.push('/verify-email', extra: {'email': _emailCtrl.text.trim()});
+          return;
+        }
+
+        final msg = switch (statusCode) {
+          401 || 422 => 'Incorrect email or password.',
+          null => 'Login failed. Check your connection and try again.',
+          _ => serverMessage ?? 'Login failed. Please try again.',
+        };
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(msg), backgroundColor: Colors.red.shade700),
+        );
         return;
       }
 
-      final msg = (err.contains('401') || err.contains('credentials') || err.contains('422'))
-          ? 'Incorrect email or password.'
-          : 'Login failed. Check your connection and try again.';
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(msg), backgroundColor: Colors.red.shade700),
+        SnackBar(
+          content: const Text('Login failed. Check your connection and try again.'),
+          backgroundColor: Colors.red.shade700,
+        ),
       );
     });
 
