@@ -31,6 +31,24 @@ DioException _connectionError() => DioException(
       type: DioExceptionType.connectionError,
     );
 
+/// Throws [loginError] from `post('/login', ...)` but records+succeeds any
+/// call to the diagnostics endpoint, so tests can assert on whether (and
+/// with what payload) a failure got reported.
+class _RecordingApiClient extends ApiClient {
+  final DioException Function() loginError;
+  final List<Map<String, dynamic>> diagnosticCalls = [];
+  _RecordingApiClient(this.loginError);
+
+  @override
+  Future<Response> post(String path, {dynamic data}) async {
+    if (path == '/diagnostics/login-failure') {
+      diagnosticCalls.add(Map<String, dynamic>.from(data as Map));
+      return Response(requestOptions: RequestOptions(path: path), statusCode: 204);
+    }
+    throw loginError();
+  }
+}
+
 Future<void> _fillParentFormAndSubmit(WidgetTester tester) async {
   await tester.tap(find.text("I'm a Parent"));
   await tester.pumpAndSettle();
@@ -195,5 +213,42 @@ void main() {
     await _fillParentFormAndSubmit(tester);
 
     expect(find.text('Login failed. Check your connection and try again.'), findsOneWidget);
+  });
+
+  testWidgets('reports an unexplained non-JSON failure as a diagnostic', (tester) async {
+    final client = _RecordingApiClient(() => _badResponse(522, null));
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [apiClientProvider.overrideWithValue(client)],
+        child: const MaterialApp(home: LoginScreen()),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await _fillParentFormAndSubmit(tester);
+
+    expect(find.text('Login failed. Please try again.'), findsOneWidget);
+    expect(client.diagnosticCalls, hasLength(1));
+    expect(client.diagnosticCalls.single['status_code'], 522);
+    expect(client.diagnosticCalls.single['app_version'], isNotEmpty);
+    expect(client.diagnosticCalls.single['platform'], isNotEmpty);
+  });
+
+  testWidgets('does not report a diagnostic for an already-understood 403', (tester) async {
+    final client = _RecordingApiClient(
+      () => _badResponse(403, {'message': 'Account is inactive.'}),
+    );
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [apiClientProvider.overrideWithValue(client)],
+        child: const MaterialApp(home: LoginScreen()),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await _fillParentFormAndSubmit(tester);
+
+    expect(find.text('Account is inactive.'), findsOneWidget);
+    expect(client.diagnosticCalls, isEmpty);
   });
 }

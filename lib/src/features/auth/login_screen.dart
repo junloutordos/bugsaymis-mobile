@@ -4,12 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../core/api_client.dart';
 import '../../core/theme.dart';
 import 'auth_provider.dart';
 
 /// Manually bumped alongside pubspec.yaml's `version:` — this screen has no
 /// runtime package-info dependency for the sake of a single footer label.
-const _appVersion = '1.2.0';
+const _appVersion = '1.3.0';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -103,6 +104,25 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
     }
   }
 
+  /// Fire-and-forget report of a login failure our own error-mapping
+  /// switch couldn't explain — see the call site in [build] for why.
+  void _reportUnexplainedLoginFailure({required int statusCode, dynamic responseData}) {
+    final snippet = responseData?.toString();
+    Future(() async {
+      try {
+        await ref.read(apiClientProvider).post('/diagnostics/login-failure', data: {
+          'status_code': statusCode,
+          'response_snippet':
+              snippet != null && snippet.length > 1000 ? snippet.substring(0, 1000) : snippet,
+          'platform': defaultTargetPlatform.name,
+          'app_version': _appVersion,
+        });
+      } catch (_) {
+        // Best-effort diagnostic only — never let a failed report surface.
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final isLoading = ref.watch(authStateProvider).isLoading;
@@ -128,6 +148,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
         if (requiresVerification) {
           context.push('/verify-email', extra: {'email': _emailCtrl.text.trim()});
           return;
+        }
+
+        // A real HTTP response with a status code we understand (401/422)
+        // or a real JSON message is self-explanatory. Anything else — a
+        // real status code but no parseable message — is a genuine
+        // unknown (e.g. an edge/proxy layer answering instead of our own
+        // JSON), and never shows up in our own request logs since it
+        // isn't our response. Report what the client actually saw so the
+        // next occurrence is diagnosable instead of another blind guess.
+        if (statusCode != null &&
+            statusCode != 401 &&
+            statusCode != 422 &&
+            serverMessage == null) {
+          _reportUnexplainedLoginFailure(statusCode: statusCode, responseData: data);
         }
 
         final msg = switch (statusCode) {
