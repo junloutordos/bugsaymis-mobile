@@ -80,6 +80,21 @@ class ServicesScreen extends ConsumerWidget {
                         onTap: () => context.push('/student/portal/leave-passes'),
                       ),
                       const SizedBox(height: 20),
+                      const SectionLabel('CLASS ADMISSION'),
+                      _ServiceTile(
+                        icon: Icons.assignment_turned_in_rounded,
+                        iconColor: const Color(0xFFD97706),
+                        iconBg: const Color(0xFFFEF3C7),
+                        title: 'Class Admission Slips',
+                        subtitle: d.admissionSlipBadge > 0
+                            ? '${d.admissionSlipBadge} item(s) need a slip'
+                            : 'See what needs a slip and request one',
+                        trailing: d.admissionSlipBadge > 0
+                            ? PortalStatusChip.forStatus('pending')
+                            : null,
+                        onTap: () => context.push('/student/portal/admission-slips'),
+                      ),
+                      const SizedBox(height: 20),
                       const SectionLabel('CAMPUS'),
                       _ServiceTile(
                         icon: Icons.grid_view_rounded,

@@ -393,6 +393,18 @@ class _PortalTodoSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final rows = <Widget>[];
 
+    if (portal.admissionSlipBadge > 0) {
+      rows.add(_todoRow(
+        context,
+        icon: Icons.assignment_turned_in_rounded,
+        iconColor: AppColors.warning,
+        iconBg: AppColors.warningBg,
+        title: 'Class Admission Slip needed',
+        subtitle: '${portal.admissionSlipBadge} attendance item(s) — tap to request a slip',
+        route: '/student/portal/admission-slips',
+      ));
+    }
+
     if (portal.total > 0 && portal.totalDone < portal.total) {
       rows.add(_todoRow(
         context,

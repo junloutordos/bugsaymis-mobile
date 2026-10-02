@@ -16,6 +16,8 @@ import '../features/notices/announcement_list_screen.dart';
 import '../features/notifications/notification_preferences_screen.dart';
 import '../features/profile/profile_screen.dart';
 import '../features/profile/profile_update_screen.dart';
+import '../features/admission_slips/admission_slips_screen.dart';
+import '../features/admission_slips/request_slip_screen.dart';
 import '../features/portal/clearance_screen.dart';
 import '../features/portal/forms_overview_screen.dart';
 import '../features/portal/leave_passes_screen.dart';
@@ -179,6 +181,11 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(path: '/student/portal/rh-application', builder: (ctx, st) => const RhApplicationScreen()),
       GoRoute(path: '/student/portal/leave-passes',   builder: (ctx, st) => const LeavePassesScreen()),
+      GoRoute(path: '/student/portal/admission-slips', builder: (ctx, st) => const AdmissionSlipsScreen()),
+      GoRoute(
+        path: '/student/portal/admission-slips/request',
+        builder: (ctx, st) => RequestSlipScreen(itemKeys: (st.extra as List?)?.cast<String>() ?? const []),
+      ),
       GoRoute(path: '/student/portal/clearance',      builder: (ctx, st) => const ClearanceScreen()),
       GoRoute(path: '/student/portal/lost-found',     builder: (ctx, st) => const LostFoundScreen()),
     ],

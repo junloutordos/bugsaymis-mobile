@@ -73,6 +73,7 @@ class PortalDashboard {
   final Map<String, dynamic>? rhApplication;
   final Map<String, dynamic>? intern;
   final ClearanceSummary? clearance;
+  final int admissionSlipBadge;
 
   const PortalDashboard({
     this.schoolYear,
@@ -83,6 +84,7 @@ class PortalDashboard {
     this.rhApplication,
     this.intern,
     this.clearance,
+    this.admissionSlipBadge = 0,
   });
 
   bool get isDormer => intern != null;
@@ -102,6 +104,7 @@ class PortalDashboard {
             ? null
             : ClearanceSummary.fromJson(
                 json['clearanceStatus'] as Map<String, dynamic>),
+        admissionSlipBadge: (json['admission_slip_badge'] as int?) ?? 0,
       );
 }
 
