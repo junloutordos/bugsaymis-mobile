@@ -60,6 +60,9 @@ class AtlasGoApp extends ConsumerWidget {
         // queue dialog surfaces it on load.
         final user = ref.read(authStateProvider).value;
         router.go(user?.isStudent == true ? '/student/home' : '/home');
+      } else if (data['type'] == 'admission_slip_needed' ||
+          data['type'] == 'admission_slip_decision') {
+        router.go('/student/portal/admission-slips');
       }
       ref.read(pendingNotificationProvider.notifier).state = null;
     });
